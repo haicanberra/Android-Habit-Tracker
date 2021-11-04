@@ -1,0 +1,14 @@
+com/example/recurring_o_city/User.java
+ com.example.recurring_o_city.User
+com/example/recurring_o_city/BuildConfig.java
+ com.example.recurring_o_city.BuildConfig
+com/example/recurring_o_city/UserProfile.java
+ com.example.recurring_o_city.UserProfile
+com/example/recurring_o_city/signup.java
+ com.example.recurring_o_city.signup
+ com.example.recurring_o_city.signup$1
+ com.example.recurring_o_city.signup$1$1
+com/example/recurring_o_city/MainActivity.java
+ com.example.recurring_o_city.MainActivity
+ com.example.recurring_o_city.MainActivity$1
+ com.example.recurring_o_city.MainActivity$2
