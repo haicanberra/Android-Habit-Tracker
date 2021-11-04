@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RecurringOCity">
         <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.RecurringOCity.NoActionBar" />
+        <activity
             android:name=".UserProfile"
             android:exported="false" />
         <activity
