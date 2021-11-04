@@ -1,5 +1,6 @@
 package com.example.recurring_o_city;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,10 +17,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity implements View.OnClickListener,OnCompleteListener<AuthResult> {
@@ -95,6 +98,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         if ((password.isEmpty())){
             editTextPassword.setError("Password is required");
             editTextPassword.requestFocus();
+
             return;
         }
 
@@ -103,6 +107,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
             editTextPassword.requestFocus();
             return;
         }
+
 
         mAuth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(this, this);
@@ -118,3 +123,4 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         }
     }
 }
+
