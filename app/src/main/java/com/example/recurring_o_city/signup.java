@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -18,14 +19,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-public class signup extends AppCompatActivity implements View.OnClickListener {
+import java.util.HashMap;
+import java.util.Map;
+
+public class signup extends AppCompatActivity implements View.OnClickListener,OnCompleteListener<AuthResult> {
 
     private TextView registerUser;
     private EditText editTextUsername, editTextEmail, editTextPassword, editTextConfPass;
     private FirebaseAuth mAuth;
-
+    private FirebaseFirestore db;
 
 
     @Override
@@ -51,7 +57,6 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
             case R.id.btn_sign_up_to_main:
                 btn_sign_up_to_main();
         }
-
     }
 
     private void btn_sign_up_to_main() {
@@ -59,76 +64,73 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String conf_pass = editTextConfPass.getText().toString().trim();
+        db = FirebaseFirestore.getInstance();
+        CollectionReference users = db.collection("Users");
 
-        if(username.isEmpty()){
+        if (username.isEmpty()) {
             editTextUsername.setError("Please enter a username");
             editTextUsername.requestFocus();
             return;
         }
 
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             editTextEmail.setError("Please enter an email address");
             editTextEmail.requestFocus();
             return;
         }
 
-        if(!(Patterns.EMAIL_ADDRESS.matcher(email).matches())){
+        if (!(Patterns.EMAIL_ADDRESS.matcher(email).matches())) {
             editTextEmail.setError("Please enter a valid email address");
         }
 
-        if(password.isEmpty()){
+        if (password.isEmpty()) {
             editTextPassword.setError("Please enter a password");
             editTextPassword.requestFocus();
             return;
         }
 
-        if (password.length() < 5){
+        if (password.length() < 5) {
             editTextPassword.setError("Password needs to be at least 5 characters long");
             editTextPassword.requestFocus();
         }
 
-        if(conf_pass.isEmpty()){
+        if (conf_pass.isEmpty()) {
             editTextConfPass.setError("Please enter a password");
             editTextConfPass.requestFocus();
             return;
         }
 
-        if (conf_pass != password){
+        if (!conf_pass.equals(password)) {
             editTextConfPass.setError("Passwords don't match");
             editTextConfPass.requestFocus();
             return;
         }
 
-        mAuth.createUserWithEmailAndPassword(email,password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if(task.isSuccessful()){
-                            User user = new User(username,email);
-
-                            FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(signup.this,"You have signed up", Toast.LENGTH_LONG).show();
-                                        startActivity(new Intent(signup.this,MainActivity.class));
-                                    }
-                                    else{
-                                        Toast.makeText(signup.this,"Sorry, could not sign up", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                        }
-                        else{
-                            Toast.makeText(signup.this,"Sorry, could not sign up", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
-
-
-
+        if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty()
+                && password.length() >= 5
+                && conf_pass.equals(password)
+                && (Patterns.EMAIL_ADDRESS.matcher(email).matches())) {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, this);
+        }
     }
+
+    @Override
+    public void onComplete(@NonNull Task<AuthResult> task) {
+        if(task.isSuccessful()){
+            FirebaseUser user = mAuth.getCurrentUser();
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("Username", editTextUsername.getText().toString());
+            data.put("Email", editTextEmail.getText().toString());
+            db.collection("Users").document(user.getUid().toString()).set(data);
+            Log.d("Firebase User", user.getDisplayName() + user.getEmail());
+
+            Toast.makeText(signup.this,"You have signed up", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(signup.this, Login.class));
+        } else{
+            Toast.makeText(signup.this,"Sorry, could not sign up", Toast.LENGTH_LONG).show();
+        }
+    }
+
 }
