@@ -16,4 +16,28 @@ public class HabitEvent {
         this.eventPic = eventPic;
         this.eventLoc = eventLoc;
     }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public Picture getEventPic() {
+        return eventPic;
+    }
+
+    public void setEventPic(Picture eventPic) {
+        this.eventPic = eventPic;
+    }
+
+    public GoogleMap getEventLoc() {
+        return eventLoc;
+    }
+
+    public void setEventLoc(GoogleMap eventLoc) {
+        this.eventLoc = eventLoc;
+    }
 }
