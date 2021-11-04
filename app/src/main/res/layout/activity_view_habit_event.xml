@@ -167,7 +167,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="87 Ave NW & 114 Street NW"
+                android:hint="87 Ave NW and 114 Street NW"
                 android:textSize="20sp" />
 
         </LinearLayout>
