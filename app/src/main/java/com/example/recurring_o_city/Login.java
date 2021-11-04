@@ -71,7 +71,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         if (user != null)
         {
             Toast.makeText(this, "Logged in as " + user.getEmail(),Toast.LENGTH_LONG).show();
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, UserProfile.class));
         }
     }
 
@@ -117,7 +117,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
     @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
-            startActivity(new Intent(Login.this, MainActivity.class));
+            startActivity(new Intent(Login.this, UserProfile.class));
         } else {
             Toast.makeText(Login.this, "Failed to Login", Toast.LENGTH_LONG).show();
         }
