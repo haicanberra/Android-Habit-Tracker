@@ -1,5 +1,7 @@
 package com.example.recurring_o_city;
 
-public class EditHabitEventFragment {
+import androidx.fragment.app.DialogFragment;
+
+public class EditHabitEventFragment extends DialogFragment {
 
 }
