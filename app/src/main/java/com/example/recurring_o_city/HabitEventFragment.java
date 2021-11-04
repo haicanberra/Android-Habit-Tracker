@@ -1,5 +1,5 @@
 package com.example.recurring_o_city;
 
-public class ViewHabitEventActivity {
+public class HabitEventFragment {
 
 }
