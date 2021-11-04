@@ -4,7 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -19,9 +24,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView register;
-    private EditText editTextEmail, editTextPassword;
-    private Button signIn;
+    private TextView signup, forgetpass;
+    private EditText editTextUsername, editTextPassword;
+    private Button logIn;
 
     private FirebaseAuth mAuth;
 
@@ -30,43 +35,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        register = (TextView) findViewById(R.id.btn_create_account);
-        register.setOnClickListener(this);
+        signup = (TextView) findViewById(R.id.sign_up);
+        forgetpass = (TextView) findViewById(R.id.forgotPassword);
 
-        signIn = (Button) findViewById(R.id.btn_login);
-        signIn.setOnClickListener(this);
+        logIn = (Button) findViewById(R.id.btn_login);
+        logIn.setOnClickListener(this);
 
-        editTextEmail = (EditText) findViewById(R.id.email);
+        editTextUsername = (EditText) findViewById(R.id.username);
         editTextPassword = (EditText) findViewById(R.id.password);
 
         mAuth = FirebaseAuth.getInstance();
-    }
 
+        // For clicking Signup
+        SpannableString s = new SpannableString(signup.getText().toString());
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                startActivity(new Intent(MainActivity.this, signup.class));
+            }
+        };
+        s.setSpan(clickableSpan, 23, 30, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        signup.setText(s);
+        signup.setMovementMethod(LinkMovementMethod.getInstance());
+        signup.setHighlightColor(Color.TRANSPARENT);
+
+
+
+
+    }
     @Override
     public void onClick(View view) {
-        switch(view.getId()){
-            case R.id.btn_create_account:
-                startActivity(new Intent(this,signup.class));
-                break;
-
+        switch (view.getId()){
+            case R.id.forgotPassword:
+                //startActivity(new Intent(this, forgot.class));
             case R.id.btn_login:
                 userLogin();
         }
+
     }
 
+
     private void userLogin() {
-        String email = editTextEmail.getText().toString().trim();
+        String username = editTextUsername.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if ((email.isEmpty())){
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
+        if ((username.isEmpty())){
+            editTextUsername.setError("Username is required");
+            editTextUsername.requestFocus();
             return;
         }
 
-        if(!(Patterns.EMAIL_ADDRESS.matcher(email).matches())){
-            editTextEmail.setError("Not a valid email");
-            editTextEmail.requestFocus();
+        if ((password.isEmpty())){
+            editTextPassword.setError("Password is required");
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        if(!(Patterns.EMAIL_ADDRESS.matcher(username).matches())){
+            editTextUsername.setError("Not a valid email");
+            editTextUsername.requestFocus();
             return;
         }
 
@@ -75,8 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editTextPassword.requestFocus();
             return;
         }
-
-        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(username,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){

@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class signup extends AppCompatActivity implements View.OnClickListener {
 
     private TextView registerUser;
-    private EditText editTextFirstName, editTextLastName, editTextEmail, editTextPassword;
+    private EditText editTextUsername, editTextEmail, editTextPassword, editTextConfPass;
     private FirebaseAuth mAuth;
 
 
@@ -38,10 +38,10 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         registerUser = (Button) findViewById(R.id.btn_sign_up_to_main);
         registerUser.setOnClickListener(this);
 
-        editTextFirstName = (EditText) findViewById(R.id.first_name);
-        editTextLastName = (EditText) findViewById(R.id.last_name);
+        editTextUsername = (EditText) findViewById(R.id.username);
         editTextEmail = (EditText) findViewById(R.id.email);
         editTextPassword = (EditText) findViewById(R.id.password);
+        editTextConfPass = (EditText) findViewById(R.id.confirm_pass);
 
     }
 
@@ -55,20 +55,14 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void btn_sign_up_to_main() {
+        String username = editTextUsername.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
-        String firstname = editTextFirstName.getText().toString().trim();
-        String lastname = editTextLastName.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        String conf_pass = editTextConfPass.getText().toString().trim();
 
-        if(firstname.isEmpty()){
-            editTextFirstName.setError("Please enter a first name");
-            editTextFirstName.requestFocus();
-            return;
-        }
-
-        if(lastname.isEmpty()){
-            editTextLastName.setError("Please enter a last name");
-            editTextLastName.requestFocus();
+        if(username.isEmpty()){
+            editTextUsername.setError("Please enter a username");
+            editTextUsername.requestFocus();
             return;
         }
 
@@ -93,30 +87,42 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
             editTextPassword.requestFocus();
         }
 
+        if(conf_pass.isEmpty()){
+            editTextConfPass.setError("Please enter a password");
+            editTextConfPass.requestFocus();
+            return;
+        }
+
+        if (conf_pass != password){
+            editTextConfPass.setError("Passwords don't match");
+            editTextConfPass.requestFocus();
+            return;
+        }
+
         mAuth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()){
-                            User user = new User(firstname,lastname,email);
+                            User user = new User(username,email);
 
                             FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        Toast.makeText(signup.this,"You have been registered", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(signup.this,"You have signed up", Toast.LENGTH_LONG).show();
                                         startActivity(new Intent(signup.this,MainActivity.class));
                                     }
                                     else{
-                                        Toast.makeText(signup.this,"Sorry, could not register", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(signup.this,"Sorry, could not sign up", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
                         }
                         else{
-                            Toast.makeText(signup.this,"Sorry, could not register", Toast.LENGTH_LONG).show();
+                            Toast.makeText(signup.this,"Sorry, could not sign up", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
