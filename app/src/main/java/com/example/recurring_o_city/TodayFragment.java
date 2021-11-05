@@ -32,10 +32,9 @@ import java.util.Date;
 
 public class TodayFragment extends Fragment{
 
-    public ArrayList<Habit> habitList;
+    public ArrayList<Habit> todayList;
     public ItemAdapter habitAdapter;
     private FloatingActionButton fab;
-    FirebaseFirestore db;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -53,8 +52,9 @@ public class TodayFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        habitList = (ArrayList<Habit>) getArguments().getSerializable(
+        todayList = (ArrayList<Habit>) getArguments().getSerializable(
                 "HABIT");
+
     }
 
     @Override
@@ -66,14 +66,11 @@ public class TodayFragment extends Fragment{
         RecyclerView recyclerView = view.findViewById(R.id.today_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-        habitAdapter = new ItemAdapter(habitList);
+        habitAdapter = new ItemAdapter(todayList);
         recyclerView.setAdapter(habitAdapter);
 
 
-        db = FirebaseFirestore.getInstance();
-        CollectionReference collectionReference = db.collection("Habits");
-
-        ItemAdapter myAdapter = new ItemAdapter(habitList);
+        ItemAdapter myAdapter = new ItemAdapter(todayList);
         recyclerView.setAdapter(myAdapter);
 
         fab = view.findViewById(R.id.fab);
@@ -83,7 +80,7 @@ public class TodayFragment extends Fragment{
         myAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Habit selectedHabit = (Habit) habitList.get(position);
+                Habit selectedHabit = (Habit) todayList.get(position);
                 ViewHabitFragment habitFrag = new ViewHabitFragment();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()

@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +42,7 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AddHabitFragment.OnFragmentInteractionListener {
 
     public ArrayList<Habit> habitList;
+    public ArrayList<Habit> todayList;
     public ArrayList<HabitEvent> habitEventList;
 
     private TabLayout tabLayout;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         habitList = new ArrayList<>();
         habitEventList = new ArrayList<>();
+        todayList = new ArrayList<>();
 
 
         tabLayout.addTab(tabLayout.newTab().setText("Today"));
@@ -115,27 +118,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
-                // Clear the old list
-                habitList.clear();
-                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-                {
-                    Log.d("New Habit", String.valueOf(doc.getData().get("Date")));
-                    String title =  (String) doc.getData().get("Title");
-                    String reason = (String) doc.getData().get("Reason");
-                    Date date = doc.getTimestamp("Date").toDate();
-                    int priv = Integer.valueOf(doc.getData().get("Privacy").toString());
-                    habitList.add(new Habit(title, reason, date, priv));
-                }
-//                FragmentManager fm = getSupportFragmentManager();
-//                fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
-//                pager2.setAdapter(fragmentadapter);
-
-            }
-        });
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
@@ -143,16 +125,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 habitList.clear();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     Log.d("New Habit", String.valueOf(doc.getData().get("Date")));
-                    String title = (String) doc.getData().get("Title");
+                    String title = (String) doc.getId();
                     String reason = (String) doc.getData().get("Reason");
-
-
                     Date date = doc.getTimestamp("Date").toDate();
                     int priv = Integer.valueOf(doc.getData().get("Privacy").toString());
                     habitList.add(new Habit(title, reason, date, priv));
+
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                    Date today = Calendar.getInstance().getTime();
+                    String date_s = format.format(today);
+                    try {
+                        today = format.parse(date_s);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    if (today.compareTo(date) == 0) {
+                        todayList.add(new Habit(title, reason, date, priv));
+                    }
                 }
                 FragmentManager fm = getSupportFragmentManager();
-                fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
+                fragmentadapter = new FragmentAdapter(fm, getLifecycle(), todayList, habitList, habitEventList);
                 pager2.setAdapter(fragmentadapter);
             }
 
