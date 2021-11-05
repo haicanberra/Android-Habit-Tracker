@@ -53,7 +53,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View view) {
-                startActivity(new Intent(Login.this, com.example.recurring_o_city.signup.class));
+                startActivity(new Intent(Login.this, com.example.recurring_o_city.Signup.class));
             }
         };
         s.setSpan(clickableSpan, 23, 30, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
