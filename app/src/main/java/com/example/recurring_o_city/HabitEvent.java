@@ -10,11 +10,11 @@ public class HabitEvent {
     private Picture eventPic;
     private GoogleMap eventLoc;
 
-    public HabitEvent(/* Habit eventHabit, */ String eventName, Picture eventPic, GoogleMap eventLoc) {
+    public HabitEvent(/* Habit eventHabit, */ String eventName) {
         // this.eventHabit = eventHabit;
         this.eventName = eventName;
-        this.eventPic = eventPic;
-        this.eventLoc = eventLoc;
+//        this.eventPic = eventPic;
+//        this.eventLoc = eventLoc;
     }
 
     public String getEventName() {
