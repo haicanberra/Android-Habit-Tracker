@@ -26,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class signup extends AppCompatActivity implements View.OnClickListener,OnCompleteListener<AuthResult> {
+public class Signup extends AppCompatActivity implements View.OnClickListener,OnCompleteListener<AuthResult> {
 
     private TextView registerUser;
     private EditText editTextUsername, editTextEmail, editTextPassword, editTextConfPass;
@@ -126,10 +126,10 @@ public class signup extends AppCompatActivity implements View.OnClickListener,On
             db.collection("Users").document(user.getUid().toString()).set(data);
             Log.d("Firebase User", user.getDisplayName() + user.getEmail());
 
-            Toast.makeText(signup.this,"You have signed up", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(signup.this, Login.class));
+            Toast.makeText(Signup.this,"You have signed up", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(Signup.this, Login.class));
         } else{
-            Toast.makeText(signup.this,"Sorry, could not sign up", Toast.LENGTH_LONG).show();
+            Toast.makeText(Signup.this,"Sorry, could not sign up", Toast.LENGTH_LONG).show();
         }
     }
 
