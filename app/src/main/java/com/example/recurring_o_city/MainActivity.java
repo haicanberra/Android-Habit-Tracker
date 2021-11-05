@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_send_request:
                 break;
             case R.id.nav_logout:
-                Toast.makeText(this, "Authentication failed.", Toast.LENGTH_LONG);
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(this, Login.class));
                 finish();

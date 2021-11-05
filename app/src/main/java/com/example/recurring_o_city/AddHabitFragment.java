@@ -23,11 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddHabitFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AddHabitFragment extends DialogFragment {
 
     private EditText habitTitle;
@@ -48,13 +43,6 @@ public class AddHabitFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-
-    public static AddHabitFragment newInstance() {
-        AddHabitFragment fragment = new AddHabitFragment();
-        Bundle args = new Bundle();
-
-        return fragment;
-    }
 
     @Override
     public void onAttach(Context context) {
