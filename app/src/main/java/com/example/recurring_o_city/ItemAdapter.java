@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+/**
+ * Generates a view that reuses views instead of creating/destroyer them when the user scrolls by
+ */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> {
 
     private OnItemClickListener myListener;
@@ -18,6 +21,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     private ArrayList<Habit> habitList;
     private ArrayList<HabitEvent> habitEventList;
 
+    /**
+     * @param list
+     */
     public ItemAdapter(ArrayList<?> list) {
         for (Object obj : list) {
             if (obj.getClass().equals(Habit.class)) {
@@ -32,14 +38,22 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     }
 
+
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
 
+        /**
+         * @param itemView
+         * @param listener
+         */
         public MyViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             textView = itemView.findViewById(R.id.item_view);
 
             itemView.setOnClickListener(new View.OnClickListener() {
+                /**
+                 * @param view
+                 */
                 @Override
                 public void onClick(View view) {
                     if (listener != null) {
@@ -53,12 +67,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         }
     }
 
+    /**
+     * @param parent
+     * @param viewType
+     * @return ViewHolder, or the thing that wraps views to allow reuse
+     */
     @NonNull
     @Override
     public ItemAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_adapter,parent,false), myListener);
     }
 
+    /**
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull ItemAdapter.MyViewHolder holder, int position) {
         if (this.habitList != null && this.habitEventList == null) {
@@ -71,6 +94,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         }
     }
 
+    /**
+     * @return int
+     */
     @Override
     public int getItemCount() {
         if (this.habitList != null && this.habitEventList == null) {
@@ -86,6 +112,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         void onItemClick(int position);
     }
 
+    /**
+     * @param listener
+     */
     public void setOnItemClickListener(OnItemClickListener listener) {
         myListener = listener;
     }

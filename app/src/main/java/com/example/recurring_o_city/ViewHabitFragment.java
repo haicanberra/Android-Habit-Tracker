@@ -35,6 +35,10 @@ public class ViewHabitFragment extends Fragment{
     private String habit_repeat;
     private String habit_privacy;
 
+    /**
+     * @param newHabit
+     * @return Fragment
+     */
     // Get the attributes from the Habit object.
     static ViewHabitFragment newInstance(Habit newHabit) {
         Bundle args = new Bundle();
@@ -53,6 +57,12 @@ public class ViewHabitFragment extends Fragment{
         return fragment;
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View
+     */
     // Show View Habit Event Fragment.
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -89,6 +99,9 @@ public class ViewHabitFragment extends Fragment{
         privacyText.setText(habit_privacy);
 
         editButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 // Call the EditHabitFragment
@@ -97,6 +110,9 @@ public class ViewHabitFragment extends Fragment{
 
         // Pops out a stack, returning to previous fragment.
         backButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();

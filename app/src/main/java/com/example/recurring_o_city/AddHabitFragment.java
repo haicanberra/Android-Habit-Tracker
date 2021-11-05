@@ -25,6 +25,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Display a popup that promps user to add fragment
+ */
 public class AddHabitFragment extends DialogFragment {
 
     private EditText habitTitle;
@@ -36,6 +39,9 @@ public class AddHabitFragment extends DialogFragment {
     static int priv = 0;
     private DatePickerDialog calDialog;
 
+    /**
+     * @return Habit
+     */
     public interface OnFragmentInteractionListener{
         void onSavePressed(Habit newHabit);
     }
@@ -44,12 +50,18 @@ public class AddHabitFragment extends DialogFragment {
         // Required empty public constructor
     }
 
+    /**
+     * @return Fragment
+     */
     public static AddHabitFragment newInstance(){
         AddHabitFragment fragment = new AddHabitFragment();
         return fragment;
     }
 
-
+    /**
+     * @param context
+     * @throws RuntimeException
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -67,6 +79,10 @@ public class AddHabitFragment extends DialogFragment {
 
     }
 
+    /**
+     * @param savedInstanceState
+     * @return Builder
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -89,6 +105,10 @@ public class AddHabitFragment extends DialogFragment {
             calDialog.show();
         });
 
+        /**
+         * @throws setError
+         * @throws Exception
+         */
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -102,17 +122,28 @@ public class AddHabitFragment extends DialogFragment {
                     // Get and validate new input from user
                     String title = habitTitle.getText().toString();
                     String reason = habitReason.getText().toString();
+                    /**
+                     * @param Boolean
+                     * @return null
+                     */
                     if (title.equals("")) {
                         habitTitle.setError("Title cannot be empty");
                         habitTitle.requestFocus();
                         return;
                     }
+                    /**
+                     * @param Boolean
+                     * @return null
+                     */
                     if (reason.equals("")) {
                         habitReason.setError("Reason cannot be empty");
                         habitReason.requestFocus();
                         return;
                     }
 
+                    /**
+                     * @param String date
+                     */
                     try {
                         newDate = d.parse(String.valueOf(habitDate.getText()));
                     } catch (ParseException e) {
@@ -130,6 +161,13 @@ public class AddHabitFragment extends DialogFragment {
                         }
                     });
 
+                    /**
+                     * @param String title, reason
+                     * @param Date date
+                     * @param int privacy
+                     * @returns Habit
+                     */
+                    //why's their two?
                     // Check if input is valid and proceed
                     if (!title.equals("") && !title.equals("") && newDate != null) {
                         //When user clicks save button, add new medicine

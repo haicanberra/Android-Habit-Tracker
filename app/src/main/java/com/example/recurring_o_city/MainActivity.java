@@ -25,7 +25,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-
+/**
+ * the base which everything executes off of
+ */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AddHabitFragment.OnFragmentInteractionListener{
 
     ArrayList<Habit> habitList;
@@ -39,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     Toolbar toolbar;
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,16 +80,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabLayout.addTab(tabLayout.newTab().setText("Event"));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            /**
+             * @param tab
+             */
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 pager2.setCurrentItem(tab.getPosition());
             }
-
+            /**
+             * @param tab
+             */
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
 
             }
-
+            /**
+             * @param tab
+             */
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
@@ -92,6 +104,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         pager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            /**
+             * @param position
+             */
             @Override
             public void onPageSelected(int position) {
                 tabLayout.selectTab(tabLayout.getTabAt(position));
@@ -115,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    /**
+     * @return null
+     */
     @Override
     public void onBackPressed(){
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -125,6 +143,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /**
+     * @param item
+     * @return Boolean
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
@@ -148,6 +170,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * @param newHabit
+     */
     @Override
     public void onSavePressed(Habit newHabit) {
         habitList.add(newHabit);

@@ -17,6 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * Display habits to occur today
+ */
 public class TodayFragment extends Fragment{
 
     private ArrayList<Habit> habitList;
@@ -26,6 +29,10 @@ public class TodayFragment extends Fragment{
         // Required empty public constructor
     }
 
+    /**
+     * @param list
+     * @return Fragment
+     */
     public static TodayFragment newInstance(ArrayList<Habit> list) {
         TodayFragment fragment = new TodayFragment();
         Bundle bundle = new Bundle();
@@ -34,6 +41,9 @@ public class TodayFragment extends Fragment{
         return fragment;
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +52,12 @@ public class TodayFragment extends Fragment{
                 "HABIT");
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

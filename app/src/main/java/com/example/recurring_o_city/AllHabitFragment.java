@@ -37,6 +37,11 @@ public class AllHabitFragment extends Fragment {
      * @return A new instance of fragment AllHabitFragment.
      */
 
+    /**
+     * @param param1
+     * @param param2
+     * @return Fragment
+     */
     public static AllHabitFragment newInstance(String param1, String param2) {
         AllHabitFragment fragment = new AllHabitFragment();
         Bundle args = new Bundle();
@@ -46,6 +51,9 @@ public class AllHabitFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +63,12 @@ public class AllHabitFragment extends Fragment {
         }
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return inflator, the view of all habits
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

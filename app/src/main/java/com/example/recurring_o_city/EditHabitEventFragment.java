@@ -10,10 +10,17 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * The popup that allows the user edit the Habit the fragment displays
+ */
 public class EditHabitEventFragment extends DialogFragment {
 
     private String oldComment;
 
+    /**
+     * @param oldHabitEvent
+     * @return Fragment
+     */
     static EditHabitEventFragment newInstance(HabitEvent oldHabitEvent) {
         Bundle args = new Bundle();
 
@@ -26,6 +33,12 @@ public class EditHabitEventFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View
+     */
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -40,6 +53,9 @@ public class EditHabitEventFragment extends DialogFragment {
         editText.setText(oldComment);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            /**
+             * @param View
+             */
             public void onClick(View view) {
                 // ...
             }
@@ -47,6 +63,9 @@ public class EditHabitEventFragment extends DialogFragment {
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            /**
+             * @param View
+             */
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
