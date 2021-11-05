@@ -13,6 +13,7 @@ public class HabitEvent {
     public HabitEvent(Habit eventHabit, String eventComment) {
         this.eventHabit = eventHabit;
         this.eventComment = eventComment;
+//        Picture and location will be implemented later!
         this.eventPic = eventPic;
         this.eventLoc = eventLoc;
     }

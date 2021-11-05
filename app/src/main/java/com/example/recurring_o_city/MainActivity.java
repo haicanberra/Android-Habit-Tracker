@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                     Date today = Calendar.getInstance().getTime();
+                    habitEventList.add(new HabitEvent(new Habit("1","1",date,1), "1"));
                     String date_s = format.format(today);
                     try {
                         today = format.parse(date_s);
