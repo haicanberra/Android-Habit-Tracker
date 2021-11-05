@@ -3,9 +3,27 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/activity_main.xml" value="0.4466666666666667" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/drawable/ic_home.xml" value="0.1" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/drawable/ic_menu_camera.xml" value="0.1" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.1" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/drawable/side_nav_bar.xml" value="0.1" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/activity_login.xml" value="0.2" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/activity_signup.xml" value="0.22" />
         <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/activity_user_profile.xml" value="0.22" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/activity_view_habit_event.xml" value="0.22" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/app_bar_main.xml" value="0.2" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/content_main.xml" value="0.2" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/edit_habit_event_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/fragment_all_habit.xml" value="0.22" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/fragment_gallery.xml" value="0.1" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/fragment_habit_event.xml" value="0.1" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/fragment_home.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/fragment_today.xml" value="0.1" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/nav_header_main.xml" value="0.22" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/menu/activity_main_drawer.xml" value="0.1" />
+        <entry key="..\:/Users/Phuong/Documents/GitHub/Recurring-O-City/app/src/main/res/menu/main.xml" value="0.22" />
         <entry key="..\:/Users/daisy/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/activity_view_habit_event.xml" value="0.1" />
         <entry key="..\:/Users/daisy/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/fragment_gallery.xml" value="0.1585144927536232" />
         <entry key="..\:/Users/daisy/Documents/GitHub/Recurring-O-City/app/src/main/res/layout/fragment_home.xml" value="0.11775362318840579" />
