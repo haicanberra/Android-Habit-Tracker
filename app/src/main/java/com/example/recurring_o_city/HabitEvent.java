@@ -7,14 +7,14 @@ import com.google.android.gms.maps.GoogleMap;
 public class HabitEvent {
     private Habit eventHabit;
     private String eventComment;
-//    private Picture eventPic;
-//    private GoogleMap eventLoc;
+    private Picture eventPic;
+    private GoogleMap eventLoc;
 
     public HabitEvent(Habit eventHabit, String eventComment) {
         this.eventHabit = eventHabit;
         this.eventComment = eventComment;
-//        this.eventPic = eventPic;
-//        this.eventLoc = eventLoc;
+        this.eventPic = eventPic;
+        this.eventLoc = eventLoc;
     }
 
     public Habit getEventHabit() {
@@ -33,19 +33,19 @@ public class HabitEvent {
         this.eventComment = eventName;
     }
 
-//    public Picture getEventPic() {
-//        return eventPic;
-//    }
-//
-//    public void setEventPic(Picture eventPic) {
-//        this.eventPic = eventPic;
-//    }
-//
-//    public GoogleMap getEventLoc() {
-//        return eventLoc;
-//    }
-//
-//    public void setEventLoc(GoogleMap eventLoc) {
-//        this.eventLoc = eventLoc;
-//    }
+    public Picture getEventPic() {
+        return eventPic;
+    }
+
+    public void setEventPic(Picture eventPic) {
+        this.eventPic = eventPic;
+    }
+
+    public GoogleMap getEventLoc() {
+        return eventLoc;
+    }
+
+    public void setEventLoc(GoogleMap eventLoc) {
+        this.eventLoc = eventLoc;
+    }
 }
