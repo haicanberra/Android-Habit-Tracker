@@ -14,7 +14,11 @@ public class EditHabitEventFragment extends DialogFragment {
 
     private String oldComment;
 
-    static EditHabitEventFragment newInstance(HabitEvent oldHabitEvent) {
+    public EditHabitEventFragment(){
+
+    }
+
+    public static EditHabitEventFragment newInstance(HabitEvent oldHabitEvent) {
         Bundle args = new Bundle();
 
         Habit oldHabit = oldHabitEvent.getEventHabit();

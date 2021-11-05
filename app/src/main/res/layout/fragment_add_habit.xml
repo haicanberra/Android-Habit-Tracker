@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AddHabitFragment"
-    android:orientation = "vertical">
+    android:orientation = "vertical"
+    android:gravity="center">
 
         <TextView
             android:id="@+id/habit_title"
@@ -65,23 +66,28 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
-                <TextView
+                <EditText
                     android:id="@+id/habit_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:ems="10"
+                    android:enabled="false"
+                    android:inputType="none"
                     android:paddingStart="5dp"
-                    android:paddingEnd="5dp" />
+                    android:paddingEnd="5dp"
+                    android:textAlignment="center" />
 
                 <Button
                     android:id="@+id/button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:text="Button" />
+                    android:text="EDIT"
+                    android:textAlignment="center" />
 
         </LinearLayout>
 
@@ -105,16 +111,22 @@
             android:paddingStart="5dp"
             android:paddingEnd="5dp" />
 
-        <Switch
-            android:id="@+id/privacy"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Privacy"
-            android:checked="true"
-            android:textOn="Private"
-            android:textOff="Public">
+            android:orientation="horizontal"
+            android:gravity="center">
+                <Switch
+                    android:id="@+id/privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Privacy"
+                    android:textOff="Public"
+                    android:textOn="Private">
 
-        </Switch>
+                </Switch>
+        </LinearLayout>
 
 
 </LinearLayout>
