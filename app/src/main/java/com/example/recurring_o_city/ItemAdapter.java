@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -96,8 +97,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         if (this.todayList != null && this.habitList == null && this.habitEventList == null) {
             String name = todayList.get(position).getTitle();
             holder.textView.setText(name);
-            holder.chk.setOnCheckedChangeListener(null);
-
 
         }
         else if (this.todayList == null && this.habitList == null && this.habitEventList != null) {
