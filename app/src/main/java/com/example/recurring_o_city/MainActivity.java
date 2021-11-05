@@ -15,6 +15,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -66,9 +68,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
-
-        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-        String date = df.format(Calendar.getInstance().getTime());
 
 
         habitList = new ArrayList<>();
@@ -187,11 +186,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onSavePressed(Habit newHabit) {
-//        habitList.add(newHabit);
-//        FragmentManager fm = getSupportFragmentManager();
-//        fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
-//        pager2.setAdapter(fragmentadapter);
-
 
         HashMap<String, Object> data = new HashMap<>();
         data.put("Reason", newHabit.getReason());
@@ -213,9 +207,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Log.d("New Habit", "Data could not be added" + e.toString());
                     }
                 });
-
-
-
-
     }
 }

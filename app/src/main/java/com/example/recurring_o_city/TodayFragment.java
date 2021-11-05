@@ -66,11 +66,11 @@ public class TodayFragment extends Fragment{
         RecyclerView recyclerView = view.findViewById(R.id.today_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-        habitAdapter = new ItemAdapter(todayList);
+        habitAdapter = new ItemAdapter(todayList, "today");
         recyclerView.setAdapter(habitAdapter);
 
 
-        ItemAdapter myAdapter = new ItemAdapter(todayList);
+        ItemAdapter myAdapter = new ItemAdapter(todayList, "today");
         recyclerView.setAdapter(myAdapter);
 
         fab = view.findViewById(R.id.fab);

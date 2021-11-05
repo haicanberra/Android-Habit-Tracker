@@ -65,11 +65,11 @@ public class AllHabitFragment extends Fragment{
         RecyclerView recyclerView = view.findViewById(R.id.all_habit_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-        habitAdapter = new ItemAdapter(allHabitList);
+        habitAdapter = new ItemAdapter(allHabitList, "all");
         recyclerView.setAdapter(habitAdapter);
 
 
-        ItemAdapter myAdapter = new ItemAdapter(allHabitList);
+        ItemAdapter myAdapter = new ItemAdapter(allHabitList, "all");
         recyclerView.setAdapter(myAdapter);
 
 
