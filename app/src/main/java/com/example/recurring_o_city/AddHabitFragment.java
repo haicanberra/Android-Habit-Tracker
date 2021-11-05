@@ -132,6 +132,7 @@ public class AddHabitFragment extends DialogFragment {
 
                     // Check if input is valid and proceed
                     if (!title.equals("") && !title.equals("") && newDate != null) {
+                        //When user clicks save button, add new medicine
                         listener.onSavePressed(new Habit(title, reason, newDate, priv));
                     }
                 }).create();

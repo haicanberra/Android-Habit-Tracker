@@ -34,7 +34,6 @@ public class ViewHabitFragment extends Fragment{
     private String habit_date;
     private String habit_repeat;
     private String habit_privacy;
-    private HabitEvent habitEvent;
 
     // Get the attributes from the Habit object.
     static ViewHabitFragment newInstance(Habit newHabit) {
@@ -92,8 +91,7 @@ public class ViewHabitFragment extends Fragment{
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editButton.setOnClickListener(v ->
-                        new EditHabitEventFragment(habit_title).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT_EVENT"));
+                // Call the EditHabitFragment
             }
         });
 
