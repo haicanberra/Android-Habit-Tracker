@@ -96,7 +96,7 @@ public class EditHabitEventFragment extends DialogFragment {
                         return;
                     }
                     if (reason.equals("")) {
-                        habitEventComment.setError("Reason cannot be empty");
+                        habitEventComment.setError("Comment cannot be empty");
                         habitEventComment.requestFocus();
                         return;
                     }
@@ -105,7 +105,7 @@ public class EditHabitEventFragment extends DialogFragment {
                     // Check if input is valid and proceed
                     if (!title.equals("") && !title.equals("") ) {
                         Date today = Calendar.getInstance().getTime();
-                        listener.onSavePressed(new HabitEvent(new Habit("1","1",today,1),"nice"));
+                        listener.onSavePressed(new HabitEvent(new Habit("1","1",today,1),habitEventComment.getText().toString()));
                     }
                 }).create();
     }
