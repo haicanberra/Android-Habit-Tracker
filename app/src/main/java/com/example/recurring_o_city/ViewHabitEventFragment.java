@@ -25,7 +25,7 @@ public class ViewHabitEventFragment extends Fragment{
     ViewHabitEventFragment habitEventFrag = new ViewHabitEventFragment();
     getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.[Fragment Container], habitEventFrag.newInstance([Habit Object]))
+                .replace(R.id.[Fragment Container], habitEventFrag.newInstance([Habit Event Object]))
                 .addToBackStack(null).commit();
      */
 

@@ -4,9 +4,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -14,9 +17,10 @@ import java.util.ArrayList;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> {
 
     private OnItemClickListener myListener;
-
     private ArrayList<Habit> habitList;
     private ArrayList<HabitEvent> habitEventList;
+
+
 
     public ItemAdapter(ArrayList<?> list) {
         for (Object obj : list) {
@@ -34,10 +38,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
+        ImageButton button;
+        CheckBox chk;
 
         public MyViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             textView = itemView.findViewById(R.id.item_view);
+            button = itemView.findViewById(R.id.imageButton);
+            chk = itemView.findViewById(R.id.checkBox2);
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -68,7 +77,22 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         else if (this.habitList == null && this.habitEventList != null) {
             String name = habitEventList.get(position).getEventHabit().getTitle();
             holder.textView.setText(name);
+            holder.chk.setVisibility(View.GONE);
         }
+        holder.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (habitList != null && habitEventList == null && habitList.size()>0) {
+                    habitList.remove(holder.getAdapterPosition());
+                    notifyDataSetChanged();
+                }
+                else if (habitList == null && habitEventList != null && habitEventList.size()>0) {
+                    habitEventList.remove(holder.getAdapterPosition());
+                    notifyDataSetChanged();
+                }
+
+            }
+        });
     }
 
     @Override

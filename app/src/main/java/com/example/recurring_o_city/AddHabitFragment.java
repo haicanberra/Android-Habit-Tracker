@@ -29,7 +29,7 @@ public class AddHabitFragment extends DialogFragment {
 
     private EditText habitTitle;
     private EditText habitReason;
-    private TextView habitDate;
+    private EditText habitDate;
     private Button button;
     private OnFragmentInteractionListener listener;
     private Switch habitPrivacy;
