@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TodayFragment extends Fragment {
+public class TodayFragment extends Fragment implements AddHabitFragment.OnFragmentInteractionListener{
 
     private ArrayList<Habit> habitList;
     private FloatingActionButton fab;
@@ -60,12 +60,18 @@ public class TodayFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                AddHabitFragment addHabitFrag = new AddHabitFragment();
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.today_frame, addHabitFrag.newInstance())
+                .addToBackStack(null).commit();
             }
         });
-
-
-
         return view;
+    }
+
+    @Override
+    public void onSavePressed(Habit newHabit) {
+        habitList.add(newHabit);
     }
 }
