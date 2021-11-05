@@ -7,14 +7,14 @@ public class Habit
     String title;
     String reason;
     Date date;
-    int priv; //private = 1, public = 0
+    int privacy; //private = 1, public = 0
 
-    public Habit (String title, String reason, Date date, int priv)
+    public Habit (String title, String reason, Date date, int privacy)
     {
         this.title = title;
         this.reason = reason;
         this.date = date;
-        this.priv = priv;
+        this.privacy = privacy;
     }
 
     public String getTitle() {
@@ -41,11 +41,11 @@ public class Habit
         this.date = date;
     }
 
-    public int getPriv() {
-        return priv;
+    public int getPrivacy() {
+        return privacy;
     }
 
-    public void setPriv(int priv) {
-        this.priv = priv;
+    public void setPrivacy(int privacy) {
+        this.privacy = privacy;
     }
 }
