@@ -66,14 +66,13 @@ public class TodayFragment extends Fragment{
         RecyclerView recyclerView = view.findViewById(R.id.today_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-        habitAdapter = new ItemAdapter(habitList);
+
+        habitAdapter = new ItemAdapter(todayList, "today");
         recyclerView.setAdapter(habitAdapter);
 
 
-        db = FirebaseFirestore.getInstance();
-        CollectionReference collectionReference = db.collection("Habits");
+        ItemAdapter myAdapter = new ItemAdapter(todayList, "today");
 
-        ItemAdapter myAdapter = new ItemAdapter(habitList);
         recyclerView.setAdapter(myAdapter);
 
         fab = view.findViewById(R.id.fab);

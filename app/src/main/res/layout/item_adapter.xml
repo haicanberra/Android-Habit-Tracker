@@ -42,6 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.473" />
+        app:layout_constraintVertical_bias="0.473"
+        android:onClick="onCheckboxClicked"/>/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

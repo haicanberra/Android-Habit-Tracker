@@ -59,6 +59,34 @@ public class AllHabitFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all_habit, container, false);
+        View view = inflater.inflate(R.layout.fragment_all_habit, container, false);
+
+        RecyclerView recyclerView = view.findViewById(R.id.all_habit_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+        habitAdapter = new ItemAdapter(allHabitList, "all");
+        recyclerView.setAdapter(habitAdapter);
+
+
+        ItemAdapter myAdapter = new ItemAdapter(allHabitList, "all");
+        recyclerView.setAdapter(myAdapter);
+
+
+
+        myAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Habit selectedHabit = (Habit) allHabitList.get(position);
+                ViewHabitFragment habitFrag = new ViewHabitFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.all_habit_frame, habitFrag.newInstance(selectedHabit))
+                        .addToBackStack(null).commit();
+            }
+        });
+
+
+        return view;
+
     }
 }
