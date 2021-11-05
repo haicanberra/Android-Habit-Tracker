@@ -28,7 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class Login extends AppCompatActivity implements View.OnClickListener,OnCompleteListener<AuthResult> {
 
     private TextView signup, forgetpass;
-    private EditText editTextUsername, editTextPassword;
+    private EditText editTextEmail, editTextPassword;
     private Button logIn;
     private FirebaseAuth mAuth;
 
@@ -43,7 +43,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         logIn = (Button) findViewById(R.id.btn_login);
         logIn.setOnClickListener(this);
 
-        editTextUsername = (EditText) findViewById(R.id.username);
+        editTextEmail = (EditText) findViewById(R.id.email);
         editTextPassword = (EditText) findViewById(R.id.password);
 
         mAuth = FirebaseAuth.getInstance();
@@ -86,12 +86,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
     }
 
     private void userLogin() {
-        String username = editTextUsername.getText().toString().trim();
+        String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if ((username.isEmpty())){
-            editTextUsername.setError("Username is required");
-            editTextUsername.requestFocus();
+        if ((email.isEmpty())){
+            editTextEmail.setError("Username is required");
+            editTextEmail.requestFocus();
             return;
         }
 
@@ -109,7 +109,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         }
 
 
-        mAuth.signInWithEmailAndPassword(username, password)
+        mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, this);
 
     }
@@ -119,7 +119,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         if (task.isSuccessful()) {
             startActivity(new Intent(Login.this, MainActivity.class));
         } else {
-            Toast.makeText(Login.this, "Failed to Login", Toast.LENGTH_LONG).show();
+            Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.recurring_o_city;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -8,15 +9,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
-
+import android.view.MenuItem;
+import android.widget.Toast;
 
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     TabLayout tabLayout;
     ViewPager2 pager2;
@@ -70,16 +73,40 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
 
+        navigationView.bringToFront();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                break;
+            case R.id.nav_you_follow:
+                break;
+            case R.id.nav_follow_you:
+                break;
+            case R.id.nav_follow_request:
+                break;
+            case R.id.nav_send_request:
+                break;
+            case R.id.nav_logout:
+                Toast.makeText(this, "Authentication failed.", Toast.LENGTH_LONG);
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, Login.class));
+                finish();
+                break;
+        }
+        return true;
+    }
 }
