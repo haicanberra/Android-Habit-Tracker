@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,6 +45,7 @@ public class ViewHabitEventFragment extends Fragment{
         return fragment;
     }
 
+    // Show View Habit Event Fragment.
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -56,6 +58,9 @@ public class ViewHabitEventFragment extends Fragment{
         TextView commentText    = view.findViewById(R.id.habitevent_comment_content);
         TextView locationText   = view.findViewById(R.id.habitevent_location_content);
         ImageView eventImage    = view.findViewById(R.id.habitevent_image);
+
+        ImageButton editButton = view.findViewById(R.id.habitevent_edit_button);
+        ImageButton backButton = view.findViewById(R.id.habitevent_back_button);
 
         event_title = getArguments().getString("event_title");
         event_reason = getArguments().getString("event_reason");
@@ -78,6 +83,22 @@ public class ViewHabitEventFragment extends Fragment{
         commentText.setText(event_comment);
         locationText.setText(event_location);
         //eventImage.setImageResource(R.drawable.[image name]);
+
+        // Calls the EditHabitEventFragment.
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Call the EditHabitEventFragment
+            }
+        });
+
+        // Pops out a stack, returning to previous fragment.
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         return view;
     }
