@@ -14,9 +14,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,13 +29,12 @@ public class AddHabitFragment extends DialogFragment {
 
     private EditText habitTitle;
     private EditText habitReason;
-    private EditText habitDate;
+    private TextView habitDate;
+    private Button button;
     private OnFragmentInteractionListener listener;
     private Switch habitPrivacy;
     static int priv = 0;
-    Calendar cal;
-    DatePickerDialog dpd;
-
+    private DatePickerDialog calDialog;
 
     public interface OnFragmentInteractionListener{
         void onSavePressed(Habit newHabit);
@@ -41,6 +42,11 @@ public class AddHabitFragment extends DialogFragment {
 
     public AddHabitFragment() {
         // Required empty public constructor
+    }
+
+    public static AddHabitFragment newInstance(){
+        AddHabitFragment fragment = new AddHabitFragment();
+        return fragment;
     }
 
 
@@ -66,24 +72,21 @@ public class AddHabitFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_add_habit, null);
 
-        habitTitle = view.findViewById(R.id.habit_title);
+        habitTitle = view.findViewById(R.id.habit_name);
         habitReason = view.findViewById(R.id.habit_reason);
         habitDate = view.findViewById(R.id.habit_date);
+        button = view.findViewById(R.id.button);
         habitPrivacy = view.findViewById(R.id.privacy);
 
 
-        habitDate.setOnClickListener(view1 -> {
-            cal = Calendar.getInstance();
-            int day = cal.get(Calendar.DAY_OF_MONTH);
-            int month = cal.get(Calendar.MONTH);
-            int year = cal.get(Calendar.YEAR);
-
-            // Get the date formatted
-            dpd = new DatePickerDialog(getActivity(), (datePicker, n_year, n_month, n_day) -> {
-                String selected_date = n_year + "-" + (n_month + 1) + "-" + n_day;
-                habitDate.setText(selected_date);
-            }, year, month, day);
-            dpd.show();
+        // Setup DatePickerDialog to pops up when "EDIT" button is clicked.
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        button.setOnClickListener(view1 -> {
+            calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay) -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
+            calDialog.show();
         });
 
         // Create builder

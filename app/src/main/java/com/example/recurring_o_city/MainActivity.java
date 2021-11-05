@@ -20,12 +20,16 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        AddHabitFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AddHabitFragment.OnFragmentInteractionListener{
 
-
+    ArrayList<Habit> habitList;
+    ArrayList<HabitEvent> habitEventList;
 
     TabLayout tabLayout;
     ViewPager2 pager2;
@@ -44,8 +48,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         pager2 = findViewById(R.id.view_pager2);
         drawerLayout = findViewById(R.id.drawer_layout);
 
+        String dtStart = "12/05/2021";
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Date date1 = null;
+        try {
+            date1 = format.parse(dtStart);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        habitList = new ArrayList<>();
+        habitList.add(new Habit("asd", "nice", date1, 1));
+        habitList.add(new Habit("2131t", "nice", date1, 1));
+        habitList.add(new Habit("Casdat", "nice", date1, 1));
+
+        Habit habit = new Habit("nice","2",date1,1);
+        habitEventList = new ArrayList<>();
+        habitEventList.add(new HabitEvent(habit, "comment"));
+
+
         FragmentManager fm = getSupportFragmentManager();
-        fragmentadapter = new FragmentAdapter(fm, getLifecycle());
+        fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
         pager2.setAdapter(fragmentadapter);
 
         tabLayout.addTab(tabLayout.newTab().setText("Today"));
@@ -128,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onSavePressed(Habit newHabit) {
-
+        habitList.add(newHabit);
+        FragmentManager fm = getSupportFragmentManager();
+        fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
+        pager2.setAdapter(fragmentadapter);
     }
 }

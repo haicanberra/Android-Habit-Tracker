@@ -18,32 +18,28 @@ import java.util.Date;
 
 public class HabitEventFragment extends Fragment {
 
-    ArrayList<HabitEvent> habitEventList;
+    private ArrayList<HabitEvent> habitEventList;
 
 
     public HabitEventFragment() {
         // Required empty public constructor
     }
 
+    public static HabitEventFragment newInstance(ArrayList<HabitEvent> list) {
+        HabitEventFragment fragment = new HabitEventFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("HABIT_EVENT", list);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String myStrDate = "11/08/2013";
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-        Date date = null;
-        try {
-            date = format.parse(myStrDate);
-            System.out.println(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Habit habit = new Habit("nice","2",date,1);
-        habitEventList = new ArrayList<>();
-        habitEventList.add(new HabitEvent(habit, "comment"));
-//        habitEventList.add(new HabitEvent("nice"));
-//        habitEventList.add(new HabitEvent("nice"));
+        habitEventList = (ArrayList<HabitEvent>) getArguments().getSerializable(
+                "HABIT_EVENT");
+
     }
 
     @Override
