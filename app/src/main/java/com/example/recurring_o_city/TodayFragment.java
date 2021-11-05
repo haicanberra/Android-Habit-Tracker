@@ -65,6 +65,7 @@ public class TodayFragment extends Fragment{
 
         RecyclerView recyclerView = view.findViewById(R.id.today_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
         habitAdapter = new ItemAdapter(habitList);
         recyclerView.setAdapter(habitAdapter);
 
@@ -72,30 +73,25 @@ public class TodayFragment extends Fragment{
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("Habits");
 
+        ItemAdapter myAdapter = new ItemAdapter(habitList);
+        recyclerView.setAdapter(myAdapter);
+
         fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(v -> new AddHabitFragment().show(getActivity().getSupportFragmentManager(), "ADD_HABIT"));
 
 
-//        db.collection("Users")
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d("Get habit", "Get data successfully");
-//                            }
-//                        } else {
-//                            Log.d("Get habit", "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//                });
+        myAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Habit selectedHabit = (Habit) habitList.get(position);
+                ViewHabitFragment habitFrag = new ViewHabitFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.today_frame, habitFrag.newInstance(selectedHabit))
+                        .addToBackStack(null).commit();
+            }
+        });
 
-
-
-//                FragmentManager fm = getSupportFragmentManager();
-//                fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
-//                pager2.setAdapter(fragmentadapter);
 
         return view;
     }
