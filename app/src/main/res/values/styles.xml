@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.RecurringOCity.NoActionBar">
+    <style name="Theme.RecurringOCity.NoActionBar" >
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -23,5 +23,5 @@
 
     <style name="Theme.RecurringOCity.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="Theme.RecurringOCity.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.RecurringOCity.PopupOverlay" parent="Theme.AppCompat.Light.NoActionBar" />
 </resources>
