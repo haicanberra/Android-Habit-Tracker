@@ -36,9 +36,9 @@ public class TodayFragment extends Fragment {
             e.printStackTrace();
         }
         habitList = new ArrayList<>();
-        habitList.add(new Habit("asd", "nice", date1, 1));
-        habitList.add(new Habit("2131t", "nice", date1, 1));
-        habitList.add(new Habit("Casdat", "nice", date1, 1));
+//        habitList.add(new Habit("asd", "nice", date1, 1));
+//        habitList.add(new Habit("2131t", "nice", date1, 1));
+//        habitList.add(new Habit("Casdat", "nice", date1, 1));
     }
 
     @Override
