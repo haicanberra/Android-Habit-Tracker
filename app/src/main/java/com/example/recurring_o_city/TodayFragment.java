@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TodayFragment extends Fragment implements AddHabitFragment.OnFragmentInteractionListener{
+public class TodayFragment extends Fragment{
 
     private ArrayList<Habit> habitList;
     private FloatingActionButton fab;
@@ -26,26 +26,20 @@ public class TodayFragment extends Fragment implements AddHabitFragment.OnFragme
         // Required empty public constructor
     }
 
+    public static TodayFragment newInstance(ArrayList<Habit> list) {
+        TodayFragment fragment = new TodayFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("HABIT", list);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String dtStart = "12/05/2021";
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-        Date date1 = null;
-        try {
-            date1 = format.parse(dtStart);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        habitList = new ArrayList<>();
-
-        habitList.add(new Habit("asd", "nice", date1, 1));
-        habitList.add(new Habit("2131t", "nice", date1, 1));
-        habitList.add(new Habit("Casdat", "nice", date1, 1));
-
-
-
+        habitList = (ArrayList<Habit>) getArguments().getSerializable(
+                "HABIT");
     }
 
     @Override
@@ -59,21 +53,9 @@ public class TodayFragment extends Fragment implements AddHabitFragment.OnFragme
         recyclerView.setAdapter(new ItemAdapter(habitList));
 
         fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddHabitFragment addHabitFrag = new AddHabitFragment();
-                getChildFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.today_frame, addHabitFrag.newInstance())
-                .addToBackStack(null).commit();
-            }
-        });
+        fab.setOnClickListener(v -> new AddHabitFragment().show(getActivity().getSupportFragmentManager(), "ADD_HABIT"));
+
         return view;
     }
 
-    @Override
-    public void onSavePressed(Habit newHabit) {
-        habitList.add(newHabit);
-    }
 }
