@@ -17,11 +17,10 @@ public class ViewHabitEventFragment extends Fragment{
     /*
     Can be called using:
 
-    Habit mockHabit = new Habit("Walk dog", "Get some fresh air", new Date(), 0);
     ViewHabitEventFragment habitEventFrag = new ViewHabitEventFragment();
     getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.FragmentContainer, habitEventFrag.newInstance([Habit Object]))
+                .replace(R.id.[Fragment Container], habitEventFrag.newInstance([Habit Object]))
                 .addToBackStack(null).commit();
      */
 
