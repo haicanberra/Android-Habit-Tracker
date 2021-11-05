@@ -1,5 +1,6 @@
 package com.example.recurring_o_city;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Implements the fragment for viewing the habit event details.
@@ -33,12 +37,16 @@ public class ViewHabitEventFragment extends Fragment{
     private String event_location;
 
     // Get the attributes from the Habit object.
-    static ViewHabitEventFragment newInstance(Habit newHabit) {
+    static ViewHabitEventFragment newInstance(HabitEvent newHabitEvent) {
         Bundle args = new Bundle();
 
-        args.putString("event_title", newHabit.getTitle());
-        args.putString("event_reason", newHabit.getReason());
-        args.putString("event_date", newHabit.getDate().toString());
+        args.putString("event_title", newHabitEvent.getEventHabit().getTitle());
+        args.putString("event_reason", newHabitEvent.getEventHabit().getReason());
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = newHabitEvent.getEventHabit().getDate();
+        String date_string = format.format(date);
+        args.putString("event_date", date_string);
 
         ViewHabitEventFragment fragment = new ViewHabitEventFragment();
         fragment.setArguments(args);

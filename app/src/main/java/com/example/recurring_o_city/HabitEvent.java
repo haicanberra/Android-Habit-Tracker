@@ -5,39 +5,47 @@ import android.graphics.Picture;
 import com.google.android.gms.maps.GoogleMap;
 
 public class HabitEvent {
-    // private Habit eventHabit;
-    private String eventName;
-    private Picture eventPic;
-    private GoogleMap eventLoc;
+    private Habit eventHabit;
+    private String eventComment;
+//    private Picture eventPic;
+//    private GoogleMap eventLoc;
 
-    public HabitEvent(/* Habit eventHabit, */ String eventName) {
-        // this.eventHabit = eventHabit;
-        this.eventName = eventName;
+    public HabitEvent(Habit eventHabit, String eventComment) {
+        this.eventHabit = eventHabit;
+        this.eventComment = eventComment;
 //        this.eventPic = eventPic;
 //        this.eventLoc = eventLoc;
     }
 
-    public String getEventName() {
-        return eventName;
+    public Habit getEventHabit() {
+        return eventHabit;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setEventHabit(Habit eventHabit) {
+        this.eventHabit = eventHabit;
     }
 
-    public Picture getEventPic() {
-        return eventPic;
+    public String getEventComment() {
+        return eventComment;
     }
 
-    public void setEventPic(Picture eventPic) {
-        this.eventPic = eventPic;
+    public void setEventComment(String eventName) {
+        this.eventComment = eventName;
     }
 
-    public GoogleMap getEventLoc() {
-        return eventLoc;
-    }
-
-    public void setEventLoc(GoogleMap eventLoc) {
-        this.eventLoc = eventLoc;
-    }
+//    public Picture getEventPic() {
+//        return eventPic;
+//    }
+//
+//    public void setEventPic(Picture eventPic) {
+//        this.eventPic = eventPic;
+//    }
+//
+//    public GoogleMap getEventLoc() {
+//        return eventLoc;
+//    }
+//
+//    public void setEventLoc(GoogleMap eventLoc) {
+//        this.eventLoc = eventLoc;
+//    }
 }
