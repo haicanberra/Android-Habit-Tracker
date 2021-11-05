@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground">
 
     <TextView
         android:id="@+id/habitevent_title"
@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:hint="Bathe Cat"
+        android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Long time no bathe"
+                android:textAlignment="textStart"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -91,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="2021-10-12"
+                android:textAlignment="textStart"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -117,6 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="No"
+                android:textAlignment="textStart"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -143,6 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="He enjoys it!"
+                android:textAlignment="textStart"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -168,6 +173,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="87 Ave NW and 114 Street NW"
+                android:textAlignment="textStart"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -175,21 +181,23 @@
     </LinearLayout>
 
     <ImageButton
+        android:id="@+id/habitevent_back_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="?attr/actionModeCloseDrawable"
+        android:backgroundTint="#ff781f"
+        android:contentDescription="GO BACK"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/habitevent_edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="EDIT"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
-
-    <ImageButton
-        android:id="@+id/habitevent_back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="GO BACK"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_revert" />
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
