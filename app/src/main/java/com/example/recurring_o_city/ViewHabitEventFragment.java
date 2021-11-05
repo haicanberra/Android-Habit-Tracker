@@ -97,6 +97,8 @@ public class ViewHabitEventFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 // Call the EditHabitEventFragment
+                editButton.setOnClickListener(v ->
+                        new EditHabitEventFragment().show(getActivity().getSupportFragmentManager(), "EDIT_HABIT_EVENT"));
             }
         });
 

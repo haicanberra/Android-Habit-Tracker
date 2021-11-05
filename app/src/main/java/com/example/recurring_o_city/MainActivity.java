@@ -129,10 +129,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     int priv = Integer.valueOf(doc.getData().get("Privacy").toString());
                     habitList.add(new Habit(title, reason, date, priv));
                 }
-//                FragmentManager fm = getSupportFragmentManager();
-//                fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
-//                pager2.setAdapter(fragmentadapter);
 
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                    Date today = Calendar.getInstance().getTime();
+                    habitEventList.add(new HabitEvent(new Habit("1","1",date,1), "1"));
+                    String date_s = format.format(today);
+                    try {
+                        today = format.parse(date_s);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    if (today.compareTo(date) == 0) {
+                        todayList.add(new Habit(title, reason, date, priv));
+                    }
             }
         });
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
