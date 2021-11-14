@@ -91,7 +91,10 @@ public class ViewHabitFragment extends Fragment{
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Call the EditHabitFragment
+                // We only need the habit title, which is the firebase document ID.
+                Habit currentHabit = new Habit(habit_title, null, null, 0);
+                new EditHabitFragment().newInstance(currentHabit).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT");
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
