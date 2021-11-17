@@ -12,15 +12,12 @@ import java.util.ArrayList;
 
 public class FragmentAdapter extends FragmentStateAdapter {
 
-    private ArrayList<Habit> todayList;
     private ArrayList<Habit> habitList;
     private ArrayList<HabitEvent> habitEventList;
 
-    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle,ArrayList<Habit> todayList, ArrayList<Habit> habitList, ArrayList<HabitEvent> habitEventList) {
+    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle,ArrayList<Habit> habitList) {
         super(fragmentManager, lifecycle);
-        this.todayList = todayList;
         this.habitList = habitList;
-        this.habitEventList = habitEventList;
     }
 
     @NonNull
@@ -33,7 +30,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
             case 2:
                 return HabitEventFragment.newInstance(this.habitEventList);
         }
-        return TodayFragment.newInstance(this.todayList);
+        return TodayFragment.newInstance(this.habitList);
     }
 
     @Override

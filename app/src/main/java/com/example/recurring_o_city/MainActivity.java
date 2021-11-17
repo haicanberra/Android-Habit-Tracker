@@ -124,26 +124,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 habitList.clear();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     Log.d("New Habit", String.valueOf(doc.getData().get("Date")));
-                    String title = (String) doc.getId();
+                    //String title = (String) doc.getId();
+                    String title = (String) doc.getData().get("Title");
                     String reason = (String) doc.getData().get("Reason");
                     Date date = doc.getTimestamp("Date").toDate();
                     int priv = Integer.valueOf(doc.getData().get("Privacy").toString());
                     habitList.add(new Habit(title, reason, date, priv));
 
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                    Date today = Calendar.getInstance().getTime();
-                    String date_s = format.format(today);
-                    try {
-                        today = format.parse(date_s);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    if (today.compareTo(date) == 0) {
-                        todayList.add(new Habit(title, reason, date, priv));
-                    }
                 }
                 FragmentManager fm = getSupportFragmentManager();
-                fragmentadapter = new FragmentAdapter(fm, getLifecycle(), todayList, habitList, habitEventList);
+                fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList);
                 pager2.setAdapter(fragmentadapter);
             }
 
@@ -188,12 +178,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onSavePressed(Habit newHabit) {
 
         HashMap<String, Object> data = new HashMap<>();
+        data.put("Title", newHabit.getTitle());
         data.put("Reason", newHabit.getReason());
         data.put("Date", newHabit.getDate());
         data.put("Privacy", newHabit.getPrivacy());
 
         collectionReference
-                .document(newHabit.getTitle())
+                .document()
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -208,4 +199,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
     }
+
+
 }
