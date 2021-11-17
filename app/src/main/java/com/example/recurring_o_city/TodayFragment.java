@@ -28,12 +28,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class TodayFragment extends Fragment{
 
-    public ArrayList<Habit> todayList;
-    public ItemAdapter habitAdapter;
+    private ArrayList<Habit> habitList;
+    private ArrayList<Habit> todayList = new ArrayList<>();
+    private ItemAdapter habitAdapter;
     private FloatingActionButton fab;
 
     public TodayFragment() {
@@ -52,8 +54,27 @@ public class TodayFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        todayList = (ArrayList<Habit>) getArguments().getSerializable(
+        habitList = (ArrayList<Habit>) getArguments().getSerializable(
                 "HABIT");
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date today = Calendar.getInstance().getTime();
+        String date_s = format.format(today);
+        try {
+            today = format.parse(date_s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i<habitList.size(); i++) {
+            Date date = habitList.get(i).getDate();
+            String title = habitList.get(i).getTitle();
+            String reason = habitList.get(i).getReason();
+            int priv = 0;
+            if (today.compareTo(date) == 0) {
+                todayList.add(new Habit(title, reason, date, priv));
+            }
+        }
 
     }
 
@@ -82,6 +103,7 @@ public class TodayFragment extends Fragment{
             public void onItemClick(int position) {
                 Habit selectedHabit = (Habit) todayList.get(position);
                 ViewHabitFragment habitFrag = new ViewHabitFragment();
+                fab.setVisibility(View.INVISIBLE);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.today_frame, habitFrag.newInstance(selectedHabit))
@@ -89,8 +111,10 @@ public class TodayFragment extends Fragment{
             }
         });
 
-
         return view;
     }
+
+
+
 
 }
