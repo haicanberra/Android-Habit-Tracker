@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -30,11 +31,13 @@ public class AddHabitFragment extends DialogFragment {
     private EditText habitTitle;
     private EditText habitReason;
     private EditText habitDate;
-    private Button button;
+    private ImageButton button;
+    private ImageButton repeat;
     private OnFragmentInteractionListener listener;
     private Switch habitPrivacy;
     static int priv = 0;
     private DatePickerDialog calDialog;
+    private RepeatDialog repeatDialog;
 
     public interface OnFragmentInteractionListener{
         void onSavePressed(Habit newHabit);
@@ -76,6 +79,7 @@ public class AddHabitFragment extends DialogFragment {
         habitReason = view.findViewById(R.id.habit_reason);
         habitDate = view.findViewById(R.id.habit_date);
         button = view.findViewById(R.id.button);
+        repeat = view.findViewById(R.id.repeat_button);
         habitPrivacy = view.findViewById(R.id.privacy);
 
 
@@ -85,9 +89,14 @@ public class AddHabitFragment extends DialogFragment {
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
         button.setOnClickListener(view1 -> {
-            calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay) -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
+            calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay)
+                    -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
             calDialog.show();
         });
+
+        // Set up the repeat fragment to pop up when Edit calender is clicked
+        repeat.setOnClickListener(v -> new RepeatDialog().show(getActivity().getSupportFragmentManager(), "Repeat"));
+
 
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
