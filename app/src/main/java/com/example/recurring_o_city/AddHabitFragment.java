@@ -9,24 +9,28 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-public class AddHabitFragment extends DialogFragment {
+public class AddHabitFragment extends DialogFragment
+        implements RepeatDialog.RepeatDialogListener {
 
     private EditText habitTitle;
     private EditText habitReason;
@@ -37,7 +41,14 @@ public class AddHabitFragment extends DialogFragment {
     private Switch habitPrivacy;
     static int priv = 0;
     private DatePickerDialog calDialog;
+    private List<String> repeat_strg;
+
     private RepeatDialog repeatDialog;
+
+    @Override
+    public void onRepeatSavePressed(List<String> repeat_list) {
+        repeat_strg = repeat_list;
+    }
 
     public interface OnFragmentInteractionListener{
         void onSavePressed(Habit newHabit);
@@ -95,7 +106,19 @@ public class AddHabitFragment extends DialogFragment {
         });
 
         // Set up the repeat fragment to pop up when Edit calender is clicked
-        repeat.setOnClickListener(v -> new RepeatDialog().show(getActivity().getSupportFragmentManager(), "Repeat"));
+        repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RepeatDialog repeatDialog = new RepeatDialog();
+//                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+//                ft.add(R.id.repeat_frame, repeatDialog).commit();
+                //repeatDialog.show(ft, "Repeat");
+                repeatDialog.show(getChildFragmentManager(), "Repeat");
+            }
+        });
+//        repeat.setOnClickListener(v -> new RepeatDialog()
+//                .show(getActivity().getFragmentManager(), "Repeat"));
+
 
 
         // Create builder
@@ -128,6 +151,8 @@ public class AddHabitFragment extends DialogFragment {
                         e.printStackTrace();
                     }
 
+
+
                     habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -142,7 +167,7 @@ public class AddHabitFragment extends DialogFragment {
                     // Check if input is valid and proceed
                     if (!title.equals("") && !title.equals("") && newDate != null) {
                         //When user clicks save button, add new medicine
-                        listener.onSavePressed(new Habit(title, reason, newDate, priv));
+                        listener.onSavePressed(new Habit(title, reason, newDate, repeat_strg, priv));
                     }
                 }).create();
     }

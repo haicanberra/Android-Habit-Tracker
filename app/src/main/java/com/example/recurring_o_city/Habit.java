@@ -1,20 +1,23 @@
 package com.example.recurring_o_city;
 
 import java.util.Date;
+import java.util.List;
 
 public class Habit
 {
     String title;
     String reason;
     Date date;
-    int privacy; //private = 1, public = 0
+    List<String> repeat;
+    int status; //private = 1, public = 0
 
-    public Habit (String title, String reason, Date date, int privacy)
+    public Habit (String title, String reason, Date date, List<String> repeat, int status)
     {
         this.title = title;
         this.reason = reason;
         this.date = date;
-        this.privacy = privacy;
+        this.status = status;
+        this.repeat = repeat;
     }
 
     public String getTitle() {
@@ -41,11 +44,19 @@ public class Habit
         this.date = date;
     }
 
-    public int getPrivacy() {
-        return privacy;
+    public int getStatus() {
+        return status;
     }
 
-    public void setPrivacy(int privacy) {
-        this.privacy = privacy;
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public List<String> getRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(List<String> repeat) {
+        this.repeat = repeat;
     }
 }

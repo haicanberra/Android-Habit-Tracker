@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AddHabitFragment.OnFragmentInteractionListener {
@@ -128,8 +129,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     String title = (String) doc.getData().get("Title");
                     String reason = (String) doc.getData().get("Reason");
                     Date date = doc.getTimestamp("Date").toDate();
-                    int priv = Integer.valueOf(doc.getData().get("Privacy").toString());
-                    habitList.add(new Habit(title, reason, date, priv));
+                    List<String> repeat = (List<String>) doc.getData().get("Repeat");
+                    int priv = 0;
+//                    int priv = Integer.valueOf(doc.getData().get("Privacy").toString());
+                    habitList.add(new Habit(title, reason, date,repeat, priv));
 
                 }
                 FragmentManager fm = getSupportFragmentManager();
@@ -181,7 +184,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         data.put("Title", newHabit.getTitle());
         data.put("Reason", newHabit.getReason());
         data.put("Date", newHabit.getDate());
-        data.put("Privacy", newHabit.getPrivacy());
+        data.put("Repeat", newHabit.getRepeat());
+        data.put("Status", newHabit.getStatus());
 
         collectionReference
                 .document()
