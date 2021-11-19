@@ -2,6 +2,7 @@ package com.example.recurring_o_city;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,30 @@ public class RepeatDialog extends DialogFragment {
     private Spinner spinner;
     private CheckBox Mon, Tue, Wed, Thur, Fri, Sat, Sun;
     private String freq;
+    private RepeatDialogListener listener;
+    List<String> repeat = new ArrayList<>();
+
+    //
+    public interface RepeatDialogListener {
+        void onRepeatSavePressed(List<String> repeat);
+    }
+
+
+    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // Verify that the host activity implements the callback interface
+        try {
+            listener = (RepeatDialogListener) getParentFragment();
+        } catch (RuntimeException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new RuntimeException(context.toString()
+                    + " must implement RepeatDialogListener");
+        }
+    }
+
+
 
     @NonNull
     @Override
@@ -51,14 +76,43 @@ public class RepeatDialog extends DialogFragment {
                 .setTitle("Repeat")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Save", (dialogInterface, i) -> {
-                    // Get and validate input
-                    int num = Integer.valueOf(repeat_num.getText().toString());
+//                    // Get and validate input
+                    String custom_num = repeat_num.getText().toString();
+                    //int num = Integer.valueOf(custom_num);
                     freq = spinner.getSelectedItem().toString();
 
+                    // Check what custom day was entered
+                    if (!custom_num.equals("")) {
+                        repeat.add(custom_num);
+                        repeat.add(freq);
+                    }
                     // Check what day in week was selected
+                    if (Mon.isChecked()) {
+                        repeat.add("Mon");
+                    }
+                    if (Tue.isChecked()) {
+                        repeat.add("Tue");
+                    }
+                    if (Wed.isChecked()) {
+                        repeat.add("Wed");
+                    }
+                    if (Thur.isChecked()) {
+                        repeat.add("Thur");
+                    }
+                    if (Fri.isChecked()) {
+                        repeat.add("Fri");
+                    }
+                    if (Sat.isChecked()) {
+                        repeat.add("Sat");
+                    }
+                    if (Sun.isChecked()) {
+                        repeat.add("Sun");
+                    }
 
+                    listener.onRepeatSavePressed(repeat);
 
                 })
                 .create();
     }
+
 }

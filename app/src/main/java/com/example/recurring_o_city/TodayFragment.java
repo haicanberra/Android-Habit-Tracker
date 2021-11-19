@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class TodayFragment extends Fragment{
 
@@ -69,10 +70,11 @@ public class TodayFragment extends Fragment{
         for (int i = 0; i<habitList.size(); i++) {
             Date date = habitList.get(i).getDate();
             String title = habitList.get(i).getTitle();
+            List<String> repeat = habitList.get(i).getRepeat();
             String reason = habitList.get(i).getReason();
             int priv = 0;
             if (today.compareTo(date) == 0) {
-                todayList.add(new Habit(title, reason, date, priv));
+                todayList.add(new Habit(title, reason, date, repeat, priv));
             }
         }
 
