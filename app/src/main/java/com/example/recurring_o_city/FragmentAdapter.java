@@ -22,12 +22,11 @@ public class FragmentAdapter extends FragmentStateAdapter {
      * @param fragmentManager
      * @param lifecycle
      * @param habitList
-     * @param habitEventList
      */
-    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ArrayList<Habit> habitList, ArrayList<HabitEvent> habitEventList) {
+
+    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle,ArrayList<Habit> habitList) {
         super(fragmentManager, lifecycle);
         this.habitList = habitList;
-        this.habitEventList = habitEventList;
     }
 
     /**
@@ -40,7 +39,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
 
         switch(position){
             case 1:
-                return new AllHabitFragment();
+                return AllHabitFragment.newInstance(this.habitList);
             case 2:
                 return HabitEventFragment.newInstance(this.habitEventList);
         }

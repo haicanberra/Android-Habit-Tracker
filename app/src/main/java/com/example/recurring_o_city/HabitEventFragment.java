@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,7 +65,7 @@ public class HabitEventFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.habit_event_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        ItemAdapter myAdapter = new ItemAdapter(habitEventList);
+        ItemAdapter myAdapter = new ItemAdapter((ArrayList<Habit>) null, "event");
         recyclerView.setAdapter(myAdapter);
 
         myAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {

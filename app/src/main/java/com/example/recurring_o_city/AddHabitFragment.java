@@ -9,35 +9,50 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Display a popup that promps user to add fragment
  */
-public class AddHabitFragment extends DialogFragment {
+
+public class AddHabitFragment extends DialogFragment
+        implements RepeatDialog.RepeatDialogListener {
 
     private EditText habitTitle;
     private EditText habitReason;
-    private TextView habitDate;
-    private Button button;
+    private EditText habitDate;
+    private ImageButton button;
+    private ImageButton repeat;
     private OnFragmentInteractionListener listener;
     private Switch habitPrivacy;
     static int priv = 0;
     private DatePickerDialog calDialog;
+    private List<String> repeat_strg;
+
+    private RepeatDialog repeatDialog;
+
+    @Override
+    public void onRepeatSavePressed(List<String> repeat_list) {
+        repeat_strg = repeat_list;
+    }
 
     /**
      * @return Habit
@@ -92,6 +107,7 @@ public class AddHabitFragment extends DialogFragment {
         habitReason = view.findViewById(R.id.habit_reason);
         habitDate = view.findViewById(R.id.habit_date);
         button = view.findViewById(R.id.button);
+        repeat = view.findViewById(R.id.repeat_button);
         habitPrivacy = view.findViewById(R.id.privacy);
 
 
@@ -101,14 +117,32 @@ public class AddHabitFragment extends DialogFragment {
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
         button.setOnClickListener(view1 -> {
-            calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay) -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
+            calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay)
+                    -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
             calDialog.show();
         });
+
+
+        // Set up the repeat fragment to pop up when Edit calender is clicked
+        repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RepeatDialog repeatDialog = new RepeatDialog();
+//                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+//                ft.add(R.id.repeat_frame, repeatDialog).commit();
+                //repeatDialog.show(ft, "Repeat");
+                repeatDialog.show(getChildFragmentManager(), "Repeat");
+            }
+        });
+//        repeat.setOnClickListener(v -> new RepeatDialog()
+//                .show(getActivity().getFragmentManager(), "Repeat"));
+
 
         /**
          * @throws setError
          * @throws Exception
          */
+
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -150,6 +184,8 @@ public class AddHabitFragment extends DialogFragment {
                         e.printStackTrace();
                     }
 
+
+
                     habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -171,7 +207,7 @@ public class AddHabitFragment extends DialogFragment {
                     // Check if input is valid and proceed
                     if (!title.equals("") && !title.equals("") && newDate != null) {
                         //When user clicks save button, add new medicine
-                        listener.onSavePressed(new Habit(title, reason, newDate, priv));
+                        listener.onSavePressed(new Habit(title, reason, newDate, repeat_strg, priv));
                     }
                 }).create();
     }

@@ -1,6 +1,7 @@
 package com.example.recurring_o_city;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,37 +10,55 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.app.ActionBar;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 
 
-
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * the base which everything executes off of
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AddHabitFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AddHabitFragment.OnFragmentInteractionListener {
 
-    ArrayList<Habit> habitList;
-    ArrayList<HabitEvent> habitEventList;
+    public ArrayList<Habit> habitList;
+    public ArrayList<Habit> todayList;
+    public ArrayList<HabitEvent> habitEventList;
 
-    TabLayout tabLayout;
-    ViewPager2 pager2;
-    FragmentAdapter fragmentadapter;
+    private TabLayout tabLayout;
+    private ViewPager2 pager2;
+    private FragmentAdapter fragmentadapter;
 
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
+    private FirebaseFirestore db;
+    CollectionReference collectionReference;
 
     /**
      * @param savedInstanceState
@@ -53,27 +72,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         pager2 = findViewById(R.id.view_pager2);
         drawerLayout = findViewById(R.id.drawer_layout);
 
-        String dtStart = "12/05/2021";
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-        Date date1 = null;
-        try {
-            date1 = format.parse(dtStart);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        db = FirebaseFirestore.getInstance();
+        collectionReference = db.collection("Habits");
+
+
         habitList = new ArrayList<>();
-        habitList.add(new Habit("asd", "nice", date1, 1));
-        habitList.add(new Habit("2131t", "nice", date1, 1));
-        habitList.add(new Habit("Casdat", "nice", date1, 1));
-
-        Habit habit = new Habit("nice","2",date1,1);
         habitEventList = new ArrayList<>();
-        habitEventList.add(new HabitEvent(habit, "comment"));
+        todayList = new ArrayList<>();
 
-
-        FragmentManager fm = getSupportFragmentManager();
-        fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
-        pager2.setAdapter(fragmentadapter);
 
         tabLayout.addTab(tabLayout.newTab().setText("Today"));
         tabLayout.addTab(tabLayout.newTab().setText("All"));
@@ -127,6 +133,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                // Clear the old list
+                habitList.clear();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    Log.d("New Habit", String.valueOf(doc.getData().get("Date")));
+                    //String title = (String) doc.getId();
+                    String title = (String) doc.getData().get("Title");
+                    String reason = (String) doc.getData().get("Reason");
+                    Date date = doc.getTimestamp("Date").toDate();
+                    List<String> repeat = (List<String>) doc.getData().get("Repeat");
+                    int priv = 0;
+//                    int priv = Integer.valueOf(doc.getData().get("Privacy").toString());
+                    habitList.add(new Habit(title, reason, date,repeat, priv));
+
+                }
+                FragmentManager fm = getSupportFragmentManager();
+                fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList);
+                pager2.setAdapter(fragmentadapter);
+            }
+
+        });
+
 
     }
 
@@ -134,11 +164,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @return null
      */
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -175,9 +204,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     @Override
     public void onSavePressed(Habit newHabit) {
-        habitList.add(newHabit);
-        FragmentManager fm = getSupportFragmentManager();
-        fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
-        pager2.setAdapter(fragmentadapter);
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("Title", newHabit.getTitle());
+        data.put("Reason", newHabit.getReason());
+        data.put("Date", newHabit.getDate());
+        data.put("Repeat", newHabit.getRepeat());
+        data.put("Status", newHabit.getStatus());
+
+        collectionReference
+                .document()
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("New Habit", "Data has been added successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("New Habit", "Data could not be added" + e.toString());
+                    }
+                });
     }
+
+
 }

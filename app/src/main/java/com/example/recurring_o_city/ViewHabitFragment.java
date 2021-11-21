@@ -12,8 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Implements the fragment for viewing the habit details.
@@ -40,13 +43,19 @@ public class ViewHabitFragment extends Fragment{
      * @return Fragment
      */
     // Get the attributes from the Habit object.
-    static ViewHabitFragment newInstance(Habit newHabit) {
+    public ViewHabitFragment newInstance(Habit newHabit) {
         Bundle args = new Bundle();
 
         args.putString("habit_title", newHabit.getTitle());
         args.putString("habit_reason", newHabit.getReason());
-        args.putString("habit_privacy", String.valueOf(newHabit.getPrivacy()));
+        args.putString("habit_privacy", String.valueOf(newHabit.getStatus()));
 
+        if (newHabit.getRepeat() == null){
+            habit_repeat = "No repeat";
+        } else {
+            habit_repeat = String.join(",", newHabit.getRepeat());
+        }
+        args.putString("habit_repeat", habit_repeat);
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
         Date date = newHabit.getDate();
         String date_string = format.format(date);
@@ -81,9 +90,10 @@ public class ViewHabitFragment extends Fragment{
         habit_title = getArguments().getString("habit_title");
         habit_reason = getArguments().getString("habit_reason");
         habit_date = getArguments().getString("habit_date");
+        habit_repeat = getArguments().getString("habit_repeat");
 
-        if (habit_repeat == null) {
-            habit_repeat = "No";
+        if (habit_repeat == "") {
+            habit_repeat = "No repeat";
         }
         if (habit_privacy == "0") {
             habit_privacy = "Public";
@@ -104,7 +114,10 @@ public class ViewHabitFragment extends Fragment{
              */
             @Override
             public void onClick(View view) {
-                // Call the EditHabitFragment
+                // We only need the habit title, which is the firebase document ID.
+                Habit currentHabit = new Habit(habit_title, null, null, null, 0);
+                new EditHabitFragment().newInstance(currentHabit).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT");
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
