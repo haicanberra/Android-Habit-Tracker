@@ -1,5 +1,6 @@
 package com.example.recurring_o_city;
 
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,11 +76,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ItemAdapter.MyViewHolder holder, int position) {
-
+        Habit selectedHabit = habitList.get(position);
         if (this.currentFragment.equals("today")) {
-            String name = habitList.get(position).getTitle();
+            String name = selectedHabit.getTitle();
             holder.textView.setText(name);
-
+            holder.chk.setChecked(toBoolean(selectedHabit.getDone()));
+            if (toBoolean(selectedHabit.getDone())) {
+                holder.textView.setPaintFlags(holder.textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
         }
         else if (this.currentFragment.equals("event")) {
 //            String name = habitEventList.get(position).getEventHabit().getTitle();
@@ -87,10 +91,52 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 //            holder.chk.setVisibility(View.GONE);
         }
         else if (this.currentFragment.equals("all")) {
-            String name = habitList.get(position).getTitle();
+            String name = selectedHabit.getTitle();
             holder.textView.setText(name);
             holder.chk.setVisibility(View.GONE);
         }
+
+        holder.chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    collectionReference
+                            .whereEqualTo("Title",selectedHabit.getTitle())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            collectionReference.document(document.getId()).update("Done","true");
+                                            Log.d("Done Habit", "Data has been marked done successfully");
+                                        }
+                                    } else {
+                                        Log.d("Done Habit", "Data could not be marked done" );
+                                    }
+                                }
+                            });
+                }
+                else {
+                    collectionReference
+                            .whereEqualTo("Title",selectedHabit.getTitle())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            collectionReference.document(document.getId()).update("Done","false");
+                                            Log.d("Done Habit", "Data has been marked done successfully");
+                                        }
+                                    } else {
+                                        Log.d("Done Habit", "Data could not be marked done" );
+                                    }
+                                }
+                            });
+                }
+            }
+        });
 
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,10 +165,20 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 //                }
             }
         });
+
+
     }
 
-    public void deleteItem(MyViewHolder holder){
+    private boolean toBoolean(String done) {
+        if (done.equals("false")) {
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
+    private void deleteItem(MyViewHolder holder){
         collectionReference
                 .whereEqualTo("Title",habitList.get(holder.getAdapterPosition()).getTitle())
                 .get()
@@ -132,10 +188,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         collectionReference.document(document.getId()).delete();
-                        Log.d("Habit", "Data has been deleted successfully");
+                        Log.d("Delete Habit", "Data has been deleted successfully");
                     }
                 } else {
-                    Log.d("Habit", "Data could not be deleted" );
+                    Log.d("Delete Habit", "Data could not be deleted" );
                 }
             }
         });

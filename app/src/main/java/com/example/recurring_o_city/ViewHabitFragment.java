@@ -1,22 +1,17 @@
 package com.example.recurring_o_city;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Implements the fragment for viewing the habit details.
@@ -44,7 +39,7 @@ public class ViewHabitFragment extends Fragment{
 
         args.putString("habit_title", newHabit.getTitle());
         args.putString("habit_reason", newHabit.getReason());
-        args.putString("habit_privacy", String.valueOf(newHabit.getStatus()));
+        args.putString("habit_privacy", String.valueOf(newHabit.getPrivacy()));
 
         if (newHabit.getRepeat() == null){
             habit_repeat = "No repeat";

@@ -15,14 +15,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.CheckBox;
 
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,10 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -118,6 +111,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        FragmentManager fm = getSupportFragmentManager();
+        fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList);
+        pager2.setAdapter(fragmentadapter);
+
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
@@ -130,19 +127,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     String reason = (String) doc.getData().get("Reason");
                     Date date = doc.getTimestamp("Date").toDate();
                     List<String> repeat = (List<String>) doc.getData().get("Repeat");
-                    int priv = 0;
-//                    int priv = Integer.valueOf(doc.getData().get("Privacy").toString());
-                    habitList.add(new Habit(title, reason, date,repeat, priv));
-
+                    Integer privacy = 0;
+                    if (doc.getData().get("Privacy") != null) {
+                        privacy = Integer.valueOf(doc.getData().get("Privacy").toString());
+                    }
+                    Habit newHabit = new Habit(title, reason, date,repeat, privacy);
+                    newHabit.setDone((String) doc.getData().get("Done"));
+                    habitList.add(newHabit);
+                    fragmentadapter.notifyDataSetChanged();
+                    pager2.setAdapter(fragmentadapter);
                 }
-                FragmentManager fm = getSupportFragmentManager();
-                fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList);
-                pager2.setAdapter(fragmentadapter);
             }
-
         });
-
-
     }
 
     @Override
@@ -185,7 +181,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         data.put("Reason", newHabit.getReason());
         data.put("Date", newHabit.getDate());
         data.put("Repeat", newHabit.getRepeat());
-        data.put("Status", newHabit.getStatus());
+        data.put("Privacy", newHabit.getPrivacy());
+        data.put("Done", newHabit.getDone());
 
         collectionReference
                 .document()
