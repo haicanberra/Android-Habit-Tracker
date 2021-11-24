@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -69,7 +71,7 @@ public class ViewHabitFragment extends Fragment{
         TextView repeatText     = view.findViewById(R.id.habit_repeat_content);
         TextView privacyText    = view.findViewById(R.id.habit_privacy_content);
 
-        ImageButton editButton = view.findViewById(R.id.habit_edit_button);
+        FloatingActionButton editButton = view.findViewById(R.id.habit_edit_button);
         ImageButton backButton = view.findViewById(R.id.habit_back_button);
 
         habit_title = getArguments().getString("habit_title");
@@ -97,8 +99,7 @@ public class ViewHabitFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 // We only need the habit title, which is the firebase document ID.
-                Habit currentHabit = new Habit(habit_title, null, null, null, 0);
-                new EditHabitFragment().newInstance(currentHabit).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT");
+                new EditHabitFragment().newInstance(habit_title).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT");
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });

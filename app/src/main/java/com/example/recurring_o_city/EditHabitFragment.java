@@ -5,38 +5,50 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-public class EditHabitFragment extends DialogFragment {
+public class EditHabitFragment extends DialogFragment
+        implements RepeatDialog.RepeatDialogListener {
 
     private EditText habitTitle;
     private EditText habitReason;
     private EditText habitDate;
-    private Button button;
+    private EditText habitRepeat;
+    private ImageButton button;
+    private ImageButton repeat;
     private Switch habitPrivacy;
     static int priv = 0;
     private DatePickerDialog calDialog;
+
+    private List<String> repeat_strg;
 
     private FirebaseFirestore db;
     CollectionReference collectionReference;
@@ -46,15 +58,20 @@ public class EditHabitFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static EditHabitFragment newInstance(Habit oldHabit){
+    public static EditHabitFragment newInstance(String oldHabitTitle){
         Bundle args = new Bundle();
 
-        // This string is going to be our key for retrieving Firebase document.
-        args.putString("habit_title", oldHabit.getTitle());
+        // This string acts as key for retrieving Firebase document.
+        args.putString("habit_title", oldHabitTitle);
 
         EditHabitFragment fragment = new EditHabitFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onRepeatSavePressed(List<String> repeat_list) {
+        repeat_strg = repeat_list;
     }
 
     @Override
@@ -69,11 +86,15 @@ public class EditHabitFragment extends DialogFragment {
         // The layout of the edit habit fragment will be same as add habit fragment.
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_add_habit, null);
 
+
         habitTitle = view.findViewById(R.id.habit_name);
         habitReason = view.findViewById(R.id.habit_reason);
         habitDate = view.findViewById(R.id.habit_date);
         button = view.findViewById(R.id.button);
+        repeat = view.findViewById(R.id.repeat_button);
         habitPrivacy = view.findViewById(R.id.privacy);
+        habitRepeat = view.findViewById(R.id.habit_frequency);
+
 
         // Setup DatePickerDialog to pops up when "EDIT" button is clicked.
         Calendar calendar = Calendar.getInstance();
@@ -85,29 +106,54 @@ public class EditHabitFragment extends DialogFragment {
             calDialog.show();
         });
 
+        // Set up the repeat fragment to pop up when Edit calender is clicked
+        repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RepeatDialog repeatDialog = new RepeatDialog();
+//                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+//                ft.add(R.id.repeat_frame, repeatDialog).commit();
+                //repeatDialog.show(ft, "Repeat");
+                repeatDialog.show(getChildFragmentManager(), "Repeat");
+            }
+        });
+//        repeat.setOnClickListener(v -> new RepeatDialog()
+//                .show(getActivity().getFragmentManager(), "Repeat"));
+
+
         // Set the collection reference from the Firebase.
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
 
-        // Retrieve the old data to edit, using the String "key" from the newInstance().
-        editHabit = collectionReference.document(getArguments().getString("habit_title"));
+        // Set the document editHabit, and pull the old data from that document.
+        // Use .whereEqualTo() to get the query...
+        collectionReference
+                .whereEqualTo("Title", getArguments().getString("habit_title"))
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Use the task.getResult() to get the querySnapshot...
+                            QuerySnapshot querySnapshot = task.getResult();
 
-        // Set the old data on the editText and TextView.
-        editHabit.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                // documentSnapshot contains data from the document in Firebase.
-                // In this case, documentSnapshot contains the habit data.
-                if (documentSnapshot.exists()) {
-                    habitTitle.setText(getArguments().getString("habit_title"));
-                    habitReason.setText(documentSnapshot.getString("Reason"));
+                            // Get the querySnapshot to get document reference.
+                            DocumentSnapshot docSnapshot = querySnapshot.getDocuments().get(0);
 
-                    Date oldDate = documentSnapshot.getDate("Date");
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    habitDate.setText(dateFormat.format(oldDate));
-                }
-            }
-        });
+                            // Update values using the documentSnapshot.
+                            editHabit = docSnapshot.getReference();
+                            habitTitle.setText(docSnapshot.getString("Title"));
+                            habitReason.setText(docSnapshot.getString("Reason"));
+
+                            List<String> repeats = (List<String>)docSnapshot.get("Repeat");
+                            habitRepeat.setText(String.join(",", repeats));
+
+                            Date oldDate = docSnapshot.getDate("Date");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            habitDate.setText(dateFormat.format(oldDate));
+                        }
+                    }
+                });
 
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -154,6 +200,7 @@ public class EditHabitFragment extends DialogFragment {
 
                     // Check if input is valid and proceed
                     if (!title.equals("") && newDate != null) {
+                        editHabit.update("Title", title);
                         editHabit.update("Reason", reason);
                         editHabit.update("Date", newDate);
                         editHabit.update("Privacy", priv);
