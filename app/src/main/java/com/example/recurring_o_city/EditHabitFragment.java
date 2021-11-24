@@ -71,7 +71,9 @@ public class EditHabitFragment extends DialogFragment
 
     @Override
     public void onRepeatSavePressed(List<String> repeat_list) {
+        // Get the List<String> of repeats, and set it to habitRepeat text field.
         repeat_strg = repeat_list;
+        habitRepeat.setText(String.join(",", repeat_strg));
     }
 
     @Override
