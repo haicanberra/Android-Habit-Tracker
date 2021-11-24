@@ -148,7 +148,9 @@ public class EditHabitFragment extends DialogFragment
                             habitReason.setText(docSnapshot.getString("Reason"));
 
                             List<String> repeats = (List<String>)docSnapshot.get("Repeat");
-                            habitRepeat.setText(String.join(",", repeats));
+                            if (repeats != null) {
+                                habitRepeat.setText(String.join(",", repeats));
+                            }
 
                             Date oldDate = docSnapshot.getDate("Date");
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
