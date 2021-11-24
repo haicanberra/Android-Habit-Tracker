@@ -205,6 +205,7 @@ public class EditHabitFragment extends DialogFragment
                         editHabit.update("Title", title);
                         editHabit.update("Reason", reason);
                         editHabit.update("Date", newDate);
+                        editHabit.update("Repeat", repeat_strg);
                         editHabit.update("Privacy", priv);
                     }
                 }).create();
