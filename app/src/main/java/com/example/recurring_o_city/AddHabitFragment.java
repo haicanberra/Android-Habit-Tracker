@@ -72,6 +72,7 @@ public class AddHabitFragment extends DialogFragment
                 }
             }
             habitRepeat.setText(repeat_display);
+
     }
 
     public interface OnFragmentInteractionListener{
@@ -115,6 +116,7 @@ public class AddHabitFragment extends DialogFragment
         habitRepeat = view.findViewById(R.id.habit_frequency);
         button = view.findViewById(R.id.button);
         repeat = view.findViewById(R.id.repeat_button);
+        habitRepeat = view.findViewById(R.id.habit_frequency);
         habitPrivacy = view.findViewById(R.id.privacy);
 
         // Setup DatePickerDialog to pops up when "EDIT" button is clicked.
