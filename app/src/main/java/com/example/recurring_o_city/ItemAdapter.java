@@ -1,5 +1,6 @@
 package com.example.recurring_o_city;
 
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +20,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Generates a view that reuses views instead of creating/destroyer them when the user scrolls by
@@ -98,11 +103,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
      */
     @Override
     public void onBindViewHolder(@NonNull ItemAdapter.MyViewHolder holder, int position) {
-
+        Habit selectedHabit = habitList.get(position);
         if (this.currentFragment.equals("today")) {
-            String name = habitList.get(position).getTitle();
+            String name = selectedHabit.getTitle();
             holder.textView.setText(name);
-
+            holder.chk.setChecked(toBoolean(selectedHabit.getDone()));
+            if (toBoolean(selectedHabit.getDone())) {
+                holder.textView.setPaintFlags(holder.textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
         }
         else if (this.currentFragment.equals("event")) {
 //            String name = habitEventList.get(position).getEventHabit().getTitle();
@@ -110,10 +118,58 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 //            holder.chk.setVisibility(View.GONE);
         }
         else if (this.currentFragment.equals("all")) {
-            String name = habitList.get(position).getTitle();
+            String name = selectedHabit.getTitle();
             holder.textView.setText(name);
             holder.chk.setVisibility(View.GONE);
         }
+
+        holder.chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    collectionReference
+                            .whereEqualTo("Title",selectedHabit.getTitle())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            collectionReference.document(document.getId()).update("Done","true");
+                                            Log.d("Done Habit", "Data has been marked done successfully");
+
+                                            // Function for creating new habit event.
+                                            createHabitEvent(document);
+                                        }
+                                    } else {
+                                        Log.d("Done Habit", "Data could not be marked done" );
+                                    }
+                                }
+                            });
+                }
+                else {
+                    collectionReference
+                            .whereEqualTo("Title",selectedHabit.getTitle())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            collectionReference.document(document.getId()).update("Done","false");
+                                            Log.d("Done Habit", "Data has been marked done successfully");
+
+                                            // Remove the habit event.
+                                            undoHabitEvent(document);
+                                        }
+                                    } else {
+                                        Log.d("Done Habit", "Data could not be marked done" );
+                                    }
+                                }
+                            });
+                }
+            }
+        });
 
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,10 +198,68 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 //                }
             }
         });
+
+
     }
 
-    public void deleteItem(MyViewHolder holder){
+    private boolean toBoolean(String done) {
+        if (done.equals("false")) {
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
+    // Add habit event when habit is checked/crossed off.
+    private void createHabitEvent(DocumentSnapshot doc) {
+
+        // Needs date of creation for undoing the last habit event.
+        Date dateCreated = new Date();
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("Title", doc.getString("Title"));
+        data.put("Reason", doc.getString("Reason"));
+        data.put("Date", doc.getDate("Date"));
+        data.put("DateCreated", dateCreated);
+
+        List<String> repeat = (List<String>)doc.get("Repeat");
+        if (repeat != null) {
+            data.put("Repeat", repeat);
+        }
+
+        // This part may change later.
+        data.put("Comment", null);
+        data.put("Photograph", null);
+        data.put("Location", null);
+
+        collectionReference
+                .document(doc.getId())              // Current document
+                .collection("Events")   // Create new sub-collection
+                .add(data);                         // Add data to the sub-collection.
+    }
+
+    // Delete habit event when habit is unchecked.
+    private void undoHabitEvent(DocumentSnapshot doc) {
+
+        // Get the most recent document, and delete it.
+        collectionReference
+                .document(doc.getId())
+                .collection("Events")
+                .orderBy("DateCreated", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                // Get the first document on the collection, delete it.
+                task.getResult().getDocuments().get(0).getReference().delete();
+            }
+        });
+    }
+
+    private void deleteItem(MyViewHolder holder){
         collectionReference
                 .whereEqualTo("Title",habitList.get(holder.getAdapterPosition()).getTitle())
                 .get()
@@ -155,10 +269,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         collectionReference.document(document.getId()).delete();
-                        Log.d("Habit", "Data has been deleted successfully");
+                        Log.d("Delete Habit", "Data has been deleted successfully");
                     }
                 } else {
-                    Log.d("Habit", "Data could not be deleted" );
+                    Log.d("Delete Habit", "Data could not be deleted" );
                 }
             }
         });

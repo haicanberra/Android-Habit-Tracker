@@ -1,12 +1,10 @@
 package com.example.recurring_o_city;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +14,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Implements the fragment for viewing the habit details.
@@ -48,7 +45,7 @@ public class ViewHabitFragment extends Fragment{
 
         args.putString("habit_title", newHabit.getTitle());
         args.putString("habit_reason", newHabit.getReason());
-        args.putString("habit_privacy", String.valueOf(newHabit.getStatus()));
+        args.putString("habit_privacy", String.valueOf(newHabit.getPrivacy()));
 
         if (newHabit.getRepeat() == null){
             habit_repeat = "No repeat";
@@ -84,7 +81,7 @@ public class ViewHabitFragment extends Fragment{
         TextView repeatText     = view.findViewById(R.id.habit_repeat_content);
         TextView privacyText    = view.findViewById(R.id.habit_privacy_content);
 
-        ImageButton editButton = view.findViewById(R.id.habit_edit_button);
+        FloatingActionButton editButton = view.findViewById(R.id.habit_edit_button);
         ImageButton backButton = view.findViewById(R.id.habit_back_button);
 
         habit_title = getArguments().getString("habit_title");
@@ -115,8 +112,7 @@ public class ViewHabitFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 // We only need the habit title, which is the firebase document ID.
-                Habit currentHabit = new Habit(habit_title, null, null, null, 0);
-                new EditHabitFragment().newInstance(currentHabit).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT");
+                new EditHabitFragment().newInstance(habit_title).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT");
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });

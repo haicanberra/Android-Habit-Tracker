@@ -39,11 +39,12 @@ public class AddHabitFragment extends DialogFragment
     private EditText habitTitle;
     private EditText habitReason;
     private EditText habitDate;
+    private EditText habitRepeat;
     private ImageButton button;
     private ImageButton repeat;
     private OnFragmentInteractionListener listener;
     private Switch habitPrivacy;
-    static int priv = 0;
+    static Integer privacy = 0;
     private DatePickerDialog calDialog;
     private List<String> repeat_strg;
 
@@ -52,6 +53,7 @@ public class AddHabitFragment extends DialogFragment
     @Override
     public void onRepeatSavePressed(List<String> repeat_list) {
         repeat_strg = repeat_list;
+        habitRepeat.setText(String.join(",", repeat_strg));
     }
 
     /**
@@ -108,6 +110,7 @@ public class AddHabitFragment extends DialogFragment
         habitDate = view.findViewById(R.id.habit_date);
         button = view.findViewById(R.id.button);
         repeat = view.findViewById(R.id.repeat_button);
+        habitRepeat = view.findViewById(R.id.habit_frequency);
         habitPrivacy = view.findViewById(R.id.privacy);
 
 
@@ -190,9 +193,9 @@ public class AddHabitFragment extends DialogFragment
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                             if (isChecked) {
-                                priv = 0;
+                                privacy = 0;
                             } else {
-                                priv = 1;
+                                privacy = 1;
                             }
                         }
                     });
@@ -207,7 +210,7 @@ public class AddHabitFragment extends DialogFragment
                     // Check if input is valid and proceed
                     if (!title.equals("") && !title.equals("") && newDate != null) {
                         //When user clicks save button, add new medicine
-                        listener.onSavePressed(new Habit(title, reason, newDate, repeat_strg, priv));
+                        listener.onSavePressed(new Habit(title, reason, newDate, repeat_strg, privacy));
                     }
                 }).create();
     }

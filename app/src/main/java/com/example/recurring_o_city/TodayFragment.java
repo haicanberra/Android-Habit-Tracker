@@ -79,12 +79,8 @@ public class TodayFragment extends Fragment{
 
         for (int i = 0; i<habitList.size(); i++) {
             Date date = habitList.get(i).getDate();
-            String title = habitList.get(i).getTitle();
-            List<String> repeat = habitList.get(i).getRepeat();
-            String reason = habitList.get(i).getReason();
-            int priv = 0;
             if (today.compareTo(date) == 0) {
-                todayList.add(new Habit(title, reason, date, repeat, priv));
+                todayList.add(habitList.get(i));
             }
         }
 

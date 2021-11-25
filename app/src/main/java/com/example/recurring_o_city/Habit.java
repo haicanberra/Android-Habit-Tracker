@@ -12,7 +12,8 @@ public class Habit
     String reason;
     Date date;
     List<String> repeat;
-    int status; //private = 1, public = 0
+    Integer privacy;  //private = 1, public = 0
+    String done = "false";  //task finished = 1, else 0.
 
     /**
      * @param title
@@ -22,12 +23,13 @@ public class Habit
      * @param status
      */
 
-    public Habit (String title, String reason, Date date, List<String> repeat, int status)
+    public Habit (String title, String reason, Date date, List<String> repeat, Integer status)
+
     {
         this.title = title;
         this.reason = reason;
         this.date = date;
-        this.status = status;
+        this.privacy = status;
         this.repeat = repeat;
     }
 
@@ -73,13 +75,12 @@ public class Habit
         this.date = date;
     }
 
-
-    public int getStatus() {
-        return status;
+    public Integer getPrivacy() {
+        return privacy;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setPrivacy(Integer privacy) {
+        this.privacy = privacy;
     }
 
     public List<String> getRepeat() {
@@ -89,4 +90,12 @@ public class Habit
     public void setRepeat(List<String> repeat) {
         this.repeat = repeat;
     }
+    public String getDone() {
+        return done;
+    }
+
+    public void setDone(String done) {
+        this.done = done;
+    }
+
 }
