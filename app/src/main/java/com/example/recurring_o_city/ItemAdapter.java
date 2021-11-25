@@ -20,12 +20,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> {
 
@@ -110,6 +114,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             collectionReference.document(document.getId()).update("Done","true");
                                             Log.d("Done Habit", "Data has been marked done successfully");
+
+                                            // Function for creating new habit event.
+                                            createHabitEvent(document);
                                         }
                                     } else {
                                         Log.d("Done Habit", "Data could not be marked done" );
@@ -128,6 +135,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             collectionReference.document(document.getId()).update("Done","false");
                                             Log.d("Done Habit", "Data has been marked done successfully");
+
+                                            // Remove the habit event.
+                                            undoHabitEvent(document);
                                         }
                                     } else {
                                         Log.d("Done Habit", "Data could not be marked done" );
@@ -176,6 +186,54 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         else{
             return true;
         }
+    }
+
+    // Add habit event when habit is checked/crossed off.
+    private void createHabitEvent(DocumentSnapshot doc) {
+
+        // Needs date of creation for undoing the last habit event.
+        Date dateCreated = new Date();
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("Title", doc.getString("Title"));
+        data.put("Reason", doc.getString("Reason"));
+        data.put("Date", doc.getDate("Date"));
+        data.put("DateCreated", dateCreated);
+
+        List<String> repeat = (List<String>)doc.get("Repeat");
+        if (repeat != null) {
+            data.put("Repeat", repeat);
+        }
+
+        // This part may change later.
+        data.put("Comment", null);
+        data.put("Photograph", null);
+        data.put("Location", null);
+
+        collectionReference
+                .document(doc.getId())              // Current document
+                .collection("Events")   // Create new sub-collection
+                .add(data);                         // Add data to the sub-collection.
+    }
+
+    // Delete habit event when habit is unchecked.
+    private void undoHabitEvent(DocumentSnapshot doc) {
+
+        // Get the most recent document, and delete it.
+        collectionReference
+                .document(doc.getId())
+                .collection("Events")
+                .orderBy("DateCreated", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                // Get the first document on the collection, delete it.
+                task.getResult().getDocuments().get(0).getReference().delete();
+            }
+        });
     }
 
     private void deleteItem(MyViewHolder holder){
