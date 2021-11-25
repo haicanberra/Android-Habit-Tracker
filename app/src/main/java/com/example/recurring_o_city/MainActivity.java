@@ -35,7 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AddHabitFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     public ArrayList<Habit> habitList;
     public ArrayList<Habit> todayList;
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList);
         pager2.setAdapter(fragmentadapter);
 
+        // Get all the habits from database
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
@@ -127,10 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     String reason = (String) doc.getData().get("Reason");
                     Date date = doc.getTimestamp("Date").toDate();
                     List<String> repeat = (List<String>) doc.getData().get("Repeat");
-                    Integer privacy = 0;
-                    if (doc.getData().get("Privacy") != null) {
-                        privacy = Integer.valueOf(doc.getData().get("Privacy").toString());
-                    }
+                    Integer privacy = Integer.valueOf(doc.getData().get("Privacy").toString());
                     Habit newHabit = new Habit(title, reason, date,repeat, privacy);
                     newHabit.setDone((String) doc.getData().get("Done"));
                     habitList.add(newHabit);
@@ -171,34 +170,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         return true;
-    }
-
-    @Override
-    public void onSavePressed(Habit newHabit) {
-
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("Title", newHabit.getTitle());
-        data.put("Reason", newHabit.getReason());
-        data.put("Date", newHabit.getDate());
-        data.put("Repeat", newHabit.getRepeat());
-        data.put("Privacy", newHabit.getPrivacy());
-        data.put("Done", newHabit.getDone());
-
-        collectionReference
-                .document()
-                .set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void avoid) {
-                        Log.d("New Habit", "Data has been added successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("New Habit", "Data could not be added" + e.toString());
-                    }
-                });
     }
 
 

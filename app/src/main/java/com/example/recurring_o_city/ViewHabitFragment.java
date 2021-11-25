@@ -41,14 +41,16 @@ public class ViewHabitFragment extends Fragment{
 
         args.putString("habit_title", newHabit.getTitle());
         args.putString("habit_reason", newHabit.getReason());
-        args.putString("habit_privacy", String.valueOf(newHabit.getPrivacy()));
+        args.putString("habit_privacy", newHabit.getPrivacy().toString());
 
         if (newHabit.getRepeat() == null){
             habit_repeat = "No repeat";
         } else {
-            habit_repeat = String.join(",", newHabit.getRepeat());
+            Utility util = new Utility();
+            habit_repeat = util.convertRepeat(newHabit.getRepeat());
         }
         args.putString("habit_repeat", habit_repeat);
+
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
         Date date = newHabit.getDate();
         String date_string = format.format(date);
@@ -78,14 +80,15 @@ public class ViewHabitFragment extends Fragment{
         habit_reason = getArguments().getString("habit_reason");
         habit_date = getArguments().getString("habit_date");
         habit_repeat = getArguments().getString("habit_repeat");
+        habit_privacy = getArguments().getString("habit_privacy");
 
         if (habit_repeat == "") {
             habit_repeat = "No repeat";
         }
-        if (habit_privacy == "0") {
+        if (habit_privacy.equals("0")) {
             habit_privacy = "Public";
         }
-        else if (habit_privacy == "1"){
+        else if (habit_privacy.equals("1")){
             habit_privacy = "Private";
         }
 
