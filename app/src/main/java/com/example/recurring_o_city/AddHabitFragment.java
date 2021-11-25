@@ -44,37 +44,6 @@ public class AddHabitFragment extends DialogFragment
     private DatePickerDialog calDialog;
     private List<String> repeat_strg;
 
-    @Override
-    public void onRepeatSavePressed(List<String> repeat_list) {
-        String repeat_display = "Every ";
-        repeat_strg = repeat_list;
-
-        //Display repeat on screen
-            for (int i = 0; i < repeat_list.size(); i++) {
-                if (i == 0 || i == 1) {
-                    repeat_display += repeat_list.get(i);
-                    repeat_display += " ";
-                    if (repeat_list.get(1).equals("week") && i == 1 && i <repeat_list.size()-2) {
-                        repeat_display += "on ";
-                    } else if (!repeat_list.get(1).equals("week") && i == 1) {
-                        repeat_display += ", ";
-                    }
-                }
-                if (repeat_list.get(1).equals("week") && i < repeat_list.size() - 1 && i > 1) {
-                    repeat_display += repeat_list.get(i);
-                    if (!repeat_list.get(i+1).equals("never")) {
-                        repeat_display += ", ";
-                    }
-                }
-                if (i == repeat_list.size() - 1 && !repeat_list.get(i).equals("never")) {
-                    repeat_display += repeat_list.get(i);
-                    repeat_display += " times";
-                }
-            }
-            habitRepeat.setText(repeat_display);
-
-    }
-
     public interface OnFragmentInteractionListener{
         void onSavePressed(Habit newHabit);
     }
@@ -91,9 +60,16 @@ public class AddHabitFragment extends DialogFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            listener = (OnFragmentInteractionListener) context;
-        } else {
+//        if (context instanceof OnFragmentInteractionListener) {
+//            listener = (OnFragmentInteractionListener) getParentFragment();
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
+        try {
+            listener = (OnFragmentInteractionListener) getParentFragment();
+        } catch (RuntimeException e) {
+            // The activity doesn't implement the interface, throw exception
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
@@ -153,7 +129,6 @@ public class AddHabitFragment extends DialogFragment
             }
         });
 
-
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -192,4 +167,11 @@ public class AddHabitFragment extends DialogFragment
                 }).create();
     }
 
+    @Override
+    public void onRepeatSavePressed(List<String> repeat_list) {
+        Utility util = new Utility();
+        String repeat_display = util.convertRepeat(repeat_list);
+        habitRepeat.setText(repeat_display);
+        repeat_strg = repeat_list;
+    }
 }

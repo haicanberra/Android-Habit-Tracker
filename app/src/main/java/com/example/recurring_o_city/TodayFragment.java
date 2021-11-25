@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
@@ -30,14 +32,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
-public class TodayFragment extends Fragment{
+public class TodayFragment extends Fragment implements AddHabitFragment.OnFragmentInteractionListener{
 
     private ArrayList<Habit> habitList;
     private ArrayList<Habit> todayList = new ArrayList<>();
     private ItemAdapter habitAdapter;
     private FloatingActionButton fab;
+    private FirebaseFirestore db;
+    CollectionReference collectionReference;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -88,14 +93,14 @@ public class TodayFragment extends Fragment{
         habitAdapter = new ItemAdapter(todayList, "today");
         recyclerView.setAdapter(habitAdapter);
 
-
         ItemAdapter myAdapter = new ItemAdapter(todayList, "today");
         recyclerView.setAdapter(myAdapter);
 
+        // When click add button, add habit fragment pops up
         fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(v -> new AddHabitFragment().show(getActivity().getSupportFragmentManager(), "ADD_HABIT"));
+        fab.setOnClickListener(v -> new AddHabitFragment().show(getChildFragmentManager(), "ADD_HABIT"));
 
-
+        // Click on item to view
         myAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -112,7 +117,33 @@ public class TodayFragment extends Fragment{
         return view;
     }
 
+    // Press save in Add habit fragment, add habit to database
+    @Override
+    public void onSavePressed(Habit newHabit) {
+        db = FirebaseFirestore.getInstance();
+        collectionReference = db.collection("Habits");
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("Title", newHabit.getTitle());
+        data.put("Reason", newHabit.getReason());
+        data.put("Date", newHabit.getDate());
+        data.put("Repeat", newHabit.getRepeat());
+        data.put("Privacy", newHabit.getPrivacy());
+        data.put("Done", newHabit.getDone());
 
-
-
+        collectionReference
+                .document()
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("New Habit", "Data has been added successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("New Habit", "Data could not be added" + e.toString());
+                    }
+                });
+    }
 }

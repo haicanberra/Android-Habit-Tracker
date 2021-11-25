@@ -40,7 +40,6 @@ public class RepeatDialog extends DialogFragment {
         void onRepeatSavePressed(List<String> repeat);
     }
 
-
     // Override the Fragment.onAttach() method to instantiate RepeatDialog
     @Override
     public void onAttach(Context context) {
@@ -54,7 +53,6 @@ public class RepeatDialog extends DialogFragment {
                     + " must implement RepeatDialogListener");
         }
     }
-
 
     @NonNull
     @Override
@@ -74,7 +72,6 @@ public class RepeatDialog extends DialogFragment {
         occur_num = view.findViewById(R.id.num_occur);
         radiogroup = view.findViewById(R.id.radio_group);
         title_repeat = view.findViewById(R.id.title_repeat);
-
 
         // Create spinner with drop down
         ArrayAdapter<String> myAdapter = new ArrayAdapter<>(getActivity(),
@@ -121,7 +118,6 @@ public class RepeatDialog extends DialogFragment {
             }
         });
 
-
         // Set default value for custom_num
         repeat_num.setText("1");
 
@@ -144,7 +140,6 @@ public class RepeatDialog extends DialogFragment {
 
                     // Check if day or week is selected
                     if (freq.equals("week")) {
-
                         // Check what day in week was selected
                         if (Mon.isChecked()) {
                             repeat.add("Mon");
@@ -167,7 +162,6 @@ public class RepeatDialog extends DialogFragment {
                         if (Sun.isChecked()) {
                             repeat.add("Sun");
                         }
-
                     }
 
                     // Check if user chooses end date or not

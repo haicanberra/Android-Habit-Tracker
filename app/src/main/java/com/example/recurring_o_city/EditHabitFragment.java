@@ -45,7 +45,7 @@ public class EditHabitFragment extends DialogFragment
     private ImageButton button;
     private ImageButton repeat;
     private Switch habitPrivacy;
-    static int priv = 0;
+    private int privacy = 0;
     private DatePickerDialog calDialog;
 
     private List<String> repeat_strg;
@@ -69,12 +69,6 @@ public class EditHabitFragment extends DialogFragment
         return fragment;
     }
 
-    @Override
-    public void onRepeatSavePressed(List<String> repeat_list) {
-        // Get the List<String> of repeats, and set it to habitRepeat text field.
-        repeat_strg = repeat_list;
-        habitRepeat.setText(String.join(",", repeat_strg));
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +82,6 @@ public class EditHabitFragment extends DialogFragment
         // The layout of the edit habit fragment will be same as add habit fragment.
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_add_habit, null);
 
-
         habitTitle = view.findViewById(R.id.habit_name);
         habitReason = view.findViewById(R.id.habit_reason);
         habitDate = view.findViewById(R.id.habit_date);
@@ -96,7 +89,6 @@ public class EditHabitFragment extends DialogFragment
         repeat = view.findViewById(R.id.repeat_button);
         habitPrivacy = view.findViewById(R.id.privacy);
         habitRepeat = view.findViewById(R.id.habit_frequency);
-
 
         // Setup DatePickerDialog to pops up when "EDIT" button is clicked.
         Calendar calendar = Calendar.getInstance();
@@ -113,14 +105,9 @@ public class EditHabitFragment extends DialogFragment
             @Override
             public void onClick(View view) {
                 RepeatDialog repeatDialog = new RepeatDialog();
-//                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-//                ft.add(R.id.repeat_frame, repeatDialog).commit();
-                //repeatDialog.show(ft, "Repeat");
                 repeatDialog.show(getChildFragmentManager(), "Repeat");
             }
         });
-//        repeat.setOnClickListener(v -> new RepeatDialog()
-//                .show(getActivity().getFragmentManager(), "Repeat"));
 
 
         // Set the collection reference from the Firebase.
@@ -149,6 +136,8 @@ public class EditHabitFragment extends DialogFragment
 
                             List<String> repeats = (List<String>)docSnapshot.get("Repeat");
                             if (repeats != null) {
+                                Utility util = new Utility();
+                                habitRepeat.setText(util.convertRepeat(repeats));
                                 habitRepeat.setText(String.join(",", repeats));
                             }
 
@@ -195,9 +184,9 @@ public class EditHabitFragment extends DialogFragment
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                             if (isChecked) {
-                                priv = 0;
+                                privacy = 1;
                             } else {
-                                priv = 1;
+                                privacy = 0;
                             }
                         }
                     });
@@ -208,9 +197,18 @@ public class EditHabitFragment extends DialogFragment
                         editHabit.update("Reason", reason);
                         editHabit.update("Date", newDate);
                         editHabit.update("Repeat", repeat_strg);
-                        editHabit.update("Privacy", priv);
+                        editHabit.update("Privacy", privacy);
                     }
                 }).create();
+    }
+
+    @Override
+    public void onRepeatSavePressed(List<String> repeat_list) {
+        // Get the List<String> of repeats, and set it to habitRepeat text field.
+        Utility util = new Utility();
+        String repeat_display = util.convertRepeat(repeat_list);
+        habitRepeat.setText(repeat_display);
+        repeat_strg = repeat_list;
     }
 
 }
