@@ -35,6 +35,7 @@ public class AddHabitFragment extends DialogFragment
     private EditText habitTitle;
     private EditText habitReason;
     private EditText habitDate;
+    private EditText habitRepeat;
     private ImageButton button;
     private ImageButton repeat;
     private OnFragmentInteractionListener listener;
@@ -48,6 +49,7 @@ public class AddHabitFragment extends DialogFragment
     @Override
     public void onRepeatSavePressed(List<String> repeat_list) {
         repeat_strg = repeat_list;
+        habitRepeat.setText(String.join(",", repeat_strg));
     }
 
     public interface OnFragmentInteractionListener{
@@ -91,6 +93,7 @@ public class AddHabitFragment extends DialogFragment
         habitDate = view.findViewById(R.id.habit_date);
         button = view.findViewById(R.id.button);
         repeat = view.findViewById(R.id.repeat_button);
+        habitRepeat = view.findViewById(R.id.habit_frequency);
         habitPrivacy = view.findViewById(R.id.privacy);
 
 
