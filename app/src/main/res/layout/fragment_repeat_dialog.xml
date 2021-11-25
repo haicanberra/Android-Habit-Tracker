@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/repeat_frame"
     android:layout_height="match_parent"
@@ -21,7 +20,7 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:text="Repeat every" />
 
         <EditText
@@ -30,7 +29,6 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:textAlignment="center"/>
-
 
         <Spinner
             android:id="@+id/spinner"
@@ -41,19 +39,25 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/title_repeat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:text="Repeat On"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"></TextView>
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        >
+    </TextView>
 
     <LinearLayout
+        android:id="@+id/days_repeat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:visibility="gone">
 
         <CheckBox
             android:id="@+id/Sun"
@@ -107,5 +111,61 @@
 
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:text = "Ends">
+    </TextView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation = "vertical"
+        android:layout_marginTop="10dp">
+
+        <RadioGroup
+            android:id ="@+id/radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/never_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Never" />
+
+            <RadioButton
+                android:id="@+id/after_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="After" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/num_occur"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:inputType="number"
+            android:textAlignment="center"
+            android:layout_toEndOf="@+id/radio_group"
+            android:layout_alignBottom="@+id/radio_group"/>
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="occurrences"
+            android:layout_toEndOf="@+id/num_occur"
+            android:layout_alignBaseline="@+id/num_occur">
+        </TextView>
+
+    </RelativeLayout>
+
+
+
 
 </LinearLayout>

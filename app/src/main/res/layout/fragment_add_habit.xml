@@ -127,6 +127,7 @@
                     android:paddingEnd="5dp"
                     android:textAlignment="center"/>
 
+
                 <ImageButton
                     android:id="@+id/repeat_button"
                     android:layout_width="wrap_content"
@@ -148,9 +149,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="Privacy"
-                    android:textOff="Public"
-                    android:textOn="Private">
+                    android:text="Private">
 
                 </Switch>
         </LinearLayout>
