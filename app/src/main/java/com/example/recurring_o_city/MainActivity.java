@@ -12,13 +12,17 @@ import androidx.viewpager2.widget.ViewPager2;
 
 
 import android.content.Intent;
+import android.graphics.Picture;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,7 +54,7 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private Toolbar toolbar;
     private FirebaseFirestore db;
-    CollectionReference collectionReference;
+    CollectionReference collectionReference, collectionReference2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,7 @@ public class MainActivity extends AppCompatActivity
 
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
+        collectionReference2 = db.collection("Habit Events");
 
 
         habitList = new ArrayList<>();
@@ -113,16 +118,18 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         FragmentManager fm = getSupportFragmentManager();
-        fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList);
+        fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
         pager2.setAdapter(fragmentadapter);
 
-        // Get all the habits from database
+        // Get all the habits from database realtime update
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
                 // Clear the old list
                 habitList.clear();
+
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    // Retrieving the habit list
                     Log.d("New Habit", String.valueOf(doc.getData().get("Date")));
                     //String title = (String) doc.getId();
                     String title = (String) doc.getData().get("Title");
@@ -130,14 +137,47 @@ public class MainActivity extends AppCompatActivity
                     Date date = doc.getTimestamp("Date").toDate();
                     List<String> repeat = (List<String>) doc.getData().get("Repeat");
                     Integer privacy = Integer.valueOf(doc.getData().get("Privacy").toString());
+
                     Habit newHabit = new Habit(title, reason, date,repeat, privacy);
                     newHabit.setDone((String) doc.getData().get("Done"));
                     habitList.add(newHabit);
-                    fragmentadapter.notifyDataSetChanged();
-                    pager2.setAdapter(fragmentadapter);
+
                 }
+                fragmentadapter.notifyDataSetChanged();
+                pager2.setAdapter(fragmentadapter);
             }
         });
+
+        // Get the habit event list
+        collectionReference2.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                // Clear the old list
+                habitEventList.clear();
+
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    // Retrieving the habit list
+                    //Log.d("New Habit", String.valueOf(document.getData().get("Date")));
+                    //String title = (String) doc.getId();
+                    String title = (String) document.getData().get("Title");
+                    String reason = (String) document.getData().get("Reason");
+                    Date date = document.getTimestamp("Date").toDate();
+                    List<String> repeat = (List<String>) document.getData().get("Repeat");
+                    Integer privacy = Integer.valueOf(document.getData().get("Privacy").toString());
+                    String comment = (String) document.getData().get("Comment");
+                    Picture photograph = (Picture) document.getData().get("Photograph");
+                    GoogleMap location = (GoogleMap) document.getData().get("Location");
+
+                    Habit newHabit = new Habit(title, reason, date,repeat, privacy);
+                    HabitEvent newHabitEvent = new HabitEvent(newHabit, comment, photograph, location);
+                    habitEventList.add(newHabitEvent);
+
+                }
+                fragmentadapter.notifyDataSetChanged();
+                pager2.setAdapter(fragmentadapter);
+            }
+        });
+
     }
 
     @Override

@@ -10,7 +10,7 @@ public class HabitEvent {
     private Picture eventPic;
     private GoogleMap eventLoc;
 
-    public HabitEvent(Habit eventHabit, String eventComment) {
+    public HabitEvent(Habit eventHabit, String eventComment, Picture eventPic, GoogleMap eventLoc) {
         this.eventHabit = eventHabit;
         this.eventComment = eventComment;
         this.eventPic = eventPic;

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,7 +19,8 @@ import java.util.Date;
 /**
  * Implements the fragment for viewing the habit details.
  */
-public class ViewHabitFragment extends Fragment{
+public class ViewHabitFragment extends Fragment
+        implements EditHabitFragment.EditHabitFragmentListener{
     /*
     Can be called using:
 
@@ -34,6 +36,7 @@ public class ViewHabitFragment extends Fragment{
     private String habit_date;
     private String habit_repeat;
     private String habit_privacy;
+    private TextView titleText, reasonText, dateText, repeatText, privacyText;
 
     // Get the attributes from the Habit object.
     public ViewHabitFragment newInstance(Habit newHabit) {
@@ -67,13 +70,13 @@ public class ViewHabitFragment extends Fragment{
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.view_habit_fragment, null);
 
-        TextView titleText      = view.findViewById(R.id.habit_title);
-        TextView reasonText     = view.findViewById(R.id.habit_reason_content);
-        TextView dateText       = view.findViewById(R.id.habit_date_content);
-        TextView repeatText     = view.findViewById(R.id.habit_repeat_content);
-        TextView privacyText    = view.findViewById(R.id.habit_privacy_content);
+        titleText      = view.findViewById(R.id.habit_title);
+        reasonText     = view.findViewById(R.id.habit_reason_content);
+        dateText       = view.findViewById(R.id.habit_date_content);
+        repeatText     = view.findViewById(R.id.habit_repeat_content);
+        privacyText    = view.findViewById(R.id.habit_privacy_content);
 
-        FloatingActionButton editButton = view.findViewById(R.id.habit_edit_button);
+        ImageButton editButton = view.findViewById(R.id.habit_edit_button);
         ImageButton backButton = view.findViewById(R.id.habit_back_button);
 
         habit_title = getArguments().getString("habit_title");
@@ -102,8 +105,8 @@ public class ViewHabitFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 // We only need the habit title, which is the firebase document ID.
-                new EditHabitFragment().newInstance(habit_title).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT");
-                getActivity().getSupportFragmentManager().popBackStack();
+                //new EditHabitFragment().newInstance(habit_title).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT");
+                new EditHabitFragment().newInstance(habit_title).show(getChildFragmentManager(), "EDIT_HABIT");
             }
         });
 
@@ -116,5 +119,26 @@ public class ViewHabitFragment extends Fragment{
         });
 
         return view;
+    }
+
+    // When save pressed
+    @Override
+    public void onEditSavePressed(Habit newHabit) {
+        titleText.setText(newHabit.getTitle());
+        reasonText.setText(newHabit.getReason());
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = newHabit.getDate();
+        String date_string = format.format(date);
+        dateText.setText(date_string);
+        Utility util = new Utility();
+        repeatText.setText(util.convertRepeat(newHabit.getRepeat()));
+
+        if (newHabit.getPrivacy().toString().equals("0")){
+            privacyText.setText("Public");
+        } else {
+            privacyText.setText("Private");
+        }
+
     }
 }
