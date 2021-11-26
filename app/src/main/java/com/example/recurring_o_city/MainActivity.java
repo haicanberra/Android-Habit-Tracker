@@ -54,12 +54,17 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private Toolbar toolbar;
     private FirebaseFirestore db;
+    private String UserId;
     CollectionReference collectionReference, collectionReference2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Get the intent that started the activity and extract the user id
+        Intent intent = getIntent();
+        UserId = intent.getStringExtra("User Id");
 
         tabLayout = findViewById(R.id.tab_layout);
         pager2 = findViewById(R.id.view_pager2);
@@ -131,16 +136,19 @@ public class MainActivity extends AppCompatActivity
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     // Retrieving the habit list
                     Log.d("New Habit", String.valueOf(doc.getData().get("Date")));
-                    //String title = (String) doc.getId();
-                    String title = (String) doc.getData().get("Title");
-                    String reason = (String) doc.getData().get("Reason");
-                    Date date = doc.getTimestamp("Date").toDate();
-                    List<String> repeat = (List<String>) doc.getData().get("Repeat");
-                    Integer privacy = Integer.valueOf(doc.getData().get("Privacy").toString());
 
-                    Habit newHabit = new Habit(title, reason, date,repeat, privacy);
-                    newHabit.setDone((String) doc.getData().get("Done"));
-                    habitList.add(newHabit);
+                    if (doc.getData().get("User Id").equals(UserId)) {
+                        String title = (String) doc.getData().get("Title");
+                        String reason = (String) doc.getData().get("Reason");
+                        Date date = doc.getTimestamp("Date").toDate();
+                        List<String> repeat = (List<String>) doc.getData().get("Repeat");
+                        Integer privacy = Integer.valueOf(doc.getData().get("Privacy").toString());
+
+                        Habit newHabit = new Habit(title, reason, date,repeat, privacy);
+                        newHabit.setDone((String) doc.getData().get("Done"));
+                        habitList.add(newHabit);
+                    }
+
 
                 }
                 fragmentadapter.notifyDataSetChanged();
@@ -158,19 +166,20 @@ public class MainActivity extends AppCompatActivity
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     // Retrieving the habit list
                     //Log.d("New Habit", String.valueOf(document.getData().get("Date")));
-                    //String title = (String) doc.getId();
-                    String title = (String) document.getData().get("Title");
-                    String reason = (String) document.getData().get("Reason");
-                    Date date = document.getTimestamp("Date").toDate();
-                    List<String> repeat = (List<String>) document.getData().get("Repeat");
-                    Integer privacy = Integer.valueOf(document.getData().get("Privacy").toString());
-                    String comment = (String) document.getData().get("Comment");
-                    Picture photograph = (Picture) document.getData().get("Photograph");
-                    GoogleMap location = (GoogleMap) document.getData().get("Location");
+                    if (document.getData().get("User Id").equals(UserId)) {
+                        String title = (String) document.getData().get("Title");
+                        String reason = (String) document.getData().get("Reason");
+                        Date date = document.getTimestamp("Date").toDate();
+                        List<String> repeat = (List<String>) document.getData().get("Repeat");
+                        Integer privacy = Integer.valueOf(document.getData().get("Privacy").toString());
+                        String comment = (String) document.getData().get("Comment");
+                        Picture photograph = (Picture) document.getData().get("Photograph");
+                        GoogleMap location = (GoogleMap) document.getData().get("Location");
 
-                    Habit newHabit = new Habit(title, reason, date,repeat, privacy);
-                    HabitEvent newHabitEvent = new HabitEvent(newHabit, comment, photograph, location);
-                    habitEventList.add(newHabitEvent);
+                        Habit newHabit = new Habit(title, reason, date,repeat, privacy);
+                        HabitEvent newHabitEvent = new HabitEvent(newHabit, comment, photograph, location);
+                        habitEventList.add(newHabitEvent);
+                    }
 
                 }
                 fragmentadapter.notifyDataSetChanged();

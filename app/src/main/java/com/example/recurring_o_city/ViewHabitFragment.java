@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +38,7 @@ public class ViewHabitFragment extends Fragment
     private String habit_repeat;
     private String habit_privacy;
     private TextView titleText, reasonText, dateText, repeatText, privacyText;
+    private FirebaseAuth mAuth;
 
     // Get the attributes from the Habit object.
     public ViewHabitFragment newInstance(Habit newHabit) {
@@ -84,6 +86,7 @@ public class ViewHabitFragment extends Fragment
         habit_date = getArguments().getString("habit_date");
         habit_repeat = getArguments().getString("habit_repeat");
         habit_privacy = getArguments().getString("habit_privacy");
+        mAuth = FirebaseAuth.getInstance();
 
         if (habit_repeat == "") {
             habit_repeat = "No repeat";
@@ -106,7 +109,7 @@ public class ViewHabitFragment extends Fragment
             public void onClick(View view) {
                 // We only need the habit title, which is the firebase document ID.
                 //new EditHabitFragment().newInstance(habit_title).show(getActivity().getSupportFragmentManager(), "EDIT_HABIT");
-                new EditHabitFragment().newInstance(habit_title).show(getChildFragmentManager(), "EDIT_HABIT");
+                new EditHabitFragment().newInstance(habit_title, mAuth.getCurrentUser().getUid()).show(getChildFragmentManager(), "EDIT_HABIT");
             }
         });
 

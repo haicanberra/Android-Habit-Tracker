@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,6 +45,7 @@ public class TodayFragment extends Fragment implements
     private FloatingActionButton fab;
     private FirebaseFirestore db;
     CollectionReference collectionReference;
+    private FirebaseAuth mAuth;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -120,7 +122,10 @@ public class TodayFragment extends Fragment implements
     public void onAddSavePressed(Habit newHabit) {
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
+        mAuth = FirebaseAuth.getInstance();
+
         HashMap<String, Object> data = new HashMap<>();
+        data.put("User Id", mAuth.getCurrentUser().getUid());
         data.put("Title", newHabit.getTitle());
         data.put("Reason", newHabit.getReason());
         data.put("Date", newHabit.getDate());
