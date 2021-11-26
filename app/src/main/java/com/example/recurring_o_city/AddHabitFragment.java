@@ -38,14 +38,15 @@ public class AddHabitFragment extends DialogFragment
     private EditText habitRepeat;
     private ImageButton button;
     private ImageButton repeat;
-    private OnFragmentInteractionListener listener;
+    //private OnFragmentInteractionListener listener;
+    private AddHabitFragmentListener listener;
     private Switch habitPrivacy;
-    static Integer privacy = 1;
+    static Integer privacy;
     private DatePickerDialog calDialog;
     private List<String> repeat_strg;
 
-    public interface OnFragmentInteractionListener{
-        void onSavePressed(Habit newHabit);
+    public interface AddHabitFragmentListener{
+        void onAddSavePressed(Habit newHabit);
     }
 
     public AddHabitFragment() {
@@ -60,14 +61,9 @@ public class AddHabitFragment extends DialogFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            listener = (OnFragmentInteractionListener) getParentFragment();
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
         try {
-            listener = (OnFragmentInteractionListener) getParentFragment();
+            //listener = (OnFragmentInteractionListener) getParentFragment();
+            listener = (AddHabitFragmentListener) getParentFragment();
         } catch (RuntimeException e) {
             // The activity doesn't implement the interface, throw exception
             throw new RuntimeException(context.toString()
@@ -158,11 +154,16 @@ public class AddHabitFragment extends DialogFragment
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+                    if (habitPrivacy.isChecked()) {
+                        privacy = 1;
+                    } else {
+                        privacy = 0;
+                    }
 
                     // Check if input is valid and proceed
-                    if (!title.equals("") && !title.equals("") && newDate != null) {
+                    if (!title.equals("") && !reason.equals("") && newDate != null) {
                         //When user clicks save button, add new medicine
-                        listener.onSavePressed(new Habit(title, reason, newDate, repeat_strg, privacy));
+                        listener.onAddSavePressed(new Habit(title, reason, newDate, repeat_strg, privacy));
                     }
                 }).create();
     }

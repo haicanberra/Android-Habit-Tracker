@@ -35,7 +35,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class TodayFragment extends Fragment implements AddHabitFragment.OnFragmentInteractionListener{
+public class TodayFragment extends Fragment implements
+        AddHabitFragment.AddHabitFragmentListener{
 
     private ArrayList<Habit> habitList;
     private ArrayList<Habit> todayList = new ArrayList<>();
@@ -93,23 +94,20 @@ public class TodayFragment extends Fragment implements AddHabitFragment.OnFragme
         habitAdapter = new ItemAdapter(todayList, "today");
         recyclerView.setAdapter(habitAdapter);
 
-        ItemAdapter myAdapter = new ItemAdapter(todayList, "today");
-        recyclerView.setAdapter(myAdapter);
-
         // When click add button, add habit fragment pops up
         fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(v -> new AddHabitFragment().show(getChildFragmentManager(), "ADD_HABIT"));
 
         // Click on item to view
-        myAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
+        habitAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 Habit selectedHabit = (Habit) todayList.get(position);
                 ViewHabitFragment habitFrag = new ViewHabitFragment();
-                fab.setVisibility(View.INVISIBLE);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.today_frame, habitFrag.newInstance(selectedHabit))
+                        //.replace(R.id.today_frame, habitFrag.newInstance(selectedHabit))
+                        .replace(R.id.drawer_layout, habitFrag.newInstance(selectedHabit))
                         .addToBackStack(null).commit();
             }
         });
@@ -119,7 +117,7 @@ public class TodayFragment extends Fragment implements AddHabitFragment.OnFragme
 
     // Press save in Add habit fragment, add habit to database
     @Override
-    public void onSavePressed(Habit newHabit) {
+    public void onAddSavePressed(Habit newHabit) {
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
         HashMap<String, Object> data = new HashMap<>();

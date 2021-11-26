@@ -45,10 +45,10 @@ public class EditHabitFragment extends DialogFragment
     private ImageButton button;
     private ImageButton repeat;
     private Switch habitPrivacy;
-    private int privacy = 0;
+    private int privacy;
+    private EditHabitFragmentListener listener;
     private DatePickerDialog calDialog;
-
-    private List<String> repeat_strg;
+    private List<String> repeats;
 
     private FirebaseFirestore db;
     CollectionReference collectionReference;
@@ -67,6 +67,22 @@ public class EditHabitFragment extends DialogFragment
         EditHabitFragment fragment = new EditHabitFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public interface EditHabitFragmentListener{
+        void onEditSavePressed(Habit newHabit);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            listener = (EditHabitFragment.EditHabitFragmentListener) getParentFragment();
+        } catch (RuntimeException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new RuntimeException(context.toString()
+                    + " must implement EditHabitFragmentListener");
+        }
     }
 
 
@@ -96,7 +112,8 @@ public class EditHabitFragment extends DialogFragment
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
         button.setOnClickListener(view1 -> {
-            calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay) -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
+            calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay)
+                    -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
             calDialog.show();
         });
 
@@ -134,11 +151,10 @@ public class EditHabitFragment extends DialogFragment
                             habitTitle.setText(docSnapshot.getString("Title"));
                             habitReason.setText(docSnapshot.getString("Reason"));
 
-                            List<String> repeats = (List<String>)docSnapshot.get("Repeat");
+                            repeats = (List<String>)docSnapshot.get("Repeat");
                             if (repeats != null) {
                                 Utility util = new Utility();
                                 habitRepeat.setText(util.convertRepeat(repeats));
-                                habitRepeat.setText(String.join(",", repeats));
                             }
 
                             Date oldDate = docSnapshot.getDate("Date");
@@ -147,6 +163,17 @@ public class EditHabitFragment extends DialogFragment
                         }
                     }
                 });
+
+        habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    privacy = 1;
+                } else {
+                    privacy = 0;
+                }
+            }
+        });
 
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -180,24 +207,24 @@ public class EditHabitFragment extends DialogFragment
                         e.printStackTrace();
                     }
 
-                    habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                            if (isChecked) {
-                                privacy = 1;
-                            } else {
-                                privacy = 0;
-                            }
-                        }
-                    });
+                    if (habitPrivacy.isChecked()) {
+                        privacy = 1;
+                    } else {
+                        privacy = 0;
+                    }
 
                     // Check if input is valid and proceed
                     if (!title.equals("") && newDate != null) {
                         editHabit.update("Title", title);
                         editHabit.update("Reason", reason);
                         editHabit.update("Date", newDate);
-                        editHabit.update("Repeat", repeat_strg);
+                        editHabit.update("Repeat", repeats);
                         editHabit.update("Privacy", privacy);
+                    }
+
+                    if (!title.equals("")  && !reason.equals("") && newDate != null) {
+                        //When user clicks save button, add new medicine
+                        listener.onEditSavePressed(new Habit(title, reason, newDate, repeats, privacy));
                     }
                 }).create();
     }
@@ -208,7 +235,7 @@ public class EditHabitFragment extends DialogFragment
         Utility util = new Utility();
         String repeat_display = util.convertRepeat(repeat_list);
         habitRepeat.setText(repeat_display);
-        repeat_strg = repeat_list;
+        repeats = repeat_list;
     }
 
 }

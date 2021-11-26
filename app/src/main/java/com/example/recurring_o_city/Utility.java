@@ -3,10 +3,8 @@ package com.example.recurring_o_city;
 import java.util.List;
 
 public class Utility {
-    List<String> repeat;
 
-    public Utility() {
-            }
+    public Utility() { }
 
     // Method to convert list of string to string
     public String convertRepeat(List<String> repeat) {
