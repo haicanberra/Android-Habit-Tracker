@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +40,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     private String currentFragment;
     private CollectionReference collectionReference, collectionReference2;
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     public ItemAdapter(ArrayList<?> list, String type) {
         this.currentFragment = type;
@@ -81,6 +83,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
         collectionReference2 = db.collection("Habit Events");
+        mAuth = FirebaseAuth.getInstance();
         return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_adapter,parent,false), myListener);
     }
 
@@ -111,6 +114,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     collectionReference
+                            .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
                             .whereEqualTo("Title",habitList.get(position).getTitle())
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -132,6 +136,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                 }
                 else {
                     collectionReference
+                            .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
                             .whereEqualTo("Title",habitList.get(position).getTitle())
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -182,6 +187,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         Date dateCreated = new Date();
 
         HashMap<String, Object> data = new HashMap<>();
+
+        data.put("User Id", mAuth.getCurrentUser().getUid());
         data.put("Title", doc.getString("Title"));
         data.put("Reason", doc.getString("Reason"));
         data.put("Date", doc.getDate("Date"));
@@ -198,10 +205,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         data.put("Photograph", null);
         data.put("Location", null);
 
-//        collectionReference
-//                .document(doc.getId())              // Current document
-//                .collection("Events")   // Create new sub-collection
-//                .add(data);                         // Add data to the sub-collection.
         // Add to collection habit event
         collectionReference2
                 .document()
@@ -222,26 +225,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     // Delete habit event when habit is unchecked.
     private void undoHabitEvent(DocumentSnapshot doc) {
-
-        // Get the most recent document, and delete it.
-//        collectionReference
-//                .document(doc.getId())
-//                .collection("Events")
-//                .orderBy("DateCreated", Query.Direction.DESCENDING)
-//                .limit(1)
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//
-//                // Get the first document on the collection, delete it.
-//                task.getResult().getDocuments().get(0).getReference().delete();
-//            }
-//        });
-
         // Get most recent document from collection habit event
         collectionReference2
-                .whereEqualTo("Title", doc.getString("Title"))
+                .whereEqualTo("User Id", doc.get("User Id"))
+                .whereEqualTo("Title", doc.get("Title"))
                 .orderBy("DateCreated", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -255,6 +242,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     private void deleteItem(MyViewHolder holder){
         collectionReference
+                .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
                 .whereEqualTo("Title",habitList.get(holder.getAdapterPosition()).getTitle())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -271,21 +259,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             }
         });
 
-//        collectionReference
-//                .document(habitList.get(holder.getAdapterPosition()).getTitle())
-//                .delete()
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void avoid) {
-//                        Log.d("Habit", "Data has been deleted successfully");
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.d("Habit", "Data could not be deleted" + e.toString());
-//                    }
-//                });
         habitList.remove(holder.getAdapterPosition());
         notifyDataSetChanged();
     }

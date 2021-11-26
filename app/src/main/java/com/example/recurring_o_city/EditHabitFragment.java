@@ -58,11 +58,12 @@ public class EditHabitFragment extends DialogFragment
         // Required empty public constructor
     }
 
-    public static EditHabitFragment newInstance(String oldHabitTitle){
+    public static EditHabitFragment newInstance(String oldHabitTitle, String UserId){
         Bundle args = new Bundle();
 
         // This string acts as key for retrieving Firebase document.
         args.putString("habit_title", oldHabitTitle);
+        args.putString("User_Id", UserId);
 
         EditHabitFragment fragment = new EditHabitFragment();
         fragment.setArguments(args);
@@ -134,6 +135,7 @@ public class EditHabitFragment extends DialogFragment
         // Set the document editHabit, and pull the old data from that document.
         // Use .whereEqualTo() to get the query...
         collectionReference
+                .whereEqualTo("User Id", getArguments().getString("User_Id"))
                 .whereEqualTo("Title", getArguments().getString("habit_title"))
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
