@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,15 +41,17 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener, AddHabitFragment.AddHabitFragmentListener{
 
     public ArrayList<Habit> habitList;
     public ArrayList<Habit> todayList;
     public ArrayList<HabitEvent> habitEventList;
+    public int selectedTab = 0;
 
     private TabLayout tabLayout;
     private ViewPager2 pager2;
     private FragmentAdapter fragmentadapter;
+    private FloatingActionButton fab;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity
     private FirebaseFirestore db;
     private String UserId;
     CollectionReference collectionReference, collectionReference2;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,10 @@ public class MainActivity extends AppCompatActivity
         tabLayout = findViewById(R.id.tab_layout);
         pager2 = findViewById(R.id.view_pager2);
         drawerLayout = findViewById(R.id.drawer_layout);
+
+        // When click add button, add habit fragment pops up
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(v -> new AddHabitFragment().show(getSupportFragmentManager(), "ADD_HABIT"));
 
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
@@ -87,7 +95,9 @@ public class MainActivity extends AppCompatActivity
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                pager2.setCurrentItem(tab.getPosition());
+                selectedTab = tab.getPosition();
+                pager2.setCurrentItem(selectedTab);
+                hideButton(selectedTab);
             }
 
             @Override
@@ -148,11 +158,10 @@ public class MainActivity extends AppCompatActivity
                         newHabit.setDone((String) doc.getData().get("Done"));
                         habitList.add(newHabit);
                     }
-
-
                 }
                 fragmentadapter.notifyDataSetChanged();
                 pager2.setAdapter(fragmentadapter);
+                pager2.setCurrentItem(selectedTab, false);
             }
         });
 
@@ -170,6 +179,7 @@ public class MainActivity extends AppCompatActivity
                         String title = (String) document.getData().get("Title");
                         String reason = (String) document.getData().get("Reason");
                         Date date = document.getTimestamp("Date").toDate();
+                        Date dateCreated = document.getTimestamp("DateCreated").toDate();
                         List<String> repeat = (List<String>) document.getData().get("Repeat");
                         Integer privacy = Integer.valueOf(document.getData().get("Privacy").toString());
                         String comment = (String) document.getData().get("Comment");
@@ -177,13 +187,14 @@ public class MainActivity extends AppCompatActivity
                         GoogleMap location = (GoogleMap) document.getData().get("Location");
 
                         Habit newHabit = new Habit(title, reason, date,repeat, privacy);
-                        HabitEvent newHabitEvent = new HabitEvent(newHabit, comment, photograph, location);
+                        HabitEvent newHabitEvent = new HabitEvent(newHabit, dateCreated, comment, photograph, location);
                         habitEventList.add(newHabitEvent);
                     }
 
                 }
                 fragmentadapter.notifyDataSetChanged();
                 pager2.setAdapter(fragmentadapter);
+                pager2.setCurrentItem(selectedTab, false);
             }
         });
 
@@ -221,5 +232,47 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    // Press save in Add habit fragment, add habit to database
+    @Override
+    public void onAddSavePressed(Habit newHabit) {
+        db = FirebaseFirestore.getInstance();
+        collectionReference = db.collection("Habits");
+        mAuth = FirebaseAuth.getInstance();
 
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("User Id", mAuth.getCurrentUser().getUid());
+        data.put("Title", newHabit.getTitle());
+        data.put("Reason", newHabit.getReason());
+        data.put("Date", newHabit.getDate());
+        data.put("Repeat", newHabit.getRepeat());
+        data.put("Privacy", newHabit.getPrivacy());
+        data.put("Done", newHabit.getDone());
+
+        collectionReference
+                .document()
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("New Habit", "Data has been added successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("New Habit", "Data could not be added" + e.toString());
+                    }
+                });
+    }
+
+    private void hideButton(int tabIndex) {
+        switch (tabIndex) {
+            case 2:
+                fab.hide();
+                break;
+            default:
+                fab.show();
+                break;
+        }
+    }
 }

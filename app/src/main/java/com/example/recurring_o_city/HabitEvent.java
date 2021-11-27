@@ -4,17 +4,21 @@ import android.graphics.Picture;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import java.util.Date;
+
 public class HabitEvent {
     private Habit eventHabit;
     private String eventComment;
     private Picture eventPic;
     private GoogleMap eventLoc;
+    private Date dateCreated;
 
-    public HabitEvent(Habit eventHabit, String eventComment, Picture eventPic, GoogleMap eventLoc) {
+    public HabitEvent(Habit eventHabit, Date dateCreated, String eventComment, Picture eventPic, GoogleMap eventLoc) {
         this.eventHabit = eventHabit;
         this.eventComment = eventComment;
         this.eventPic = eventPic;
         this.eventLoc = eventLoc;
+        this.dateCreated = dateCreated;
     }
 
     public Habit getEventHabit() {
@@ -48,4 +52,13 @@ public class HabitEvent {
     public void setEventLoc(GoogleMap eventLoc) {
         this.eventLoc = eventLoc;
     }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
 }
