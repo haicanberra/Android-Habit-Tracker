@@ -6,18 +6,251 @@
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar1"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/Theme.RecurringOCity.PopupOverlay">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/habitevent_back_button"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentLeft="true"
+                android:background="?attr/actionModeCloseDrawable"
+                android:backgroundTint="#ff781f"
+                android:clickable="true"
+                android:src="@drawable/ic_back" />
+
+            <ImageButton
+                android:id="@+id/habitevent_edit_button"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentRight="true"
+                android:background="?attr/actionModeCloseDrawable"
+                android:backgroundTint="#ff781f"
+                android:clickable="true"
+                android:src="@drawable/ic_edit" />
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
     <TextView
         android:id="@+id/habitevent_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:hint="Bathe Cat"
         android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar1" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_gravity = "center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/habitevent_title">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/habitevent_reason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:text="Reason:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/habitevent_reason_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Long time no bathe"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/habitevent_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:text="Date:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/habitevent_date_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="2021-10-12"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/habitevent_datedone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:text="Date done:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/habitevent_datedone_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="2021-10-12"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/habitevent_repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:text="Repeat:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/habitevent_repeat_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="No"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/habitevent_privacy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:text="Status:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/habitevent_privacy_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Private"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/habitevent_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:text="Comment:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/habitevent_comment_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="He enjoys it!"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/habitevent_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:text="Location:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/habitevent_location_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="87 Ave NW and 114 Street NW"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/habitevent_image"
@@ -34,170 +267,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         tools:srcCompat="@tools:sample/avatars[3]" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/habitevent_title">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/habitevent_reason"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:paddingRight="5dp"
-                android:text="Reason:"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="115dp" />
-
-            <TextView
-                android:id="@+id/habitevent_reason_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Long time no bathe"
-                android:textAlignment="textStart"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/habitevent_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:paddingRight="5dp"
-                android:text="Date:"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="168dp" />
-
-            <TextView
-                android:id="@+id/habitevent_date_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="2021-10-12"
-                android:textAlignment="textStart"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/habitevent_repeat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:paddingRight="5dp"
-                android:text="Repeat:"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="219dp" />
-
-            <TextView
-                android:id="@+id/habitevent_repeat_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="No"
-                android:textAlignment="textStart"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/habitevent_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:paddingRight="5dp"
-                android:text="Comment:"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="274dp" />
-
-            <TextView
-                android:id="@+id/habitevent_comment_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="He enjoys it!"
-                android:textAlignment="textStart"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/habitevent_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="5dp"
-                android:text="Location:"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="330dp" />
-
-            <TextView
-                android:id="@+id/habitevent_location_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="87 Ave NW and 114 Street NW"
-                android:textAlignment="textStart"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/habitevent_back_button"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:background="?attr/actionModeCloseDrawable"
-        android:backgroundTint="#ff781f"
-        android:contentDescription="GO BACK"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/habitevent_edit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_edit"
-        tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
