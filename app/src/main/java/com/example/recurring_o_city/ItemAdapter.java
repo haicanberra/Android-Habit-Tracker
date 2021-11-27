@@ -253,6 +253,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     }
 
     private void deleteHabit(MyViewHolder holder){
+        // Delete the habit from habit list
         collectionReference
                 .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
                 .whereEqualTo("Title",habitList.get(holder.getAdapterPosition()).getTitle())
@@ -271,6 +272,27 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             }
         });
 
+        // Delete all corresponding habit events
+        collectionReference2
+                .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
+                .whereEqualTo("Title",habitList.get(holder.getAdapterPosition()).getTitle())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                collectionReference2.document(document.getId()).delete();
+                                Log.d("Delete Habit", "Data has been deleted successfully");
+                            }
+                        } else {
+                            Log.d("Delete Habit", "Data could not be deleted" );
+                        }
+                    }
+                });
+        if (habitEventList != null ) {
+            habitEventList.remove(holder.getAdapterPosition());
+        }
         habitList.remove(holder.getAdapterPosition());
         notifyDataSetChanged();
     }
