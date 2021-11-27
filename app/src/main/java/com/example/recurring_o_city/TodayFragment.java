@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,16 +37,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class TodayFragment extends Fragment implements
-        AddHabitFragment.AddHabitFragmentListener{
+public class TodayFragment extends Fragment{
 
     private ArrayList<Habit> habitList;
     private ArrayList<Habit> todayList = new ArrayList<>();
     private ItemAdapter habitAdapter;
-    private FloatingActionButton fab;
-    private FirebaseFirestore db;
-    CollectionReference collectionReference;
-    private FirebaseAuth mAuth;
+
 
     public TodayFragment() {
         // Required empty public constructor
@@ -96,10 +93,6 @@ public class TodayFragment extends Fragment implements
         habitAdapter = new ItemAdapter(todayList, "today");
         recyclerView.setAdapter(habitAdapter);
 
-        // When click add button, add habit fragment pops up
-        fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(v -> new AddHabitFragment().show(getChildFragmentManager(), "ADD_HABIT"));
-
         // Click on item to view
         habitAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
             @Override
@@ -117,36 +110,4 @@ public class TodayFragment extends Fragment implements
         return view;
     }
 
-    // Press save in Add habit fragment, add habit to database
-    @Override
-    public void onAddSavePressed(Habit newHabit) {
-        db = FirebaseFirestore.getInstance();
-        collectionReference = db.collection("Habits");
-        mAuth = FirebaseAuth.getInstance();
-
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("User Id", mAuth.getCurrentUser().getUid());
-        data.put("Title", newHabit.getTitle());
-        data.put("Reason", newHabit.getReason());
-        data.put("Date", newHabit.getDate());
-        data.put("Repeat", newHabit.getRepeat());
-        data.put("Privacy", newHabit.getPrivacy());
-        data.put("Done", newHabit.getDone());
-
-        collectionReference
-                .document()
-                .set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void avoid) {
-                        Log.d("New Habit", "Data has been added successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("New Habit", "Data could not be added" + e.toString());
-                    }
-                });
-    }
 }

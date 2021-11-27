@@ -55,12 +55,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         TextView textView;
         ImageButton button;
         CheckBox chk;
+        TextView date;
 
         public MyViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             textView = itemView.findViewById(R.id.item_view);
             button = itemView.findViewById(R.id.imageButton);
             chk = itemView.findViewById(R.id.checkBox2);
+            date = itemView.findViewById(R.id.dateCreated);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -97,16 +99,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             if (toBoolean(habitList.get(position).getDone())) {
                 holder.textView.setPaintFlags(holder.textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             }
-        }
-        else if (this.currentFragment.equals("event")) {
-            String name = habitEventList.get(position).getEventHabit().getTitle();
-            holder.textView.setText(name);
-            holder.chk.setVisibility(View.GONE);
+            holder.date.setVisibility(View.GONE);
+            holder.button.setVisibility(View.INVISIBLE);
         }
         else if (this.currentFragment.equals("all")) {
             String name = habitList.get(position).getTitle();
             holder.textView.setText(name);
             holder.chk.setVisibility(View.GONE);
+            holder.date.setVisibility((View.GONE));
+        }
+        else if (this.currentFragment.equals("event")) {
+            String name = habitEventList.get(position).getEventHabit().getTitle();
+            holder.textView.setText(name);
+            holder.chk.setVisibility(View.GONE);
+            holder.date.setText(habitEventList.get(position).getDateCreated().toString());
+
         }
 
         holder.chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -162,8 +169,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (habitList.size()>0) {
-                    deleteItem(holder);
+                if ((currentFragment.equals("today") || currentFragment.equals("all"))) {
+                    deleteHabit(holder);
+                }
+                else if ((currentFragment.equals("event"))) {
+                    deleteEvent(holder);
                 }
             }
         });
@@ -234,13 +244,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        task.getResult().getDocuments().get(0).getReference().delete();
+                        if (task.getResult().getDocuments().size() > 0) {
+                            task.getResult().getDocuments().get(0).getReference().delete();
+                        }
                     }
                 });
 
     }
 
-    private void deleteItem(MyViewHolder holder){
+    private void deleteHabit(MyViewHolder holder){
         collectionReference
                 .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
                 .whereEqualTo("Title",habitList.get(holder.getAdapterPosition()).getTitle())
@@ -260,6 +272,30 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         });
 
         habitList.remove(holder.getAdapterPosition());
+        notifyDataSetChanged();
+    }
+
+    private void deleteEvent(MyViewHolder holder) {
+        collectionReference2
+                .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
+                .whereEqualTo("Title",habitEventList.get(holder.getAdapterPosition()).getEventHabit().getTitle())
+                .whereEqualTo("DateCreated",habitEventList.get(holder.getAdapterPosition()).getDateCreated())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                collectionReference2.document(document.getId()).delete();
+                                Log.d("Delete Habit", "Data has been deleted successfully");
+                            }
+                        } else {
+                            Log.d("Delete Habit", "Data could not be deleted" );
+                        }
+                    }
+                });
+
+        habitEventList.remove(holder.getAdapterPosition());
         notifyDataSetChanged();
     }
 

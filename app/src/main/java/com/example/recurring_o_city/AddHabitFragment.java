@@ -62,8 +62,7 @@ public class AddHabitFragment extends DialogFragment
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            //listener = (OnFragmentInteractionListener) getParentFragment();
-            listener = (AddHabitFragmentListener) getParentFragment();
+            listener = (AddHabitFragmentListener) context;
         } catch (RuntimeException e) {
             // The activity doesn't implement the interface, throw exception
             throw new RuntimeException(context.toString()
