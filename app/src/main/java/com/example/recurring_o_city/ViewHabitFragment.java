@@ -88,13 +88,9 @@ public class ViewHabitFragment extends Fragment
         habit_privacy = getArguments().getString("habit_privacy");
         mAuth = FirebaseAuth.getInstance();
 
-        if (habit_repeat == "") {
-            habit_repeat = "No repeat";
-        }
         if (habit_privacy.equals("0")) {
             habit_privacy = "Public";
-        }
-        else if (habit_privacy.equals("1")){
+        } else if (habit_privacy.equals("1")){
             habit_privacy = "Private";
         }
 
