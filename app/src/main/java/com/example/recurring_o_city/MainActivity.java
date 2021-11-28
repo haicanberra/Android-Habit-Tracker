@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Picture;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -188,11 +190,12 @@ public class MainActivity extends AppCompatActivity
                         List<String> repeat = (List<String>) document.getData().get("Repeat");
                         Integer privacy = Integer.valueOf(document.getData().get("Privacy").toString());
                         String comment = (String) document.getData().get("Comment");
-                        Picture photograph = (Picture) document.getData().get("Photograph");
+                        String photograph = (String) document.getData().get("Photograph");
                         GoogleMap location = (GoogleMap) document.getData().get("Location");
 
                         Habit newHabit = new Habit(title, reason, date,repeat, privacy);
                         HabitEvent newHabitEvent = new HabitEvent(newHabit, dateCreated, comment, photograph, location);
+
                         habitEventList.add(newHabitEvent);
                     }
 

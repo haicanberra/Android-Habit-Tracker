@@ -185,7 +185,7 @@ public class EditHabitFragment extends DialogFragment
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Save", (dialogInterface, i) -> {
                     Date newDate = null;
-                    SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat d = new SimpleDateFormat("yyyy/MM/dd");
 
                     // Get and validate new input from user
                     String title = habitTitle.getText().toString();
