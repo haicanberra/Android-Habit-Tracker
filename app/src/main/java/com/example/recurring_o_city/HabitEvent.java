@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Picture;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,10 +13,10 @@ public class HabitEvent implements Serializable {
     private Habit eventHabit;
     private String eventComment;
     private String eventPic;
-    private GoogleMap eventLoc;
+    private GeoPoint eventLoc;
     private Date dateCreated;
 
-    public HabitEvent(Habit eventHabit, Date dateCreated, String eventComment, String eventPic, GoogleMap eventLoc) {
+    public HabitEvent(Habit eventHabit, Date dateCreated, String eventComment, String eventPic, GeoPoint eventLoc) {
         this.eventHabit = eventHabit;
         this.eventComment = eventComment;
         this.eventPic = eventPic;
@@ -47,11 +48,11 @@ public class HabitEvent implements Serializable {
         this.eventPic = eventPic;
     }
 
-    public GoogleMap getEventLoc() {
+    public GeoPoint getEventLoc() {
         return eventLoc;
     }
 
-    public void setEventLoc(GoogleMap eventLoc) {
+    public void setEventLoc(GeoPoint eventLoc) {
         this.eventLoc = eventLoc;
     }
 
