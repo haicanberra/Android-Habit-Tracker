@@ -5,6 +5,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -49,6 +52,7 @@ public class EditHabitFragment extends DialogFragment
     private EditHabitFragmentListener listener;
     private DatePickerDialog calDialog;
     private List<String> repeats;
+    private boolean duplicate;
 
     private FirebaseFirestore db;
     CollectionReference collectionReference;
@@ -177,6 +181,21 @@ public class EditHabitFragment extends DialogFragment
             }
         });
 
+        habitTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Empty method for TextWatcher.
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Empty method for TextWatcher.
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                duplicateTitle(editable.toString());
+            }
+        });
+
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -200,6 +219,11 @@ public class EditHabitFragment extends DialogFragment
                     if (reason.equals("")) {
                         habitReason.setError("Reason cannot be empty");
                         habitReason.requestFocus();
+                        return;
+                    }
+                    if (duplicate) {
+                        habitTitle.setError("Title must be unique");
+                        habitTitle.requestFocus();
                         return;
                     }
 
@@ -240,4 +264,23 @@ public class EditHabitFragment extends DialogFragment
         repeats = repeat_list;
     }
 
+    private void duplicateTitle(String title) {
+        String userId = getActivity().getIntent().getStringExtra("User Id");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = db.collection("Habits");
+        Query query = collectionReference
+                .whereEqualTo("Title", title)
+                .whereEqualTo("User Id", userId);
+
+        // This query modifies global boolean variable "duplicate".
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    duplicate = task.getResult().size() != 0;
+                }
+            }
+        });
+    }
 }
