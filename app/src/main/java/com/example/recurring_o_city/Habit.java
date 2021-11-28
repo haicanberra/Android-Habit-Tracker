@@ -1,9 +1,10 @@
 package com.example.recurring_o_city;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Habit
+public class Habit implements Serializable
 {
     String title;
     String reason;
