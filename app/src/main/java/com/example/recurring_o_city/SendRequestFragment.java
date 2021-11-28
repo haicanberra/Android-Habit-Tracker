@@ -32,7 +32,9 @@ public class SendRequestFragment extends Fragment {
     private ImageButton backButton;
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
-    Boolean valid = false;
+    private FirebaseAuth mAuth;
+    private Boolean valid = false;
+
 
 
     public SendRequestFragment() {
@@ -65,33 +67,30 @@ public class SendRequestFragment extends Fragment {
         backButton = view.findViewById(R.id.send_back_button);
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Users");
+        mAuth = FirebaseAuth.getInstance();
 
         String email = userEmail.getText().toString();
-        if (email.isEmpty()) {
-            userEmail.setError("Email is required");
-            userEmail.requestFocus();
-        } else {
-            // Validate if that user email exists
-            collectionReference
-                    .whereEqualTo("Email", email)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot document: task.getResult()) {
-                                    if (document.exists()) {
-                                        valid = true;
-                                    } else {
-                                        Log.d("User email", "No such user exists");
-                                    }
-                                }
-                            } else {
-                                Log.d("User email", "Error getting documents: ", task.getException());
-                            }
 
+        // Validate if that user email exists
+        collectionReference
+                .whereEqualTo("Email", email)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document: task.getResult()) {
+                                if (document.exists()) {
+                                    valid = true;
+                                } else {
+                                    Log.d("User email", "No such user exists");
+                                }
+                            }
+                        } else {
+                            Log.d("User email", "Error getting documents: ", task.getException());
                         }
-                    });
+                    }
+                });
 
 
 
@@ -111,6 +110,7 @@ public class SendRequestFragment extends Fragment {
             });
 
 
+
             // If click on  back button
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -118,7 +118,7 @@ public class SendRequestFragment extends Fragment {
                     getActivity().getSupportFragmentManager().popBackStack();
                 }
             });
-        }
+
         return view;
     }
 
@@ -133,7 +133,10 @@ public class SendRequestFragment extends Fragment {
                         if (task.isSuccessful()) {
                             // Get the current pending list
                             ArrayList<String> pending = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Email");
-                            pending.add(email);
+                            // Add current user email to that pending list if not yet in the list
+                            if (!pending.contains(mAuth.getCurrentUser().getEmail())) {
+                                pending.add(mAuth.getCurrentUser().getEmail());
+                            }
                             // Update the new pending list
                             task.getResult().getDocuments().get(0).getReference().update("Pending Request", pending);
                         }
