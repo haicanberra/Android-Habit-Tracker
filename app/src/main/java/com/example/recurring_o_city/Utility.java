@@ -1,5 +1,9 @@
 package com.example.recurring_o_city;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Utility {
@@ -37,6 +41,60 @@ public class Utility {
             }
         }
         return repeat_display;
+    }
+
+//    public Date convertDate() {
+//        Date newDate = null;
+//        SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
+//        try {
+//            newDate = d.parse(String.valueOf(habitDate.getText()));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+    // Get current date
+    public Date getCurrentDate() {
+        SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
+        Date today = Calendar.getInstance().getTime();
+        String date_s = d.format(today);
+        try {
+            today = d.parse(date_s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return today;
+    }
+
+    public Date addDay(Date date, int i) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DAY_OF_YEAR, i);
+        return cal.getTime();
+    }
+
+    public Date getNextDate(Habit newHabit) {
+        Date dateGoals = null;
+
+        //Date currentDate = util.getCurrentDate();
+        // Update the next date
+        if (newHabit.getRepeat() != null) {
+            String repeatType = newHabit.getRepeat().get(1);
+            Integer repeatNum = Integer.valueOf(newHabit.getRepeat().get(0));
+
+            // Find next date based on next date
+            Date currentDate = newHabit.getNext_date();
+            if (repeatType.equals("Day")) {
+                // Add the date to current date and set it as next_Date
+                dateGoals = addDay(currentDate, repeatNum);
+            } else if (repeatType.equals("Week")) {
+                // Add the week to current date if none checkbox selected
+
+                // Else
+
+            }
+        }
+        return dateGoals;
     }
 
 }

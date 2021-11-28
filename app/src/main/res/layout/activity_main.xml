@@ -32,18 +32,26 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.RecurringOCity.PopupOverlay" />
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
+        <RelativeLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar" />
+            android:layout_below="@+id/toolbar">
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/tab_layout" >
-        </androidx.viewpager2.widget.ViewPager2>
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/tab_layout">
+
+            </androidx.viewpager2.widget.ViewPager2>
+        </RelativeLayout>
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
