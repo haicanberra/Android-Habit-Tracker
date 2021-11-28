@@ -1,6 +1,8 @@
 package com.example.recurring_o_city;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +16,12 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Implements the fragment for viewing the habit event details.
@@ -39,7 +45,11 @@ public class ViewHabitEventFragment extends Fragment
     private String event_privacy;
     private String event_comment;
     private String event_location;
+    private String event_image;
+    private String event_datedone;
+    private String event_datedoneraw;
     private TextView titleText, reasonText, dateText, repeatText, privacyText, commentText, datedoneText, locationText;
+    private ImageView eventImage;
     private FirebaseAuth mAuth;
 
     // Get the attributes from the Habit object.
@@ -49,19 +59,32 @@ public class ViewHabitEventFragment extends Fragment
         args.putString("event_title", newHabitEvent.getEventHabit().getTitle());
         args.putString("event_reason", newHabitEvent.getEventHabit().getReason());
         args.putString("event_privacy", newHabitEvent.getEventHabit().getPrivacy().toString());
+        args.putString("event_image", newHabitEvent.getEventPic());
+
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
         Date date = newHabitEvent.getEventHabit().getDate();
         String date_string = format.format(date);
         args.putString("event_date", date_string);
 
-        if (newHabitEvent.getEventHabit().getRepeat() == null){
-            event_repeat = "No repeat";
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy/MM/dd 'at' h:mm a");
+        Date date2 = newHabitEvent.getDateCreated();
+        String date_string2 = format2.format(date2);
+        args.putString("event_datedone", date_string2);
+
+        SimpleDateFormat format3 = new SimpleDateFormat("yyyy/MM/dd/HH/mm");
+        Date date3 = newHabitEvent.getDateCreated();
+        String date_string3 = format3.format(date3);
+        args.putString("event_datedoneraw", date_string3);
+
+        String repeat;
+        if (newHabitEvent.getEventHabit().getRepeat().size() == 0){
+            repeat = "No repeat";
         } else {
             Utility util = new Utility();
-            event_reason = util.convertRepeat(newHabitEvent.getEventHabit().getRepeat());
+            repeat = util.convertRepeat(newHabitEvent.getEventHabit().getRepeat());
         }
-        args.putString("habit_repeat", event_repeat);
+        args.putString("event_repeat", repeat);
 
         ViewHabitEventFragment fragment = new ViewHabitEventFragment();
         fragment.setArguments(args);
@@ -82,7 +105,7 @@ public class ViewHabitEventFragment extends Fragment
         commentText    = view.findViewById(R.id.habitevent_comment_content);
         datedoneText   = view.findViewById(R.id.habitevent_datedone_content);
         locationText   = view.findViewById(R.id.habitevent_location_content);
-        ImageView eventImage    = view.findViewById(R.id.habitevent_image);
+        eventImage    = view.findViewById(R.id.habitevent_image);
 
         ImageButton editButton = view.findViewById(R.id.habitevent_edit_button);
         ImageButton backButton = view.findViewById(R.id.habitevent_back_button);
@@ -92,8 +115,11 @@ public class ViewHabitEventFragment extends Fragment
         event_title = getArguments().getString("event_title");
         event_reason = getArguments().getString("event_reason");
         event_date = getArguments().getString("event_date");
+        event_datedone = getArguments().getString("event_datedone");
+        event_datedoneraw = getArguments().getString("event_datedoneraw");
         event_repeat = getArguments().getString("event_repeat");
         event_privacy = getArguments().getString("event_privacy");
+        event_image = getArguments().getString("event_image");
 
         if (event_privacy.equals("0")) {
             event_privacy = "Public";
@@ -111,11 +137,17 @@ public class ViewHabitEventFragment extends Fragment
         titleText.setText(event_title);
         reasonText.setText(event_reason);
         dateText.setText(event_date);
+        datedoneText.setText(event_datedone);
         repeatText.setText(event_repeat);
         privacyText.setText(event_privacy);
         commentText.setText(event_comment);
+
         locationText.setText(event_location);
-        //eventImage.setImageResource(R.drawable.[image name]);
+
+        if (event_image != null) {
+            byte[] bytes = Base64.getDecoder().decode(event_image);
+            eventImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+        }
 
         // Calls the EditHabitEventFragment.
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +155,7 @@ public class ViewHabitEventFragment extends Fragment
             public void onClick(View view) {
                 // Call the EditHabitEventFragment
                 new EditHabitEventFragment()
-                        .newInstance(event_title, mAuth.getCurrentUser().getUid()).show(getChildFragmentManager(), "EDIT_HABITEVENT");
+                        .newInstance(event_title, event_datedoneraw, mAuth.getCurrentUser().getUid()).show(getChildFragmentManager(), "EDIT_HABITEVENT");
             }
         });
 
@@ -139,10 +171,12 @@ public class ViewHabitEventFragment extends Fragment
     }
 
     @Override
-    public void onEditEventSavePressed(String comment) {
+    public void onEditEventSavePressed(String comment, String img) {
         commentText.setText(comment);
         // Set the location
 
         // Set the image
+        byte[] bytes = Base64.getDecoder().decode(img);
+        eventImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
     }
 }
