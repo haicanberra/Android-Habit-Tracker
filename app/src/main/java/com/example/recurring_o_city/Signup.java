@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,10 +120,15 @@ public class Signup extends AppCompatActivity implements View.OnClickListener,On
     public void onComplete(@NonNull Task<AuthResult> task) {
         if(task.isSuccessful()){
             FirebaseUser user = mAuth.getCurrentUser();
+            ArrayList<String> list = new ArrayList<>();
 
             Map<String, Object> data = new HashMap<>();
             data.put("Username", editTextUsername.getText().toString());
             data.put("Email", editTextEmail.getText().toString());
+            data.put("Pending Request", list);
+            data.put("Follower list", list);
+            data.put("Following list", list);
+
             db.collection("Users").document(user.getUid().toString()).set(data);
             Log.d("Firebase User", user.getDisplayName() + user.getEmail());
 
