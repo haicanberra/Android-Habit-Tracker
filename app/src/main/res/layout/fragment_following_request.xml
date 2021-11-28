@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".YouFollowFragment"
-    android:background="?android:attr/colorBackground">
+    android:background="?android:attr/colorBackground"
+    tools:context=".FollowingRequestFragment" >
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar1"
+        android:id="@+id/toolbar3"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/Theme.RecurringOCity.PopupOverlay"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp">
+        app:popupTheme="@style/Theme.RecurringOCity.PopupOverlay">
 
-        
         <ImageButton
-                android:id="@+id/habit_back_button"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_alignParentLeft="true"
-                android:background="?attr/actionModeCloseDrawable"
-                android:backgroundTint="#ff781f"
-                android:clickable="true"
-                android:src="@drawable/ic_back" />
+            android:id="@+id/send_back_button"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentLeft="true"
+            android:background="?attr/actionModeCloseDrawable"
+            android:backgroundTint="#ff781f"
+            android:clickable="true"
+            android:src="@drawable/ic_back" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -39,7 +38,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar1">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar3">
 
     </ListView>
 

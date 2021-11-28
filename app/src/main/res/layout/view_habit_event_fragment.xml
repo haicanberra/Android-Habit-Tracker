@@ -59,12 +59,11 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="24dp"
-        android:layout_gravity = "center"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/habitevent_title">
 
@@ -95,16 +94,16 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/habitevent_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="5dp"
-                android:text="Date:"
+                android:text="Date Started:"
                 android:textSize="20sp" />
 
             <TextView
@@ -120,16 +119,16 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/habitevent_datedone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="5dp"
-                android:text="Date Created:"
+                android:text="Event Date:"
                 android:textSize="20sp" />
 
             <TextView
@@ -145,9 +144,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/habitevent_repeat"
@@ -195,9 +194,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/habitevent_comment"
@@ -220,9 +219,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/habitevent_location"
@@ -243,6 +242,7 @@
         </LinearLayout>
 
     </LinearLayout>
+
 
     <ImageView
         android:id="@+id/habitevent_image"

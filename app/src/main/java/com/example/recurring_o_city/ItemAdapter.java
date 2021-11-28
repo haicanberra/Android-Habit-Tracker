@@ -27,6 +27,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -112,7 +113,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             String name = habitEventList.get(position).getEventHabit().getTitle();
             holder.textView.setText(name);
             holder.chk.setVisibility(View.GONE);
-            holder.date.setText(habitEventList.get(position).getDateCreated().toString());
+
+            SimpleDateFormat format2 = new SimpleDateFormat("yyyy/MM/dd 'at' h:mm a");
+            Date date = habitEventList.get(position).getDateCreated();
+            String date_string = format2.format(date);
+            holder.date.setText(date_string);
 
         }
 

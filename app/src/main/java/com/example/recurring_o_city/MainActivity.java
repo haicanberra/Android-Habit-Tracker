@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Picture;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<Habit> habitList;
     public ArrayList<Habit> todayList;
     public ArrayList<HabitEvent> habitEventList;
+    private ArrayList<User> follower, following, follow_request;
     public int selectedTab = 0;
 
     private TabLayout tabLayout;
@@ -58,7 +61,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private FirebaseFirestore db;
     private String UserId;
-    CollectionReference collectionReference, collectionReference2;
+    CollectionReference collectionReference, collectionReference2, collectionUser;
     private FirebaseAuth mAuth;
 
     @Override
@@ -81,11 +84,15 @@ public class MainActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
         collectionReference2 = db.collection("Habit Events");
+        collectionUser = db.collection("Users");
 
 
         habitList = new ArrayList<>();
         habitEventList = new ArrayList<>();
         todayList = new ArrayList<>();
+        follower = new ArrayList<>();
+        following = new ArrayList<>();
+        follow_request = new ArrayList<>();
 
 
         tabLayout.addTab(tabLayout.newTab().setText("Today"));
@@ -188,11 +195,12 @@ public class MainActivity extends AppCompatActivity
                         List<String> repeat = (List<String>) document.getData().get("Repeat");
                         Integer privacy = Integer.valueOf(document.getData().get("Privacy").toString());
                         String comment = (String) document.getData().get("Comment");
-                        Picture photograph = (Picture) document.getData().get("Photograph");
+                        String photograph = (String) document.getData().get("Photograph");
                         GoogleMap location = (GoogleMap) document.getData().get("Location");
 
                         Habit newHabit = new Habit(title, reason, date,repeat, privacy);
                         HabitEvent newHabitEvent = new HabitEvent(newHabit, dateCreated, comment, photograph, location);
+
                         habitEventList.add(newHabitEvent);
                     }
 
@@ -202,6 +210,9 @@ public class MainActivity extends AppCompatActivity
                 pager2.setCurrentItem(selectedTab, false);
             }
         });
+
+        // Get the realtime follower list, following list, follow request list of current user
+        getUserInfor();
 
     }
 
@@ -226,7 +237,7 @@ public class MainActivity extends AppCompatActivity
                 fab.hide();
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.drawer_layout, new YouFollowFragment().newInstance())
+                        .replace(R.id.drawer_layout, new YouFollowFragment().newInstance(following))
                         .addToBackStack(null)
                         .commit();
                 break;
@@ -235,11 +246,17 @@ public class MainActivity extends AppCompatActivity
                 fab.hide();
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.drawer_layout, new FollowYouFragment().newInstance())
+                        .replace(R.id.drawer_layout, new FollowYouFragment().newInstance(follower))
                         .addToBackStack(null)
                         .commit();
                 break;
             case R.id.nav_follow_request:
+                fab.hide();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.drawer_layout, new FollowingRequestFragment().newInstance(follow_request))
+                        .addToBackStack(null)
+                        .commit();
                 break;
             case R.id.nav_send_request:
                 fab.hide();
@@ -303,6 +320,26 @@ public class MainActivity extends AppCompatActivity
                 fab.show();
                 break;
         }
+    }
+
+    public void getUserInfor() {
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                // Clear the old list
+                follow_request.clear();
+                follower.clear();
+                following.clear();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    // Retrieving all the list
+                    if (doc.getId().equals(UserId)) {
+                        follow_request = (ArrayList<User>) doc.getData().get("Pending");
+                        follower = (ArrayList<User>) doc.getData().get("Follower");
+                        following = (ArrayList<User>) doc.getData().get("Following");
+                    }
+                }
+            }
+        });
     }
 
 //    public Date getNextDate(Habit newHabit) {

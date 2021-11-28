@@ -1,5 +1,6 @@
 package com.example.recurring_o_city;
 
+import android.graphics.Bitmap;
 import android.graphics.Picture;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -10,11 +11,11 @@ import java.util.Date;
 public class HabitEvent implements Serializable {
     private Habit eventHabit;
     private String eventComment;
-    private Picture eventPic;
+    private String eventPic;
     private GoogleMap eventLoc;
     private Date dateCreated;
 
-    public HabitEvent(Habit eventHabit, Date dateCreated, String eventComment, Picture eventPic, GoogleMap eventLoc) {
+    public HabitEvent(Habit eventHabit, Date dateCreated, String eventComment, String eventPic, GoogleMap eventLoc) {
         this.eventHabit = eventHabit;
         this.eventComment = eventComment;
         this.eventPic = eventPic;
@@ -38,11 +39,11 @@ public class HabitEvent implements Serializable {
         this.eventComment = eventName;
     }
 
-    public Picture getEventPic() {
+    public String getEventPic() {
         return eventPic;
     }
 
-    public void setEventPic(Picture eventPic) {
+    public void setEventPic(String eventPic) {
         this.eventPic = eventPic;
     }
 
