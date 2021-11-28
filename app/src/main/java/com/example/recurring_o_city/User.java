@@ -1,9 +1,13 @@
 package com.example.recurring_o_city;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Information about the user
 public class User {
 
-    public String username, email;
+    private String username, email;
+    private ArrayList<String> pending_list;
 
     public User(String username, String email){
         this.username = username;
@@ -17,4 +21,13 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 }

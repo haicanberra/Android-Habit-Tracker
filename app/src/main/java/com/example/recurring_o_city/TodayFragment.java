@@ -72,10 +72,13 @@ public class TodayFragment extends Fragment{
             e.printStackTrace();
         }
 
+        // Get today habit list
         for (int i = 0; i<habitList.size(); i++) {
             Date date = habitList.get(i).getDate();
             if (today.compareTo(date) == 0) {
                 todayList.add(habitList.get(i));
+                // Update next date here
+
             }
         }
 
@@ -101,7 +104,6 @@ public class TodayFragment extends Fragment{
                 ViewHabitFragment habitFrag = new ViewHabitFragment();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        //.replace(R.id.today_frame, habitFrag.newInstance(selectedHabit))
                         .replace(R.id.drawer_layout, habitFrag.newInstance(selectedHabit))
                         .addToBackStack(null).commit();
             }

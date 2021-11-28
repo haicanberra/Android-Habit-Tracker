@@ -9,6 +9,7 @@ public class Habit implements Serializable
     String title;
     String reason;
     Date date;
+    Date next_date = null; // get the next date
     List<String> repeat;
     Integer privacy;  //private = 1, public = 0
     String done = "false";  //task finished = 1, else 0.
@@ -69,4 +70,11 @@ public class Habit implements Serializable
         this.done = done;
     }
 
+    public Date getNext_date() {
+        return next_date;
+    }
+
+    public void setNext_date(Date next_date) {
+        this.next_date = next_date;
+    }
 }

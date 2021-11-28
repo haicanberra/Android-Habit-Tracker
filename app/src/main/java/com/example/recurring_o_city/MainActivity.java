@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity
                     Log.d("New Habit", String.valueOf(doc.getData().get("Date")));
 
                     if (doc.getData().get("User Id").equals(UserId)) {
+                        // Add to habit list
                         String title = (String) doc.getData().get("Title");
                         String reason = (String) doc.getData().get("Reason");
                         Date date = doc.getTimestamp("Date").toDate();
@@ -156,7 +157,11 @@ public class MainActivity extends AppCompatActivity
 
                         Habit newHabit = new Habit(title, reason, date,repeat, privacy);
                         newHabit.setDone((String) doc.getData().get("Done"));
+                        //newHabit.setNext_date(doc.getTimestamp("Next Date").toDate());
+
                         habitList.add(newHabit);
+
+                        //
                     }
                 }
                 fragmentadapter.notifyDataSetChanged();
@@ -214,14 +219,35 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.nav_home:
+                // Go back to home
                 break;
             case R.id.nav_you_follow:
+                // Go to you follow fragment
+                fab.hide();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.drawer_layout, new YouFollowFragment().newInstance())
+                        .addToBackStack(null)
+                        .commit();
                 break;
             case R.id.nav_follow_you:
+                // Go to follow you fragment
+                fab.hide();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.drawer_layout, new FollowYouFragment().newInstance())
+                        .addToBackStack(null)
+                        .commit();
                 break;
             case R.id.nav_follow_request:
                 break;
             case R.id.nav_send_request:
+                fab.hide();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.drawer_layout, new SendRequestFragment().newInstance())
+                        .addToBackStack(null)
+                        .commit();
                 break;
             case R.id.nav_logout:
                 FirebaseAuth.getInstance().signOut();
@@ -229,6 +255,7 @@ public class MainActivity extends AppCompatActivity
                 finish();
                 break;
         }
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -238,6 +265,7 @@ public class MainActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
         mAuth = FirebaseAuth.getInstance();
+        //Date nextDate = getNextDate(newHabit);
 
         HashMap<String, Object> data = new HashMap<>();
         data.put("User Id", mAuth.getCurrentUser().getUid());
@@ -247,6 +275,7 @@ public class MainActivity extends AppCompatActivity
         data.put("Repeat", newHabit.getRepeat());
         data.put("Privacy", newHabit.getPrivacy());
         data.put("Done", newHabit.getDone());
+        //data.put("Next Date", nextDate);
 
         collectionReference
                 .document()
@@ -275,4 +304,48 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
     }
+
+//    public Date getNextDate(Habit newHabit) {
+//        Date dateGoals = null;
+//        Utility util = new Utility();
+//        Date currentDate = util.getCurrentDate();
+//        // If user chooses to repeat, find the next date. Else return null
+//        if (newHabit.getRepeat() != null) {
+//            String repeatType = newHabit.getRepeat().get(1);
+//            Integer repeatNum = Integer.valueOf(newHabit.getRepeat().get(0));
+//            String last = newHabit.getRepeat().get(newHabit.getRepeat().size() - 1);
+//
+//            // Update date goals
+//            if (newHabit.getDate().after(currentDate)) {
+//                // No need to find next date
+//                dateGoals = (newHabit.getDate());
+//            } else if (newHabit.getDate().equals(currentDate)) {
+//                dateGoals = (newHabit.getDate()); // Need to find next date if time_occur >= 1
+//            } else if (newHabit.getDate().before(currentDate)) {
+//                Date temp = newHabit.getDate();
+//                while (temp.before(currentDate)) {
+//                    // Get the repeat result
+//                    if (repeatType.equals("Day")) {
+//                        // Add the day to temp till it pass the current date
+//                        temp = util.addDay(temp, repeatNum);
+//                    } else if (repeatType.equals("Week") && newHabit.getRepeat().size() == 3) {
+//                        // Never ends but repeat... week on the name of date started
+//                        temp = util.addDay(temp, repeatNum*7);
+//                        // Case: repeat ... week on Mon,Tue,....
+//                    } else if (repeatType.equals("Week") && newHabit.getRepeat().size() > 3) {
+//                        // The earliest name of date would be the next item in list
+//                        temp = currentDate;
+//                        // Find the next date
+//
+//                    }
+//                }
+//                // For the case repeat on .....
+//
+//
+//                // Now temp can either be equal or after current date
+//                dateGoals = temp;
+//            }
+//        }
+//        return dateGoals;
+//    }
 }
