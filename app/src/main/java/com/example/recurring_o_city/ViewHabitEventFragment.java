@@ -3,6 +3,8 @@ package com.example.recurring_o_city;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +17,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.GeoPoint;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Implements the fragment for viewing the habit event details.
@@ -51,6 +56,7 @@ public class ViewHabitEventFragment extends Fragment
     private TextView titleText, reasonText, dateText, repeatText, privacyText, commentText, datedoneText, locationText;
     private ImageView eventImage;
     private FirebaseAuth mAuth;
+    private double event_latitude, event_longitude;
 
     // Get the attributes from the Habit object.
     public ViewHabitEventFragment newInstance(HabitEvent newHabitEvent) {
@@ -60,7 +66,6 @@ public class ViewHabitEventFragment extends Fragment
         args.putString("event_reason", newHabitEvent.getEventHabit().getReason());
         args.putString("event_privacy", newHabitEvent.getEventHabit().getPrivacy().toString());
         args.putString("event_image", newHabitEvent.getEventPic());
-
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
         Date date = newHabitEvent.getEventHabit().getDate();
@@ -77,8 +82,26 @@ public class ViewHabitEventFragment extends Fragment
         String date_string3 = format3.format(date3);
         args.putString("event_datedoneraw", date_string3);
 
+        Date simpleDate = newHabitEvent.getDateCreated();
+        args.putSerializable("event_date_simple", simpleDate);
+
+        Double latitude;
+        Double longitude;
+
+        if (newHabitEvent.getEventLoc() != null) {
+            latitude = newHabitEvent.getEventLoc().getLatitude();
+            longitude = newHabitEvent.getEventLoc().getLongitude();
+        }
+        else {
+            latitude = 0.0;
+            longitude = 0.0;
+        }
+
+        args.putDouble("event_latitude", latitude);
+        args.putDouble("event_longitude", longitude);
+
         String repeat;
-        if (newHabitEvent.getEventHabit().getRepeat().size() == 0){
+        if (newHabitEvent.getEventHabit().getRepeat() == null){
             repeat = "No repeat";
         } else {
             Utility util = new Utility();
@@ -120,6 +143,8 @@ public class ViewHabitEventFragment extends Fragment
         event_repeat = getArguments().getString("event_repeat");
         event_privacy = getArguments().getString("event_privacy");
         event_image = getArguments().getString("event_image");
+        event_latitude = getArguments().getDouble("event_latitude");
+        event_longitude = getArguments().getDouble("event_longitude");
 
         if (event_privacy.equals("0")) {
             event_privacy = "Public";
@@ -130,9 +155,34 @@ public class ViewHabitEventFragment extends Fragment
         if (event_comment == null) {
             event_comment = "";
         }
-        if (event_location == null) {
+
+        if (event_latitude == 0.0 && event_longitude == 0.0) {
             event_location = "";
         }
+        else {
+            Geocoder geocoder;
+            List<Address> addresses;
+
+            geocoder = new Geocoder(this.getContext(), Locale.getDefault());
+
+            // Get the address from coordinate.
+            try {
+                addresses = geocoder.getFromLocation(event_latitude, event_longitude, 1);
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String street = addresses.get(0).getThoroughfare();
+                String streetNum = addresses.get(0).getFeatureName();
+
+                if (street == null) {
+                    event_location = streetNum + " " + city + " " + state;
+                } else {
+                    event_location = street + " " + city + " " + state;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         titleText.setText(event_title);
         reasonText.setText(event_reason);
@@ -141,7 +191,6 @@ public class ViewHabitEventFragment extends Fragment
         repeatText.setText(event_repeat);
         privacyText.setText(event_privacy);
         commentText.setText(event_comment);
-
         locationText.setText(event_location);
 
         if (event_image != null) {
@@ -154,8 +203,10 @@ public class ViewHabitEventFragment extends Fragment
             @Override
             public void onClick(View view) {
                 // Call the EditHabitEventFragment
+                Date simpleDate = (Date) getArguments().getSerializable("event_date_simple");
+
                 new EditHabitEventFragment()
-                        .newInstance(event_title, event_datedoneraw, mAuth.getCurrentUser().getUid()).show(getChildFragmentManager(), "EDIT_HABITEVENT");
+                        .newInstance(event_title, event_datedoneraw, mAuth.getCurrentUser().getUid(), simpleDate).show(getChildFragmentManager(), "EDIT_HABITEVENT");
             }
         });
 
@@ -171,9 +222,12 @@ public class ViewHabitEventFragment extends Fragment
     }
 
     @Override
-    public void onEditEventSavePressed(String comment, String img) {
+    public void onEditEventSavePressed(String comment, String address, String img) {
+        // Set the comment
         commentText.setText(comment);
+
         // Set the location
+        locationText.setText(address);
 
         // Set the image
         byte[] bytes = Base64.getDecoder().decode(img);

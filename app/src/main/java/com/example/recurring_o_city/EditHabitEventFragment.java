@@ -8,8 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -25,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,16 +36,19 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class EditHabitEventFragment extends DialogFragment {
 
@@ -59,12 +66,14 @@ public class EditHabitEventFragment extends DialogFragment {
     CollectionReference collectionReference;
     DocumentReference editHabitEvent;
 
+    private GeoPoint newCoordinate;
+
 
     public EditHabitEventFragment(){
 
     }
 
-    public static EditHabitEventFragment newInstance(String event_title, String event_datedone, String UserId) {
+    public static EditHabitEventFragment newInstance(String event_title, String event_datedone, String UserId, Date date) {
         Bundle args = new Bundle();
 
         args.putString("event_datedone", event_datedone);
@@ -76,13 +85,15 @@ public class EditHabitEventFragment extends DialogFragment {
 
         args.putString("User_Id", UserId);
 
+        args.putSerializable("event_date_simple", date);
+
         EditHabitEventFragment fragment = new EditHabitEventFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     public interface EditHabitEventFragmentListener{
-        void onEditEventSavePressed(String newComment, String img);
+        void onEditEventSavePressed(String newComment, String address, String img);
     }
 
     @Override
@@ -195,17 +206,58 @@ public class EditHabitEventFragment extends DialogFragment {
         // When click on map image, open map activity
         // Code to implements map here
 
-
+        // Send all instances needed for map initialization.
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = new MapsFragment();
+                String mUserId = getArguments().getString("User_Id");
+                String mTitle = eventTitle.getText().toString();
+                Date mCreated = (Date) getArguments().getSerializable("event_date_simple");
+                String mAddress = eventLocation.getText().toString();
+
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.drawer_layout, fragment)
+                        .replace(R.id.drawer_layout, MapsFragment.newInstance(mUserId, mTitle, mCreated, mAddress))
                         .addToBackStack(null).commit();
             }
         });
+
+        // This listener gets the result from the map fragment.
+        getActivity().getSupportFragmentManager().setFragmentResultListener(
+                "RequestKey", this, new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                        Double latitude = result.getDouble("latitude");
+                        Double longitude = result.getDouble("longitude");
+
+                        // Set the new location.
+                        Geocoder geocoder;
+                        List<Address> addresses;
+                        String address = null;
+                        newCoordinate = new GeoPoint(latitude, longitude);
+
+                        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+
+                        // Get the address from coordinate.
+                        try {
+                            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                            String city = addresses.get(0).getLocality();
+                            String state = addresses.get(0).getAdminArea();
+                            String street = addresses.get(0).getThoroughfare();
+                            String streetNum = addresses.get(0).getFeatureName();
+
+                            if (street == null) {
+                                address = streetNum + " " + city + " " + state;
+                            } else {
+                                address = street + " " + city + " " + state;
+                            }
+                            eventLocation.setText(address);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
         // Package the unique creation date of habit event along with intent.
         // Make sure the habit and user matches.
         //collectionReference
@@ -221,6 +273,7 @@ public class EditHabitEventFragment extends DialogFragment {
                 .setPositiveButton("Save", (dialogInterface, i) -> {
                     // Get input from user, can be null as optional
                     String comment = eventComment.getText().toString();
+                    String address = eventLocation.getText().toString();
 
                     // Get the image (byte array) and convert to list to store on firebase
                     String img = "";
@@ -233,18 +286,16 @@ public class EditHabitEventFragment extends DialogFragment {
                         }
                     }
 
-
                     // Get the location
 
                     // Update to database
                     editHabitEvent.update("Comment", comment);
                     editHabitEvent.update("Photograph", img);
-
+                    editHabitEvent.update("Location", newCoordinate);
 
                     // When user clicks save button, add these details to habit event
-                    listener.onEditEventSavePressed(comment, img);
+                    listener.onEditEventSavePressed(comment, address, img);
                 }).create();
 
     }
-
 }

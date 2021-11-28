@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -21,6 +24,14 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +53,7 @@ public class AddHabitFragment extends DialogFragment
     private AddHabitFragmentListener listener;
     private Switch habitPrivacy;
     static Integer privacy;
+    private boolean duplicate;
     private DatePickerDialog calDialog;
     private List<String> repeat_strg;
 
@@ -110,6 +122,21 @@ public class AddHabitFragment extends DialogFragment
             }
         });
 
+        habitTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Empty method for TextWatcher.
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Empty method for TextWatcher.
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                duplicateTitle(editable.toString());
+            }
+        });
+
         // Set up the switch
         habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -147,7 +174,11 @@ public class AddHabitFragment extends DialogFragment
                         habitReason.requestFocus();
                         return;
                     }
-
+                    if (duplicate) {
+                        habitTitle.setError("Title must be unique");
+                        habitTitle.requestFocus();
+                        return;
+                    }
                     try {
                         newDate = d.parse(String.valueOf(habitDate.getText()));
                     } catch (ParseException e) {
@@ -173,5 +204,25 @@ public class AddHabitFragment extends DialogFragment
         String repeat_display = util.convertRepeat(repeat_list);
         habitRepeat.setText(repeat_display);
         repeat_strg = repeat_list;
+    }
+
+    private void duplicateTitle(String title) {
+        String userId = getActivity().getIntent().getStringExtra("User Id");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = db.collection("Habits");
+        Query query = collectionReference
+                .whereEqualTo("Title", title)
+                .whereEqualTo("User Id", userId);
+
+        // This query modifies global boolean variable "duplicate".
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    duplicate = task.getResult().size() != 0;
+                }
+            }
+        });
     }
 }

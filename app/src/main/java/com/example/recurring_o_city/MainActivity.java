@@ -18,8 +18,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,6 +30,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -196,7 +195,7 @@ public class MainActivity extends AppCompatActivity
                         Integer privacy = Integer.valueOf(document.getData().get("Privacy").toString());
                         String comment = (String) document.getData().get("Comment");
                         String photograph = (String) document.getData().get("Photograph");
-                        GoogleMap location = (GoogleMap) document.getData().get("Location");
+                        GeoPoint location = (GeoPoint) document.getData().get("Location");
 
                         Habit newHabit = new Habit(title, reason, date,repeat, privacy);
                         HabitEvent newHabitEvent = new HabitEvent(newHabit, dateCreated, comment, photograph, location);
