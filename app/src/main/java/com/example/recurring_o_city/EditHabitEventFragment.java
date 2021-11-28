@@ -3,11 +3,15 @@ package com.example.recurring_o_city;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,7 +32,9 @@ public class EditHabitEventFragment extends DialogFragment {
     private TextView eventTitle;
     private EditText eventComment;
     private EditText eventLocation;
-    private ImageButton MapButton;
+    private ImageButton mapButton;
+    private ImageButton photoButton;
+    private ImageView imageView;
     private EditHabitEventFragment.EditHabitEventFragmentListener listener;
     private FirebaseFirestore db;
     CollectionReference collectionReference;
@@ -71,13 +77,22 @@ public class EditHabitEventFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+        imageView.setImageBitmap(bitmap);
+    }
+
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.edit_habit_event_fragment, null);
 
         eventTitle = view.findViewById(R.id.editevent_title);
         eventComment = view.findViewById(R.id.editevent_comment);
         eventLocation = view.findViewById(R.id.editevent_location);
-        MapButton = view.findViewById(R.id.editevent_map);
+        mapButton = view.findViewById(R.id.editevent_map);
+        photoButton = view.findViewById(R.id.editevent_photo);
+        imageView = view.findViewById(R.id.editevent_image);
 
         // Set the habit event title
         eventTitle.setText(getArguments().getString("event_title"));
@@ -110,12 +125,19 @@ public class EditHabitEventFragment extends DialogFragment {
         // When click on the image button, go to take photo
         // Code to take photo implements here
 
+        photoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, 0);
+            }
+        });
 
         // When click on map image, open map activity
         // Code to implements map here
 
 
-        MapButton.setOnClickListener(new View.OnClickListener() {
+        mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new MapsFragment();

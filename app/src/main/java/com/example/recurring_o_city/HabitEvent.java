@@ -4,9 +4,10 @@ import android.graphics.Picture;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class HabitEvent {
+public class HabitEvent implements Serializable {
     private Habit eventHabit;
     private String eventComment;
     private Picture eventPic;
