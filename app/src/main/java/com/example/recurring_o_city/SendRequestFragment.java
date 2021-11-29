@@ -33,6 +33,7 @@ public class SendRequestFragment extends Fragment {
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
     private FirebaseAuth mAuth;
+    private String currentEmail;
     private Boolean valid = false;
 
 
@@ -69,45 +70,17 @@ public class SendRequestFragment extends Fragment {
         collectionReference = db.collection("Users");
         mAuth = FirebaseAuth.getInstance();
 
-        String email = userEmail.getText().toString();
 
-        // Validate if that user email exists
-        collectionReference
-                .whereEqualTo("Email", email)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot document: task.getResult()) {
-                                if (document.exists()) {
-                                    valid = true;
-                                } else {
-                                    Log.d("User email", "No such user exists");
-                                }
-                            }
-                        } else {
-                            Log.d("User email", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-
-
-
-            // When click send button
-            sendButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Send the request (current user email to the entered user)
-                    if (valid == true) {
-                        sendRequest(email);
-                        Toast.makeText(getContext(), "Send request successfully", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getContext(), "Cannot send request", Toast.LENGTH_LONG).show();
-                    }
-
-                }
-            });
+        currentEmail = mAuth.getCurrentUser().getEmail();
+        // When click send button
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Send the request (current user email to the entered user)
+                String email = userEmail.getText().toString();
+                sendRequest(email);
+            }
+        });
 
 
             // If click on  back button
@@ -134,8 +107,12 @@ public class SendRequestFragment extends Fragment {
                                 // Get the current pending list
                                 ArrayList<String> pending = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Pending");
                                 // Add current user email to that pending list if not yet in the list
-                                if (!pending.contains(mAuth.getCurrentUser().getEmail())) {
-                                    pending.add(mAuth.getCurrentUser().getEmail());
+                                if (!pending.contains(currentEmail)) {
+                                    Toast.makeText(getContext(), "Send request successfully", Toast.LENGTH_LONG).show();
+                                    pending.add(currentEmail);
+                                }
+                                else {
+                                    Toast.makeText(getContext(), "Send request failed", Toast.LENGTH_LONG).show();
                                 }
                                 // Update the new pending list
                                 task.getResult().getDocuments().get(0).getReference().update("Pending", pending);

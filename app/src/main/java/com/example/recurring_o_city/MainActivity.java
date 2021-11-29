@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getUserInfor() {
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        collectionUser.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
                 // Clear the old list

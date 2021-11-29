@@ -1,11 +1,13 @@
 package com.example.recurring_o_city;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,13 +26,14 @@ public class UserAdapter extends ArrayAdapter<String> {
     private ArrayList<String> users;
     private Context context;
     private TextView username, user_email;
-    private ImageButton accept, deny;
+    private ImageView accept, deny;
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
     private FirebaseAuth mAuth;
+    private String currentEmail;
 
     public UserAdapter(Context context, ArrayList<String> users) {
-        super(context, 0);
+        super(context, 0, users);
         this.context = context;
         this.users = users;
     }
@@ -42,6 +45,7 @@ public class UserAdapter extends ArrayAdapter<String> {
         collectionReference = db.collection("Users");
         mAuth = FirebaseAuth.getInstance();
 
+        currentEmail = mAuth.getCurrentUser().getEmail();
         String userEmail = users.get(position);
 
         View view = convertView;
@@ -88,21 +92,38 @@ public class UserAdapter extends ArrayAdapter<String> {
     // Update follower list of current user
     public void updateFollowerList(String email) {
         collectionReference
-                .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
+                .whereEqualTo("Email", currentEmail)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            ArrayList<String> follower = new ArrayList<>();
                             // Add email to follower current list
-                            ArrayList<String> follower = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Follower");
-                            String email = task.getResult().getDocuments().get(0).get("Email").toString();
-                            String name = task.getResult().getDocuments().get(0).get("Username").toString();
+                            if (task.getResult().getDocuments().size() > 0) {
+                                follower = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Follower");
 
+                            }
                             follower.add(email);
+                            //String name = task.getResult().getDocuments().get(0).get("Username").toString();
+
                             // Update the list to database
                             task.getResult().getDocuments().get(0).getReference().update("Follower", follower);
 
+                        }
+                    }
+                });
+    }
+
+    // Update the pending list of current user
+    public void updatePendingList(String email) {
+        collectionReference
+                .whereEqualTo("Email", currentEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
                             // Remove the email from current pending list
                             ArrayList<String> pending = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Pending");
                             pending.remove(email);
@@ -113,27 +134,6 @@ public class UserAdapter extends ArrayAdapter<String> {
                 });
     }
 
-    // Update the pending list of current user
-    public void updatePendingList(String email) {
-        collectionReference
-                .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            String email = task.getResult().getDocuments().get(0).get("Email").toString();
-                            String name = task.getResult().getDocuments().get(0).get("Username").toString();
-                            User newUser = new User(name, email);
-                            // Remove the email from current pending list
-                            ArrayList<String> pending = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Pending");
-                            pending.remove(newUser);
-                            // Update the list to database
-                            task.getResult().getDocuments().get(0).getReference().update("Pending", pending);
-                        }
-                    }
-                });
-    }
     // Update the following list of that accepted user
     public void updateFollowingList(String email) {
         collectionReference
@@ -143,11 +143,12 @@ public class UserAdapter extends ArrayAdapter<String> {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            ArrayList<String> following = new ArrayList<>();
+                            if (task.getResult().getDocuments().size() > 0) {
+                                following = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Following");
+                            }
                             // Add to following list of that accepted user
-                            ArrayList<User> following = (ArrayList<User>) task.getResult().getDocuments().get(0).get("Following");
-                            String username = mAuth.getCurrentUser().getDisplayName();
-                            String email = mAuth.getCurrentUser().getEmail();
-                            following.add(new User(username, email));
+                            following.add(currentEmail);
                             // Update the list to database
                             task.getResult().getDocuments().get(0).getReference().update("Following", following);
                         }
