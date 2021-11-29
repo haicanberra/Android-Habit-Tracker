@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Display a popup that promps user to add fragment
+ * Display a popup that prompts user to add fragment
  */
 
 public class AddHabitFragment extends DialogFragment

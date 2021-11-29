@@ -43,7 +43,7 @@ public class AllHabitFragment extends Fragment{
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param ArrayList<Habit> list
+     * @param 'ArrayList<Habit>' list
      * @return Fragment
      */
 
@@ -71,7 +71,7 @@ public class AllHabitFragment extends Fragment{
      * @param inflater
      * @param container
      * @param savedInstanceState
-     * @return inflator, the view of all habits
+     * @return view, the view of all habits
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
