@@ -18,6 +18,8 @@ import android.graphics.Picture;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private TextView currentUserEmail;
     private FirebaseFirestore db;
     private String UserId;
     CollectionReference collectionReference, collectionReference2, collectionUser;
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(v -> new AddHabitFragment().show(getSupportFragmentManager(), "ADD_HABIT"));
 
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         collectionReference = db.collection("Habits");
         collectionReference2 = db.collection("Habit Events");
         collectionUser = db.collection("Users");
@@ -174,7 +178,11 @@ public class MainActivity extends AppCompatActivity
                         Date date = doc.getTimestamp("Date").toDate();
                         List<String> repeat = (List<String>) doc.getData().get("Repeat");
                         Integer privacy = Integer.valueOf(doc.getData().get("Privacy").toString());
+                        Integer goal = Integer.valueOf(doc.getData().get("Goal").toString());
+                        Integer complete = Integer.valueOf(doc.getData().get("Complete").toString());
                         Habit newHabit = new Habit(title, reason, date,repeat, privacy);
+                        newHabit.setComplete(complete);
+                        newHabit.setGoal(goal);
                         Date nextDate;
                         if (doc.getTimestamp("Next Date") != null) {
                             nextDate =  doc.getTimestamp("Next Date").toDate();
@@ -228,6 +236,11 @@ public class MainActivity extends AppCompatActivity
                 pager2.setCurrentItem(selectedTab, false);
             }
         });
+
+        NavigationView temp = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = temp.getHeaderView(0);
+        TextView currentUserEmail = headerView.findViewById(R.id.currentUserEmail);
+        currentUserEmail.setText(mAuth.getCurrentUser().getEmail());
 
         // Get the realtime follower list, following list, follow request list of current user
         getUserInfor();
@@ -327,6 +340,8 @@ public class MainActivity extends AppCompatActivity
         data.put("Privacy", newHabit.getPrivacy());
         data.put("Done", newHabit.getDone());
         data.put("Next Date", nextDate);
+        data.put("Goal", newHabit.getGoal());
+        data.put("Complete", newHabit.getComplete());
 
         collectionReference
                 .document()

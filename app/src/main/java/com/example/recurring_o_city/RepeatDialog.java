@@ -85,6 +85,7 @@ public class RepeatDialog extends DialogFragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String selected_item = adapterView.getItemAtPosition(position).toString();
                 if (selected_item.equals("week")) {
+                    repeat_num.setVisibility(View.GONE);
                     title_repeat.setVisibility(View.VISIBLE);
                     days_repeat.setVisibility(View.VISIBLE);
                 } else if (selected_item.equals("day")) {
