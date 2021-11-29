@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -50,7 +51,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback {
+public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -60,19 +61,25 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private Geocoder geocoder;
     private EditText addressText;
     private FloatingActionButton fab;
+    private ImageView loadingScreen;
+
+    private GeoPoint coordinate;
+    private List<Address> addresses;
+    private String address;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
     }
 
-    public static MapsFragment newInstance(String userId, String title, Date date, String address) {
+    public static MapsFragment newInstance(String userId, String title, Date date, GeoPoint address) {
         Bundle args = new Bundle();
 
         args.putString("user_id", userId);
         args.putString("event_title", title);
         args.putSerializable("event_date", date);
-        args.putString("event_loc", address);
+        args.putDouble("event_lat", address.getLatitude());
+        args.putDouble("event_lon", address.getLongitude());
 
         MapsFragment fragment = new MapsFragment();
         fragment.setArguments(args);
@@ -112,27 +119,20 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        List<Address> addresses;
-        String address = getArguments().getString("event_loc");
+
+        Double latitude = getArguments().getDouble("event_lat");
+        Double longitude = getArguments().getDouble("event_lon");
+        if (latitude == 0.0 && longitude == 0.0) {
+            coordinate = null;
+        }
+        else {
+            coordinate = new GeoPoint(latitude, longitude);
+        }
+
         // Request permission on runtime.
         getLocationPermission();
         getLocationUi();
-
-        // Get the address and marker. Use device location or saved location.
-        if (address.isEmpty()) {
-            getDeviceLocation();
-        }
-        else {
-            try {
-                addresses = geocoder.getFromLocationName(address, 1);
-                Address location = addresses.get(0);
-                lastKnownLocation.setLatitude(location.getLatitude());
-                lastKnownLocation.setLongitude(location.getLongitude());
-                createMarker();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        getDeviceLocation();
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
@@ -159,10 +159,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 Bundle bundle = new Bundle();
                 bundle.putDouble("latitude", lastKnownLocation.getLatitude());
                 bundle.putDouble("longitude", lastKnownLocation.getLongitude());
+                bundle.putString("newAddress", addressText.getText().toString());
 
+                // Send the bundle of information back to the editHabitEventFragment.
                 getActivity().getSupportFragmentManager()
                         .setFragmentResult("RequestKey", bundle);
 
+                // Pop back out of the backstack.
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
@@ -211,7 +214,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                lastKnownLocation = null;
                 getLocationPermission();
             }
         } catch (SecurityException e) {
@@ -234,6 +236,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                             // Update last known location from the current device location.
                             if (lastKnownLocation != null) {
+
+                                // If there is already a pre-existing address, get those.
+                                if (coordinate != null) {
+                                    try {
+                                        addresses = geocoder
+                                                .getFromLocation(coordinate.getLatitude(), coordinate.getLongitude(), 1);
+                                        Address location = addresses.get(0);
+                                        lastKnownLocation.setLatitude(location.getLatitude());
+                                        lastKnownLocation.setLongitude(location.getLongitude());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                // Move camera to the marker location.
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), 15));
@@ -244,8 +261,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                             else {
                                 // Placeholder coordinate, if current location is null.
-                                lastKnownLocation.setLatitude(-34);
-                                lastKnownLocation.setLongitude(151);
                                 mMap.moveCamera(CameraUpdateFactory
                                         .newLatLngZoom(new LatLng(-34, 151), 5));
                             }
@@ -259,8 +274,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void setLocation(Location lastKnownLocation) {
-        List<Address> addresses;
-        String address = null;
+        String newAddress;
 
         try {
             addresses = geocoder.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1);
@@ -270,11 +284,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             String streetNum = addresses.get(0).getFeatureName();
 
             if (street == null) {
-                address = streetNum + " " + city + " " + state;
+                newAddress = streetNum + " " + city + " " + state;
             } else {
-                address = street + " " + city + " " + state;
+                newAddress = street + " " + city + " " + state;
             }
-            addressText.setText(address);
+            addressText.setText(newAddress);
         } catch (IOException e) {
             e.printStackTrace();
         }
