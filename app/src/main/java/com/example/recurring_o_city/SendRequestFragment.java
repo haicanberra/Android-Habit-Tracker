@@ -99,7 +99,7 @@ public class SendRequestFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     // Send the request (current user email to the entered user)
-                    if (valid.booleanValue() == true) {
+                    if (valid == true) {
                         sendRequest(email);
                         Toast.makeText(getContext(), "Send request successfully", Toast.LENGTH_LONG).show();
                     } else {
@@ -110,14 +110,13 @@ public class SendRequestFragment extends Fragment {
             });
 
 
-
             // If click on  back button
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                }
-            });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         return view;
     }
@@ -131,14 +130,17 @@ public class SendRequestFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            // Get the current pending list
-                            ArrayList<String> pending = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Email");
-                            // Add current user email to that pending list if not yet in the list
-                            if (!pending.contains(mAuth.getCurrentUser().getEmail())) {
-                                pending.add(mAuth.getCurrentUser().getEmail());
+                            if (task.getResult().getDocuments().size() > 0) {
+                                // Get the current pending list
+                                ArrayList<String> pending = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Pending");
+                                // Add current user email to that pending list if not yet in the list
+                                if (!pending.contains(mAuth.getCurrentUser().getEmail())) {
+                                    pending.add(mAuth.getCurrentUser().getEmail());
+                                }
+                                // Update the new pending list
+                                task.getResult().getDocuments().get(0).getReference().update("Pending", pending);
                             }
-                            // Update the new pending list
-                            task.getResult().getDocuments().get(0).getReference().update("Pending Request", pending);
+
                         }
                     }
                 });

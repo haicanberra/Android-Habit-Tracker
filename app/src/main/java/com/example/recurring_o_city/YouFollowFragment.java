@@ -7,21 +7,23 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 public class YouFollowFragment extends Fragment {
 
-    private ArrayList<User> following;
+    private ArrayList<String> following;
     private ListView userList;
     private UserAdapter userAdapter;
+    private ImageButton backButton;
     public YouFollowFragment() {
         // Required empty public constructor
     }
 
 
-    public static YouFollowFragment newInstance(ArrayList<User> following) {
+    public static YouFollowFragment newInstance(ArrayList<String> following) {
         YouFollowFragment fragment = new YouFollowFragment();
         Bundle args = new Bundle();
         args.putSerializable("Following", following);
@@ -32,7 +34,7 @@ public class YouFollowFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        following = (ArrayList<User>) getArguments().getSerializable("Following");
+        following = (ArrayList<String>) getArguments().getSerializable("Following");
     }
 
     @Override
@@ -40,11 +42,19 @@ public class YouFollowFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_you_follow, container, false);
+        backButton = view.findViewById(R.id.send_back_button);
         // Create custom adapter
         userList = view.findViewById(R.id.listview);
         userAdapter = new UserAdapter(getContext(), following);
         userList.setAdapter(userAdapter);
 
+        // When click back button
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         return view;
 
     }

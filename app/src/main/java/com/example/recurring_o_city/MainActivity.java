@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<Habit> habitList;
     public ArrayList<Habit> todayList;
     public ArrayList<HabitEvent> habitEventList;
-    private ArrayList<User> follower, following, follow_request;
+    private ArrayList<String> follower, following, follow_request;
     public int selectedTab = 0;
 
     private TabLayout tabLayout;
@@ -332,9 +332,9 @@ public class MainActivity extends AppCompatActivity
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     // Retrieving all the list
                     if (doc.getId().equals(UserId)) {
-                        follow_request = (ArrayList<User>) doc.getData().get("Pending");
-                        follower = (ArrayList<User>) doc.getData().get("Follower");
-                        following = (ArrayList<User>) doc.getData().get("Following");
+                        follow_request = (ArrayList<String>) doc.getData().get("Pending");
+                        follower = (ArrayList<String>) doc.getData().get("Follower");
+                        following = (ArrayList<String>) doc.getData().get("Following");
                     }
                 }
             }
