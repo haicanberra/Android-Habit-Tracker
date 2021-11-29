@@ -233,9 +233,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.nav_home:
-                // Go back to home
-                break;
             case R.id.nav_you_follow:
                 // Go to you follow fragment
                 fab.hide();
@@ -244,6 +241,7 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.drawer_layout, new YouFollowFragment().newInstance(following))
                         .addToBackStack(null)
                         .commit();
+                fab.show();
                 break;
             case R.id.nav_follow_you:
                 // Go to follow you fragment
@@ -253,6 +251,7 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.drawer_layout, new FollowYouFragment().newInstance(follower))
                         .addToBackStack(null)
                         .commit();
+                fab.show();
                 break;
             case R.id.nav_follow_request:
                 fab.hide();
@@ -261,6 +260,7 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.drawer_layout, new FollowingRequestFragment().newInstance(follow_request))
                         .addToBackStack(null)
                         .commit();
+                fab.show();
                 break;
             case R.id.nav_send_request:
                 fab.hide();
@@ -269,6 +269,7 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.drawer_layout, new SendRequestFragment().newInstance())
                         .addToBackStack(null)
                         .commit();
+                fab.show();
                 break;
             case R.id.nav_logout:
                 FirebaseAuth.getInstance().signOut();

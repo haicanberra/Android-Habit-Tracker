@@ -85,8 +85,8 @@ public class ViewHabitEventFragment extends Fragment
         Date simpleDate = newHabitEvent.getDateCreated();
         args.putSerializable("event_date_simple", simpleDate);
 
-        Double latitude;
-        Double longitude;
+        double latitude;
+        double longitude;
 
         if (newHabitEvent.getEventLoc() != null) {
             latitude = newHabitEvent.getEventLoc().getLatitude();
