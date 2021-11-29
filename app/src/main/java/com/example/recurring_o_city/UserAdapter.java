@@ -56,7 +56,6 @@ public class UserAdapter extends ArrayAdapter<String> {
         }
 
         // Get the view ids
-        username = view.findViewById(R.id.user_name);
         user_email = view.findViewById(R.id.user_email);
         accept = view.findViewById(R.id.accept);
         deny = view.findViewById(R.id.deny);
@@ -81,6 +80,8 @@ public class UserAdapter extends ArrayAdapter<String> {
                 updatePendingList(userEmail);
                 // Add that user to following list of current user
                 updateFollowingList(userEmail);
+                users.remove(userEmail);
+                notifyDataSetChanged();
             }
         });
 
@@ -90,24 +91,15 @@ public class UserAdapter extends ArrayAdapter<String> {
             public void onClick(View view) {
                 // Remove from current user pending list
                 updatePendingList(userEmail);
+                users.remove(userEmail);
+                notifyDataSetChanged();
             }
         });
 
 
         // Set the fields
         // Get the username
-        collectionReference
-                .whereEqualTo("Email", userEmail)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            String userName = (String) task.getResult().getDocuments().get(0).get("Username");
-                            username.setText(userName);
-                        }
-                    }
-                });
+
         user_email.setText(userEmail);
 
         return view;

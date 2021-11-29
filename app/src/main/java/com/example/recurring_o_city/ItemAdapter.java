@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,9 +20,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -43,6 +46,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
+
     public ItemAdapter(ArrayList<?> list, String type) {
         this.currentFragment = type;
         if (type.equals("event")) {
@@ -57,6 +61,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         ImageButton button;
         CheckBox chk;
         TextView date;
+        CircularProgressIndicator mCircle;
+        RelativeLayout layout;
+        TextView textView2;
 
         public MyViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
@@ -64,6 +71,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             button = itemView.findViewById(R.id.imageButton);
             chk = itemView.findViewById(R.id.checkBox2);
             date = itemView.findViewById(R.id.dateCreated);
+            mCircle = itemView.findViewById(R.id.progressBar);
+            layout = itemView.findViewById(R.id.progress_layout);
+            textView2 = itemView.findViewById(R.id.progress_circle);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -102,12 +112,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             }
             holder.date.setVisibility(View.GONE);
             holder.button.setVisibility(View.INVISIBLE);
+            holder.layout.setVisibility(View.GONE);
+
         }
         else if (this.currentFragment.equals("all")) {
             String name = habitList.get(position).getTitle();
             holder.textView.setText(name);
             holder.chk.setVisibility(View.GONE);
             holder.date.setVisibility((View.GONE));
+
+            Integer goal = habitList.get(position).getGoal();
+            Integer complete = habitList.get(position).getComplete();
+            holder.textView2.setText(String.valueOf((complete/goal)*100));
+            holder.mCircle.setProgress((complete/goal)*100);
         }
         else if (this.currentFragment.equals("fyhf")) {
             String name = habitList.get(position).getTitle();
@@ -126,6 +143,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             String date_string = format2.format(date);
             holder.date.setText(date_string);
 
+            holder.layout.setVisibility(View.GONE);
+
         }
 
         holder.chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -142,6 +161,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             collectionReference.document(document.getId()).update("Done","true");
+                                            collectionReference.document(document.getId()).update("Complete", FieldValue.increment(1));
                                             Log.d("Done Habit", "Data has been marked done successfully");
 
                                             // Function for creating new habit event.
@@ -165,6 +185,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             collectionReference.document(document.getId()).update("Done","false");
                                             Log.d("Done Habit", "Data has been marked done successfully");
+                                            collectionReference.document(document.getId()).update("Complete", FieldValue.increment(-1));
 
                                             // Remove the habit event.
                                             undoHabitEvent(document);
