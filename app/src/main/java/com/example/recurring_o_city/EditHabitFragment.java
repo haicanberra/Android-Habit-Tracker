@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -122,14 +123,6 @@ public class EditHabitFragment extends DialogFragment
             calDialog.show();
         });
 
-        // Set up the repeat fragment to pop up when Edit calender is clicked
-        repeat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RepeatDialog repeatDialog = new RepeatDialog();
-                repeatDialog.show(getChildFragmentManager(), "Repeat");
-            }
-        });
 
 
         // Set the collection reference from the Firebase.
@@ -158,17 +151,28 @@ public class EditHabitFragment extends DialogFragment
                             habitReason.setText(docSnapshot.getString("Reason"));
 
                             repeats = (List<String>)docSnapshot.get("Repeat");
-                            if (repeats != null) {
+                            if (repeats == null || repeats.size() <= 1) {
+                                habitRepeat.setText("Does not repeat");
+                            } else {
                                 Utility util = new Utility();
                                 habitRepeat.setText(util.convertRepeat(repeats));
                             }
 
                             Date oldDate = docSnapshot.getDate("Date");
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                             habitDate.setText(dateFormat.format(oldDate));
                         }
                     }
                 });
+
+        // Set up the repeat fragment to pop up when Edit calender is clicked
+        repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RepeatDialog repeatDialog = new RepeatDialog();
+                repeatDialog.show(getChildFragmentManager(), "Repeat");
+            }
+        });
 
         habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -210,21 +214,9 @@ public class EditHabitFragment extends DialogFragment
                     String title = habitTitle.getText().toString();
                     String reason = habitReason.getText().toString();
 
-                    // Check if the inputs are valid.
-                    if (title.equals("")) {
-                        habitTitle.setError("Title cannot be empty");
-                        habitTitle.requestFocus();
-                        return;
-                    }
-                    if (reason.equals("")) {
-                        habitReason.setError("Reason cannot be empty");
-                        habitReason.requestFocus();
-                        return;
-                    }
                     if (duplicate) {
                         habitTitle.setError("Title must be unique");
                         habitTitle.requestFocus();
-                        return;
                     }
 
                     try {
@@ -238,7 +230,6 @@ public class EditHabitFragment extends DialogFragment
                     } else {
                         privacy = 0;
                     }
-
                     // Check if input is valid and proceed
                     if (!title.equals("") && newDate != null) {
                         editHabit.update("Title", title);
@@ -247,8 +238,7 @@ public class EditHabitFragment extends DialogFragment
                         editHabit.update("Repeat", repeats);
                         editHabit.update("Privacy", privacy);
                     }
-
-                    if (!title.equals("")  && !reason.equals("") && newDate != null) {
+                    if (!title.equals("") && !reason.equals("") && newDate != null) {
                         //When user clicks save button, add new medicine
                         listener.onEditSavePressed(new Habit(title, reason, newDate, repeats, privacy));
                     }
@@ -258,8 +248,13 @@ public class EditHabitFragment extends DialogFragment
     @Override
     public void onRepeatSavePressed(List<String> repeat_list) {
         // Get the List<String> of repeats, and set it to habitRepeat text field.
-        Utility util = new Utility();
-        String repeat_display = util.convertRepeat(repeat_list);
+        String repeat_display ="";
+        if (repeat_list.size() <= 1) {
+            repeat_display = "Does not repeat";
+        } else {
+            Utility util = new Utility();
+            repeat_display = util.convertRepeat(repeat_list);
+        }
         habitRepeat.setText(repeat_display);
         repeats = repeat_list;
     }
@@ -267,8 +262,6 @@ public class EditHabitFragment extends DialogFragment
     private void duplicateTitle(String title) {
         String userId = getActivity().getIntent().getStringExtra("User Id");
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference collectionReference = db.collection("Habits");
         Query query = collectionReference
                 .whereEqualTo("Title", title)
                 .whereEqualTo("User Id", userId);

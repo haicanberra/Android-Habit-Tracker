@@ -63,7 +63,7 @@ public class TodayFragment extends Fragment{
         habitList = (ArrayList<Habit>) getArguments().getSerializable(
                 "HABIT");
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
         Date today = Calendar.getInstance().getTime();
         String date_s = format.format(today);
         try {

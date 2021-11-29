@@ -99,7 +99,6 @@ public class AddHabitFragment extends DialogFragment
         habitRepeat = view.findViewById(R.id.habit_frequency);
         button = view.findViewById(R.id.button);
         repeat = view.findViewById(R.id.repeat_button);
-        habitRepeat = view.findViewById(R.id.habit_frequency);
         habitPrivacy = view.findViewById(R.id.privacy);
 
         // Setup DatePickerDialog to pops up when "EDIT" button is clicked.
@@ -113,6 +112,7 @@ public class AddHabitFragment extends DialogFragment
             calDialog.show();
         });
 
+        habitRepeat.setText("Does not repeat");
         // Set up the repeat fragment to pop up when Edit calender is clicked
         repeat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +159,7 @@ public class AddHabitFragment extends DialogFragment
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Save", (dialogInterface, i) -> {
                     Date newDate = null;
-                    SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat d = new SimpleDateFormat("yyyy/MM/dd");
 
                     // Get and validate new input from user
                     String title = habitTitle.getText().toString();
@@ -200,8 +200,13 @@ public class AddHabitFragment extends DialogFragment
 
     @Override
     public void onRepeatSavePressed(List<String> repeat_list) {
-        Utility util = new Utility();
-        String repeat_display = util.convertRepeat(repeat_list);
+        String repeat_display ="";
+        if (repeat_list.size() <= 1) {
+            repeat_display = "Does not repeat";
+        } else {
+            Utility util = new Utility();
+            repeat_display = util.convertRepeat(repeat_list);
+        }
         habitRepeat.setText(repeat_display);
         repeat_strg = repeat_list;
     }
