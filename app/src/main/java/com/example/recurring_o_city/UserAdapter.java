@@ -95,7 +95,19 @@ public class UserAdapter extends ArrayAdapter<String> {
 
 
         // Set the fields
-        //username.setText(userEmail);
+        // Get the username
+        collectionReference
+                .whereEqualTo("Email", userEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            String userName = (String) task.getResult().getDocuments().get(0).get("Username");
+                            username.setText(userName);
+                        }
+                    }
+                });
         user_email.setText(userEmail);
 
         return view;
@@ -117,7 +129,6 @@ public class UserAdapter extends ArrayAdapter<String> {
 
                             }
                             follower.add(email);
-                            //String name = task.getResult().getDocuments().get(0).get("Username").toString();
 
                             // Update the list to database
                             task.getResult().getDocuments().get(0).getReference().update("Follower", follower);

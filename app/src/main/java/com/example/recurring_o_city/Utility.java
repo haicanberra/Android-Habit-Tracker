@@ -1,5 +1,15 @@
 package com.example.recurring_o_city;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Utility {
-
     public Utility() { }
 
     // Method to convert list of string to string
@@ -96,5 +105,8 @@ public class Utility {
         }
         return dateGoals;
     }
+
+
+
 
 }

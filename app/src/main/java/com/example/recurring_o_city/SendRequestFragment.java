@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -78,12 +79,30 @@ public class SendRequestFragment extends Fragment {
             public void onClick(View view) {
                 // Send the request (current user email to the entered user)
                 String email = userEmail.getText().toString();
-                sendRequest(email);
+
+                // Validate the user email
+                collectionReference
+                        .whereEqualTo("Email", email)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    int list = task.getResult().getDocuments().size();
+                                    if (list == 0 || email.equals(currentEmail)) {
+                                        Toast.makeText(getContext(), "Invalid email", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        sendRequest(email);
+                                    }
+
+                                }
+                            }
+                        });
             }
         });
 
 
-            // If click on  back button
+        // If click on  back button
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,13 +125,14 @@ public class SendRequestFragment extends Fragment {
                             if (task.getResult().getDocuments().size() > 0) {
                                 // Get the current pending list
                                 ArrayList<String> pending = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Pending");
-                                // Add current user email to that pending list if not yet in the list
-                                if (!pending.contains(currentEmail)) {
+                                ArrayList<String> follower = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Follower");
+
+                                // Add current user email to that pending list if not yet added
+                                if (!pending.contains(currentEmail) && !follower.contains(currentEmail)) {
                                     Toast.makeText(getContext(), "Send request successfully", Toast.LENGTH_LONG).show();
                                     pending.add(currentEmail);
-                                }
-                                else {
-                                    Toast.makeText(getContext(), "Send request failed", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(getContext(), "Already sent request", Toast.LENGTH_LONG).show();
                                 }
                                 // Update the new pending list
                                 task.getResult().getDocuments().get(0).getReference().update("Pending", pending);

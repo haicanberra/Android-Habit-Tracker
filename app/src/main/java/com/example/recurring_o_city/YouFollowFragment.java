@@ -2,6 +2,7 @@ package com.example.recurring_o_city;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ public class YouFollowFragment extends Fragment {
     private ListView userList;
     private UserAdapter userAdapter;
     private ImageButton backButton;
+
     public YouFollowFragment() {
         // Required empty public constructor
     }
@@ -35,6 +37,7 @@ public class YouFollowFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         following = (ArrayList<String>) getArguments().getSerializable("Following");
+
     }
 
     @Override
@@ -43,6 +46,7 @@ public class YouFollowFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_you_follow, container, false);
         backButton = view.findViewById(R.id.send_back_button);
+
         // Create custom adapter
         userList = view.findViewById(R.id.listview);
         userAdapter = new UserAdapter(getContext(), following,"yff");
