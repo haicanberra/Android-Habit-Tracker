@@ -75,7 +75,7 @@ public class AllHabitFragment extends Fragment{
                 ViewHabitFragment habitFrag = new ViewHabitFragment();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.drawer_layout, habitFrag.newInstance(selectedHabit))
+                        .replace(R.id.drawer_layout, habitFrag.newInstance(selectedHabit, "show"))
                         .addToBackStack(null).commit();
             }
         });

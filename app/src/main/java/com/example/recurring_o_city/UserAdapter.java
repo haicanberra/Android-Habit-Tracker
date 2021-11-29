@@ -179,3 +179,4 @@ public class UserAdapter extends ArrayAdapter<String> {
                 });
     }
 }
+
