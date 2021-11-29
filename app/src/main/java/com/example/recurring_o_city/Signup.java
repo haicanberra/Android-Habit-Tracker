@@ -120,7 +120,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener,On
     public void onComplete(@NonNull Task<AuthResult> task) {
         if(task.isSuccessful()){
             FirebaseUser user = mAuth.getCurrentUser();
-            ArrayList<User> list = new ArrayList<>();
+            ArrayList<String> list = new ArrayList<>();
 
             Map<String, Object> data = new HashMap<>();
             data.put("Username", editTextUsername.getText().toString());

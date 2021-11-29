@@ -20,8 +20,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class UserAdapter extends ArrayAdapter<User> {
-    private ArrayList<User> users;
+public class UserAdapter extends ArrayAdapter<String> {
+    private ArrayList<String> users;
     private Context context;
     private TextView username, user_email;
     private ImageButton accept, deny;
@@ -29,7 +29,7 @@ public class UserAdapter extends ArrayAdapter<User> {
     private CollectionReference collectionReference;
     private FirebaseAuth mAuth;
 
-    public UserAdapter(Context context, ArrayList<User> users) {
+    public UserAdapter(Context context, ArrayList<String> users) {
         super(context, 0);
         this.context = context;
         this.users = users;
@@ -42,7 +42,7 @@ public class UserAdapter extends ArrayAdapter<User> {
         collectionReference = db.collection("Users");
         mAuth = FirebaseAuth.getInstance();
 
-        User user = users.get(position);
+        String userEmail = users.get(position);
 
         View view = convertView;
         if (view == null) {
@@ -60,10 +60,10 @@ public class UserAdapter extends ArrayAdapter<User> {
             @Override
             public void onClick(View view) {
                 // Add current user to follower list of that user and remove from pending
-                updateFollowerList(user.getEmail());
-                updatePendingList(user.getEmail());
+                updateFollowerList(userEmail);
+                updatePendingList(userEmail);
                 // Add that user to following list of current user
-                updateFollowingList(user.getEmail());
+                updateFollowingList(userEmail);
 
             }
         });
@@ -73,14 +73,14 @@ public class UserAdapter extends ArrayAdapter<User> {
             @Override
             public void onClick(View view) {
                 // Remove from current user pending list
-                updatePendingList(user.getEmail());
+                updatePendingList(userEmail);
             }
         });
 
 
         // Set the fields
-        username.setText(user.getUsername());
-        user_email.setText(user.getEmail());
+        //username.setText(userEmail);
+        user_email.setText(userEmail);
 
         return view;
     }
@@ -95,17 +95,17 @@ public class UserAdapter extends ArrayAdapter<User> {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             // Add email to follower current list
-                            ArrayList<User> follower = (ArrayList<User>) task.getResult().getDocuments().get(0).get("Follower");
+                            ArrayList<String> follower = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Follower");
                             String email = task.getResult().getDocuments().get(0).get("Email").toString();
                             String name = task.getResult().getDocuments().get(0).get("Username").toString();
-                            User newUser = new User(name, email);
-                            follower.add(newUser);
+
+                            follower.add(email);
                             // Update the list to database
                             task.getResult().getDocuments().get(0).getReference().update("Follower", follower);
 
                             // Remove the email from current pending list
                             ArrayList<String> pending = (ArrayList<String>) task.getResult().getDocuments().get(0).get("Pending");
-                            pending.remove(newUser);
+                            pending.remove(email);
                             // Update the list to database
                             task.getResult().getDocuments().get(0).getReference().update("Pending", pending);
                         }
