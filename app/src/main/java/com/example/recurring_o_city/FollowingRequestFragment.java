@@ -48,7 +48,7 @@ public class FollowingRequestFragment extends Fragment {
         //Create custom adapter
         userList = view.findViewById(R.id.listview);
         backButton = view.findViewById(R.id.send_back_button);
-        userAdapter = new UserAdapter(getContext(), pending);
+        userAdapter = new UserAdapter(getContext(), pending, "frf");
         userList.setAdapter(userAdapter);
 
         // When click back button

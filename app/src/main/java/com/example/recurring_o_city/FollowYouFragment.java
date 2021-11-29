@@ -47,8 +47,10 @@ public class FollowYouFragment extends Fragment {
 
         // Custom adapter
         userList = view.findViewById(R.id.listview);
-        userAdapter = new UserAdapter(getContext(), follower);
+        userAdapter = new UserAdapter(getContext(), follower,"fyf");
         userList.setAdapter(userAdapter);
+
+
 
         // When click back button
         backButton.setOnClickListener(new View.OnClickListener() {

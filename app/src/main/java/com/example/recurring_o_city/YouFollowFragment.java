@@ -45,7 +45,7 @@ public class YouFollowFragment extends Fragment {
         backButton = view.findViewById(R.id.send_back_button);
         // Create custom adapter
         userList = view.findViewById(R.id.listview);
-        userAdapter = new UserAdapter(getContext(), following);
+        userAdapter = new UserAdapter(getContext(), following,"yff");
         userList.setAdapter(userAdapter);
 
         // When click back button
