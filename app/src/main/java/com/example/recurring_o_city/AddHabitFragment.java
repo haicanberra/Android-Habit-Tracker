@@ -109,6 +109,7 @@ public class AddHabitFragment extends DialogFragment
         button.setOnClickListener(view1 -> {
             calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay)
                     -> habitDate.setText(mYear + "/" + (mMonth + 1) + "/" + mDay), year, month, day);
+            calDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             calDialog.show();
         });
 

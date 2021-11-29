@@ -10,6 +10,7 @@ public class Habit implements Serializable
     String reason;
     Date date;
     Date next_date = null; // get the next date
+    Date nextnext_date = null; // get the next date of next date
     List<String> repeat;
     Integer privacy;  //private = 1, public = 0
     String done = "false";  //task finished = 1, else 0.
@@ -23,6 +24,14 @@ public class Habit implements Serializable
         this.date = date;
         this.privacy = status;
         this.repeat = repeat;
+    }
+
+    public Date getNextnext_date() {
+        return nextnext_date;
+    }
+
+    public void setNextnext_date(Date nextnext_date) {
+        this.nextnext_date = nextnext_date;
     }
 
     public Integer getGoal() {

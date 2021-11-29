@@ -170,12 +170,15 @@ public class MainActivity extends AppCompatActivity
                         Habit newHabit = new Habit(title, reason, date,repeat, privacy);
                         newHabit.setComplete(complete);
                         newHabit.setGoal(goal);
-                        Date nextDate;
-                        if (doc.getTimestamp("Next Date") != null) {
+                        Date nextDate, nextNextDate;
+                        if (doc.getTimestamp("Next Date") != null && doc.getTimestamp("Next Next Date") != null) {
                             nextDate =  doc.getTimestamp("Next Date").toDate();
+                            nextNextDate = doc.getTimestamp("Next Next Date").toDate();
                             newHabit.setNext_date(nextDate);
+                            newHabit.setNextnext_date(nextNextDate);
                         } else {
                             newHabit.setNext_date(null);
+                            newHabit.setNextnext_date(null);
                         }
                         newHabit.setDone((String) doc.getData().get("Done"));
 
@@ -302,12 +305,15 @@ public class MainActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
         mAuth = FirebaseAuth.getInstance();
-        Date nextDate;
+        Date nextDate, nextNextDate;
         if (newHabit.getRepeat() != null && newHabit.getRepeat().size() ==3) {
             nextDate = util.getNextDate(newHabit.getDate(), newHabit.getNext_date(), newHabit.getRepeat());
+            nextNextDate = util.getNextDate(newHabit.getDate(), nextDate, newHabit.getRepeat());
         } else {
             nextDate = null;
+            nextNextDate = null;
         }
+
 
         // where to set  next date in habit
 
@@ -322,6 +328,7 @@ public class MainActivity extends AppCompatActivity
         data.put("Next Date", nextDate);
         data.put("Goal", newHabit.getGoal());
         data.put("Complete", newHabit.getComplete());
+        data.put("Next Next Date", nextNextDate);
 
         collectionReference
                 .document()

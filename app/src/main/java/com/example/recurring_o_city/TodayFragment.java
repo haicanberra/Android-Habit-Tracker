@@ -24,6 +24,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -91,8 +93,11 @@ public class TodayFragment extends Fragment{
                 todayList.add(habitList.get(i));
                 //Update next date here
                 habitList.get(i).setNext_date(habitList.get(i).getNext_date());
+                habitList.get(i).setNextnext_date(habitList.get(i).getNextnext_date());
             }
         }
+
+
     }
 
     @Override
