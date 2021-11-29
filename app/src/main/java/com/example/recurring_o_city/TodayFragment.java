@@ -32,6 +32,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,7 +43,6 @@ public class TodayFragment extends Fragment{
     private ArrayList<Habit> habitList;
     private ArrayList<Habit> todayList = new ArrayList<>();
     private ItemAdapter habitAdapter;
-
 
     public TodayFragment() {
         // Required empty public constructor
@@ -64,10 +64,13 @@ public class TodayFragment extends Fragment{
                 "HABIT");
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat name_format = new SimpleDateFormat("EEE");
         Date today = Calendar.getInstance().getTime();
         String date_s = format.format(today);
+        String date_name = null;
         try {
             today = format.parse(date_s);
+            date_name = name_format.format(today);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -75,13 +78,19 @@ public class TodayFragment extends Fragment{
         // Get today habit list
         for (int i = 0; i<habitList.size(); i++) {
             Date date = habitList.get(i).getDate();
-            if (today.compareTo(date) == 0) {
+            Date nextDate = habitList.get(i).getNext_date();
+            List<String> repeat_strg = habitList.get(i).getRepeat();
+            List<String> repeat_box = new ArrayList<>();
+            if (repeat_strg != null && repeat_strg.size() > 3) {
+                repeat_box = repeat_strg.subList(2, repeat_strg.size()-1);
+            }
+            
+            if (today.compareTo(date) == 0 || today.equals(nextDate) || repeat_box.contains(date_name)) {
                 todayList.add(habitList.get(i));
-                // Update next date here
-
+                //Update next date here
+                habitList.get(i).setNext_date(habitList.get(i).getNext_date());
             }
         }
-
     }
 
     @Override
@@ -108,7 +117,6 @@ public class TodayFragment extends Fragment{
                         .addToBackStack(null).commit();
             }
         });
-
         return view;
     }
 

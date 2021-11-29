@@ -37,6 +37,7 @@ public class ViewHabitFragment extends Fragment
     private String habit_date;
     private String habit_repeat;
     private String habit_privacy;
+
     private TextView titleText, reasonText, dateText, repeatText, privacyText;
     private FirebaseAuth mAuth;
 
@@ -86,6 +87,7 @@ public class ViewHabitFragment extends Fragment
         habit_date = getArguments().getString("habit_date");
         habit_repeat = getArguments().getString("habit_repeat");
         habit_privacy = getArguments().getString("habit_privacy");
+
         mAuth = FirebaseAuth.getInstance();
 
         if (habit_privacy.equals("0")) {

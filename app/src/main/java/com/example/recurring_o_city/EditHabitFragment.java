@@ -50,6 +50,7 @@ public class EditHabitFragment extends DialogFragment
     private ImageButton repeat;
     private Switch habitPrivacy;
     private int privacy;
+    private Date nextDate, startDate;
     private EditHabitFragmentListener listener;
     private DatePickerDialog calDialog;
     private List<String> repeats;
@@ -67,6 +68,7 @@ public class EditHabitFragment extends DialogFragment
         Bundle args = new Bundle();
 
         // This string acts as key for retrieving Firebase document.
+
         args.putString("habit_title", oldHabitTitle);
         args.putString("User_Id", UserId);
 
@@ -119,7 +121,7 @@ public class EditHabitFragment extends DialogFragment
         int year = calendar.get(Calendar.YEAR);
         button.setOnClickListener(view1 -> {
             calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay)
-                    -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
+                    -> habitDate.setText(mYear + "/" + (mMonth + 1) + "/" + mDay), year, month, day);
             calDialog.show();
         });
 
@@ -149,7 +151,9 @@ public class EditHabitFragment extends DialogFragment
                             editHabit = docSnapshot.getReference();
                             habitTitle.setText(docSnapshot.getString("Title"));
                             habitReason.setText(docSnapshot.getString("Reason"));
-
+                            if (docSnapshot.getLong("Privacy") == 0) {
+                                habitPrivacy.setChecked(false);
+                            }
                             repeats = (List<String>)docSnapshot.get("Repeat");
                             if (repeats == null || repeats.size() <= 1) {
                                 habitRepeat.setText("Does not repeat");
@@ -161,6 +165,9 @@ public class EditHabitFragment extends DialogFragment
                             Date oldDate = docSnapshot.getDate("Date");
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                             habitDate.setText(dateFormat.format(oldDate));
+
+                            nextDate = docSnapshot.getDate("Next Date");
+
                         }
                     }
                 });
@@ -221,6 +228,7 @@ public class EditHabitFragment extends DialogFragment
 
                     try {
                         newDate = d.parse(String.valueOf(habitDate.getText()));
+
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -230,6 +238,16 @@ public class EditHabitFragment extends DialogFragment
                     } else {
                         privacy = 0;
                     }
+
+                    startDate = newDate;
+                    if (repeats != null && repeats.size() ==3) {
+                        Utility util = new Utility();
+                        nextDate = util.getNextDate(startDate, null, repeats);
+                    } else {
+                        nextDate = null;
+                    }
+
+
                     // Check if input is valid and proceed
                     if (!title.equals("") && newDate != null) {
                         editHabit.update("Title", title);
@@ -237,6 +255,8 @@ public class EditHabitFragment extends DialogFragment
                         editHabit.update("Date", newDate);
                         editHabit.update("Repeat", repeats);
                         editHabit.update("Privacy", privacy);
+                        editHabit.update("Next Date", nextDate);
+
                     }
                     if (!title.equals("") && !reason.equals("") && newDate != null) {
                         //When user clicks save button, add new medicine
