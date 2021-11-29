@@ -63,6 +63,7 @@ public class EditHabitEventFragment extends DialogFragment {
     private EditHabitEventFragment.EditHabitEventFragmentListener listener;
     private FirebaseFirestore db;
     private ActivityResultLauncher<Intent> activityResultLauncher;
+    private GeoPoint oldLocation;
     CollectionReference collectionReference;
     DocumentReference editHabitEvent;
 
@@ -159,6 +160,16 @@ public class EditHabitEventFragment extends DialogFragment {
                                     eventTitle.setText(document.getString("Title"));
                                     eventComment.setText(document.getString("Comment"));
 
+                                    oldLocation = document.getGeoPoint("Location");
+
+                                    if (oldLocation != null && eventLocation.getText().toString().isEmpty()) {
+                                        eventLocation.setText(fetchAddress(oldLocation));
+                                    }
+
+                                    if (oldLocation == null) {
+                                        oldLocation = new GeoPoint(0.0,0.0);
+                                    }
+
                                     event_image = document.getString("Photograph");
                                     if (event_image != null) {
                                         byte[] bytes = Base64.getDecoder().decode(event_image);
@@ -213,11 +224,14 @@ public class EditHabitEventFragment extends DialogFragment {
                 String mUserId = getArguments().getString("User_Id");
                 String mTitle = eventTitle.getText().toString();
                 Date mCreated = (Date) getArguments().getSerializable("event_date_simple");
-                String mAddress = eventLocation.getText().toString();
+                GeoPoint mAddress = new GeoPoint(oldLocation.getLatitude(), oldLocation.getLongitude());
+
+                MapsFragment fragment =
+                        MapsFragment.newInstance(mUserId, mTitle, mCreated, mAddress);
 
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.drawer_layout, MapsFragment.newInstance(mUserId, mTitle, mCreated, mAddress))
+                        .replace(R.id.drawer_layout, fragment)
                         .addToBackStack(null).commit();
             }
         });
@@ -227,34 +241,12 @@ public class EditHabitEventFragment extends DialogFragment {
                 "RequestKey", this, new FragmentResultListener() {
                     @Override
                     public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                        String newAddress = result.getString("newAddress");
                         Double latitude = result.getDouble("latitude");
                         Double longitude = result.getDouble("longitude");
 
-                        // Set the new location.
-                        Geocoder geocoder;
-                        List<Address> addresses;
-                        String address = null;
                         newCoordinate = new GeoPoint(latitude, longitude);
-
-                        geocoder = new Geocoder(getActivity(), Locale.getDefault());
-
-                        // Get the address from coordinate.
-                        try {
-                            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                            String city = addresses.get(0).getLocality();
-                            String state = addresses.get(0).getAdminArea();
-                            String street = addresses.get(0).getThoroughfare();
-                            String streetNum = addresses.get(0).getFeatureName();
-
-                            if (street == null) {
-                                address = streetNum + " " + city + " " + state;
-                            } else {
-                                address = street + " " + city + " " + state;
-                            }
-                            eventLocation.setText(address);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        eventLocation.setText(newAddress);
                     }
                 });
 
@@ -297,5 +289,28 @@ public class EditHabitEventFragment extends DialogFragment {
                     listener.onEditEventSavePressed(comment, address, img);
                 }).create();
 
+    }
+
+    public String fetchAddress(GeoPoint geoPoint) {
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        List<Address> addresses;
+        String address = null;
+
+        try {
+            addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String street = addresses.get(0).getThoroughfare();
+            String streetNum = addresses.get(0).getFeatureName();
+
+            if (street == null) {
+                address = streetNum + " " + city + " " + state;
+            } else {
+                address = street + " " + city + " " + state;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return address;
     }
 }
