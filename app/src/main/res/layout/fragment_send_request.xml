@@ -27,6 +27,16 @@
             android:backgroundTint="#ff781f"
             android:clickable="true"
             android:src="@drawable/ic_back" />
+        <TextView
+            android:id="@+id/toolbar3_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/raleway_bold"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="Send Request"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"/>
 
     </androidx.appcompat.widget.Toolbar>
 
