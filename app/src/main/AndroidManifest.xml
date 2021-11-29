@@ -26,12 +26,15 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAcrkgyHcBMEsH1dcXQFEtrR5YJXqzUtUI" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="Habit Tracker"
-            android:theme="@style/Theme.RecurringOCity.NoActionBar" />
+            android:label=""
+            android:theme="@style/Theme.RecurringOCity" />
         <activity
             android:name=".UserProfile"
             android:exported="false" />
