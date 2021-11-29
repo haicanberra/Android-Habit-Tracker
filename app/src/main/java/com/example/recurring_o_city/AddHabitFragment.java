@@ -108,7 +108,7 @@ public class AddHabitFragment extends DialogFragment
         int year = calendar.get(Calendar.YEAR);
         button.setOnClickListener(view1 -> {
             calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay)
-                    -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
+                    -> habitDate.setText(mYear + "/" + (mMonth + 1) + "/" + mDay), year, month, day);
             calDialog.show();
         });
 

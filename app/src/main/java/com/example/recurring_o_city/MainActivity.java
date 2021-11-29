@@ -160,10 +160,15 @@ public class MainActivity extends AppCompatActivity
                         Date date = doc.getTimestamp("Date").toDate();
                         List<String> repeat = (List<String>) doc.getData().get("Repeat");
                         Integer privacy = Integer.valueOf(doc.getData().get("Privacy").toString());
-
                         Habit newHabit = new Habit(title, reason, date,repeat, privacy);
+                        Date nextDate;
+                        if (doc.getTimestamp("Next Date") != null) {
+                            nextDate =  doc.getTimestamp("Next Date").toDate();
+                            newHabit.setNext_date(nextDate);
+                        } else {
+                            newHabit.setNext_date(null);
+                        }
                         newHabit.setDone((String) doc.getData().get("Done"));
-                        //newHabit.setNext_date(doc.getTimestamp("Next Date").toDate());
 
                         habitList.add(newHabit);
 
@@ -279,10 +284,18 @@ public class MainActivity extends AppCompatActivity
     // Press save in Add habit fragment, add habit to database
     @Override
     public void onAddSavePressed(Habit newHabit) {
+        Utility util = new Utility();
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
         mAuth = FirebaseAuth.getInstance();
-        //Date nextDate = getNextDate(newHabit);
+        Date nextDate;
+        if (newHabit.getRepeat() != null && newHabit.getRepeat().size() ==3) {
+            nextDate = util.getNextDate(newHabit.getDate(), newHabit.getNext_date(), newHabit.getRepeat());
+        } else {
+            nextDate = null;
+        }
+
+        // where to set  next date in habit
 
         HashMap<String, Object> data = new HashMap<>();
         data.put("User Id", mAuth.getCurrentUser().getUid());
@@ -292,7 +305,7 @@ public class MainActivity extends AppCompatActivity
         data.put("Repeat", newHabit.getRepeat());
         data.put("Privacy", newHabit.getPrivacy());
         data.put("Done", newHabit.getDone());
-        //data.put("Next Date", nextDate);
+        data.put("Next Date", nextDate);
 
         collectionReference
                 .document()
@@ -342,47 +355,4 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-//    public Date getNextDate(Habit newHabit) {
-//        Date dateGoals = null;
-//        Utility util = new Utility();
-//        Date currentDate = util.getCurrentDate();
-//        // If user chooses to repeat, find the next date. Else return null
-//        if (newHabit.getRepeat() != null) {
-//            String repeatType = newHabit.getRepeat().get(1);
-//            Integer repeatNum = Integer.valueOf(newHabit.getRepeat().get(0));
-//            String last = newHabit.getRepeat().get(newHabit.getRepeat().size() - 1);
-//
-//            // Update date goals
-//            if (newHabit.getDate().after(currentDate)) {
-//                // No need to find next date
-//                dateGoals = (newHabit.getDate());
-//            } else if (newHabit.getDate().equals(currentDate)) {
-//                dateGoals = (newHabit.getDate()); // Need to find next date if time_occur >= 1
-//            } else if (newHabit.getDate().before(currentDate)) {
-//                Date temp = newHabit.getDate();
-//                while (temp.before(currentDate)) {
-//                    // Get the repeat result
-//                    if (repeatType.equals("Day")) {
-//                        // Add the day to temp till it pass the current date
-//                        temp = util.addDay(temp, repeatNum);
-//                    } else if (repeatType.equals("Week") && newHabit.getRepeat().size() == 3) {
-//                        // Never ends but repeat... week on the name of date started
-//                        temp = util.addDay(temp, repeatNum*7);
-//                        // Case: repeat ... week on Mon,Tue,....
-//                    } else if (repeatType.equals("Week") && newHabit.getRepeat().size() > 3) {
-//                        // The earliest name of date would be the next item in list
-//                        temp = currentDate;
-//                        // Find the next date
-//
-//                    }
-//                }
-//                // For the case repeat on .....
-//
-//
-//                // Now temp can either be equal or after current date
-//                dateGoals = temp;
-//            }
-//        }
-//        return dateGoals;
-//    }
 }
