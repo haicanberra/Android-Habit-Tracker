@@ -1,30 +1,24 @@
 package com.example.recurring_o_city;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -35,16 +29,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.example.recurring_o_city.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.Date;
@@ -61,15 +49,32 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     private Geocoder geocoder;
     private EditText addressText;
     private FloatingActionButton fab;
-    private ImageView loadingScreen;
-
+    private Button saveButton;
     private GeoPoint coordinate;
     private List<Address> addresses;
-    private String address;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        // Test whether permission has been granted.
+        ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                new ActivityResultCallback<Boolean>() {
+                    @Override
+                    public void onActivityResult(Boolean result) {
+                        if (result) {
+                            Log.e("TESTING", "PERMISSION GRANTED");
+                            locationPermissionGranted = true;
+                        } else {
+                            Log.e("TESTING", "PERMISSION DENIED");
+                        }
+                    }
+                }
+         );
+
+        // Request Permission.
+        mPermissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     public static MapsFragment newInstance(String userId, String title, Date date, GeoPoint address) {
@@ -90,13 +95,24 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
 
-        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        double latitude = getArguments().getDouble("event_lat");
+        double longitude = getArguments().getDouble("event_lon");
 
         addressText = view.findViewById(R.id.map_address_field);
-        fab = view.findViewById(R.id.map_edit_fab);
+        fab = view.findViewById(R.id.search_map_fab);
+        saveButton = view.findViewById(R.id.save_location_button);
 
-        // Construct a FusedLocationProviderClient.
+        // If latitude and longitude are both zero, then location is null.
+        if (latitude == 0.0 && longitude == 0.0) {
+            coordinate = null;
+        }
+        else {
+            coordinate = new GeoPoint(latitude, longitude);
+        }
+
+        // Construct a FusedLocationProviderClient and Geocoder.
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        geocoder = new Geocoder(getActivity(), Locale.getDefault());
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
@@ -120,17 +136,7 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
 
         mMap = googleMap;
 
-        Double latitude = getArguments().getDouble("event_lat");
-        Double longitude = getArguments().getDouble("event_lon");
-        if (latitude == 0.0 && longitude == 0.0) {
-            coordinate = null;
-        }
-        else {
-            coordinate = new GeoPoint(latitude, longitude);
-        }
 
-        // Request permission on runtime.
-        getLocationPermission();
         getLocationUi();
         getDeviceLocation();
 
@@ -152,54 +158,72 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
             }
         });
 
-        // On floating action button click, return the current coordinate.
+        // On save button click, return the current coordinate.
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!addressText.getText().toString().equals("")) {
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("newAddress", addressText.getText().toString());
+                    bundle.putDouble("latitude", lastKnownLocation.getLatitude());
+                    bundle.putDouble("longitude", lastKnownLocation.getLongitude());
+
+                    // Send the bundle of information back to the editHabitEventFragment.
+                    getActivity().getSupportFragmentManager()
+                            .setFragmentResult("MapRequest", bundle);
+
+                    // Pop back out of the backstack.
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+                else {
+                    Toast.makeText(
+                            getActivity(),
+                            "Cannot save empty address",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // On floating button action click, get the address from textbox and update marker.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putDouble("latitude", lastKnownLocation.getLatitude());
-                bundle.putDouble("longitude", lastKnownLocation.getLongitude());
-                bundle.putString("newAddress", addressText.getText().toString());
+                // If location permission is granted, zoom to current location of marker.
+                mMap.clear();
 
-                // Send the bundle of information back to the editHabitEventFragment.
-                getActivity().getSupportFragmentManager()
-                        .setFragmentResult("RequestKey", bundle);
+                try {
+                    addresses = geocoder.getFromLocationName(addressText.getText().toString(), 1);
+                    Address address = addresses.get(0);
 
-                // Pop back out of the backstack.
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
-    }
+                    lastKnownLocation.setLatitude(address.getLatitude());
+                    lastKnownLocation.setLongitude(address.getLongitude());
 
-    public void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
-        }
-        else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-    }
+                    LatLng cameraPos = new LatLng(
+                            lastKnownLocation.getLatitude(),
+                            lastKnownLocation.getLongitude());
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraPos, 15));
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        locationPermissionGranted = false;
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    locationPermissionGranted = true;
+                    createMarker(lastKnownLocation);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        }
-        getLocationUi();
+        });
+
+        // On map click, create marker on that position and set coordinate.
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                if (lastKnownLocation != null) {
+                    mMap.clear();
+                    lastKnownLocation.setLatitude(latLng.latitude);
+                    lastKnownLocation.setLongitude(latLng.longitude);
+                    createMarker(lastKnownLocation);
+                    setLocation(lastKnownLocation);
+                }
+            }
+        });
     }
 
     public void getLocationUi() {
@@ -209,25 +233,19 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         try {
             if (locationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            }
-            else {
+            } else {
                 mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                getLocationPermission();
             }
-        } catch (SecurityException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    public void getDeviceLocation() {
+        public void getDeviceLocation() {
         try{
+            // If location permission is granted, build coordinate from getLastLocation().
             if (locationPermissionGranted) {
-
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-
                 locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
@@ -235,49 +253,61 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
                             lastKnownLocation = task.getResult();
 
                             // Update last known location from the current device location.
-                            if (lastKnownLocation != null) {
+                            if (lastKnownLocation != null && coordinate != null) {
 
-                                // If there is already a pre-existing address, get those.
-                                if (coordinate != null) {
-                                    try {
-                                        addresses = geocoder
-                                                .getFromLocation(coordinate.getLatitude(), coordinate.getLongitude(), 1);
-                                        Address location = addresses.get(0);
-                                        lastKnownLocation.setLatitude(location.getLatitude());
-                                        lastKnownLocation.setLongitude(location.getLongitude());
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                                try {
+                                    addresses = geocoder
+                                            .getFromLocation(coordinate.getLatitude(), coordinate.getLongitude(), 1);
+                                    Address location = addresses.get(0);
+                                    lastKnownLocation.setLatitude(location.getLatitude());
+                                    lastKnownLocation.setLongitude(location.getLongitude());
+
+                                    LatLng cameraPos = new LatLng(
+                                            lastKnownLocation.getLatitude(),
+                                            lastKnownLocation.getLongitude());
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraPos, 15));
+
+                                    createMarker(lastKnownLocation);
+                                    setLocation(lastKnownLocation);
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-
-                                // Move camera to the marker location.
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(lastKnownLocation.getLatitude(),
-                                                lastKnownLocation.getLongitude()), 15));
-
-                                // Set the marker on current location.
-                                createMarker();
-                            }
-
-                            else {
-                                // Placeholder coordinate, if current location is null.
-                                mMap.moveCamera(CameraUpdateFactory
-                                        .newLatLngZoom(new LatLng(-34, 151), 5));
                             }
                         }
                     }
                 });
+            }
+            // If no permission is granted, create default coordinate and build from there.
+            else {
+                lastKnownLocation = new Location("Default coordinate");
+
+                if (coordinate != null) {
+                    double newLatitude = coordinate.getLatitude();
+                    double newLongitude = coordinate.getLongitude();
+
+                    lastKnownLocation.setLatitude(newLatitude);
+                    lastKnownLocation.setLongitude(newLongitude);
+
+                    LatLng cameraPos = new LatLng(
+                            lastKnownLocation.getLatitude(),
+                            lastKnownLocation.getLongitude());
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraPos, 15));
+
+                    createMarker(lastKnownLocation);
+                    setLocation(lastKnownLocation);
+                }
             }
         } catch (SecurityException e) {
             e.printStackTrace();
         }
     }
 
-    public void setLocation(Location lastKnownLocation) {
+    public void setLocation(Location location) {
         String newAddress;
 
         try {
-            addresses = geocoder.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1);
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             String city = addresses.get(0).getLocality();
             String state = addresses.get(0).getAdminArea();
             String street = addresses.get(0).getThoroughfare();
@@ -294,16 +324,12 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         }
     }
 
-    public void createMarker() {
+    public void createMarker(Location location) {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(
-                lastKnownLocation.getLatitude(),
-                lastKnownLocation.getLongitude()));
+                location.getLatitude(),
+                location.getLongitude()));
         markerOptions.draggable(true);
-        markerOptions.title(lastKnownLocation.getLatitude() + " : " + lastKnownLocation.getLongitude());
         mMap.addMarker(markerOptions);
-
-        // Set the location, after getting the marker.
-        setLocation(lastKnownLocation);
     }
 }

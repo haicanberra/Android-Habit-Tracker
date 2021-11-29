@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         map:layout_constraintBottom_toTopOf="@+id/map_address_field"
@@ -27,13 +28,13 @@
             tools:context=".MapsFragment" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/map_edit_fab"
+            android:id="@+id/search_map_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@id/map"
+            android:layout_alignTop="@id/map"
             android:clickable="true"
-            map:srcCompat="@android:drawable/ic_menu_edit" />
+            map:srcCompat="@android:drawable/ic_menu_search" />
 
     </RelativeLayout>
 
@@ -45,8 +46,17 @@
         android:hint="Enter address"
         android:inputType="textPersonName"
         map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintEnd_toStartOf="@+id/save_location_button"
         map:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/save_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Save"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
