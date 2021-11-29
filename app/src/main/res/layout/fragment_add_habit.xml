@@ -90,10 +90,10 @@
                 <ImageButton
                     android:id="@+id/button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="0.2"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_calendar"/>
+                    android:src="@drawable/ic_edit_calendar" />
 
         </LinearLayout>
 
@@ -127,13 +127,14 @@
                     android:paddingEnd="5dp"
                     android:textAlignment="center"/>
 
+
                 <ImageButton
                     android:id="@+id/repeat_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="0.2"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_repeat" />
+                    android:src="@drawable/ic_edit_calendar" />
 
         </LinearLayout>
 
@@ -148,9 +149,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="Privacy"
-                    android:textOff="Public"
-                    android:textOn="Private">
+                    android:text="Private">
 
                 </Switch>
         </LinearLayout>

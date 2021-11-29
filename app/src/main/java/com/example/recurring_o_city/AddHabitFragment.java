@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -21,6 +24,14 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,25 +53,16 @@ public class AddHabitFragment extends DialogFragment
     private EditText habitRepeat;
     private ImageButton button;
     private ImageButton repeat;
-    private OnFragmentInteractionListener listener;
+    //private OnFragmentInteractionListener listener;
+    private AddHabitFragmentListener listener;
     private Switch habitPrivacy;
-    static Integer privacy = 0;
+    static Integer privacy;
+    private boolean duplicate;
     private DatePickerDialog calDialog;
     private List<String> repeat_strg;
 
-    private RepeatDialog repeatDialog;
-
-    @Override
-    public void onRepeatSavePressed(List<String> repeat_list) {
-        repeat_strg = repeat_list;
-        habitRepeat.setText(String.join(",", repeat_strg));
-    }
-
-    /**
-     * @return Habit
-     */
-    public interface OnFragmentInteractionListener{
-        void onSavePressed(Habit newHabit);
+    public interface AddHabitFragmentListener{
+        void onAddSavePressed(Habit newHabit);
     }
 
     public AddHabitFragment() {
@@ -75,16 +77,13 @@ public class AddHabitFragment extends DialogFragment
         return fragment;
     }
 
-    /**
-     * @param context
-     * @throws RuntimeException
-     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            listener = (OnFragmentInteractionListener) context;
-        } else {
+        try {
+            listener = (AddHabitFragmentListener) context;
+        } catch (RuntimeException e) {
+            // The activity doesn't implement the interface, throw exception
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
@@ -108,11 +107,10 @@ public class AddHabitFragment extends DialogFragment
         habitTitle = view.findViewById(R.id.habit_name);
         habitReason = view.findViewById(R.id.habit_reason);
         habitDate = view.findViewById(R.id.habit_date);
+        habitRepeat = view.findViewById(R.id.habit_frequency);
         button = view.findViewById(R.id.button);
         repeat = view.findViewById(R.id.repeat_button);
-        habitRepeat = view.findViewById(R.id.habit_frequency);
         habitPrivacy = view.findViewById(R.id.privacy);
-
 
         // Setup DatePickerDialog to pops up when "EDIT" button is clicked.
         Calendar calendar = Calendar.getInstance();
@@ -121,30 +119,48 @@ public class AddHabitFragment extends DialogFragment
         int year = calendar.get(Calendar.YEAR);
         button.setOnClickListener(view1 -> {
             calDialog = new DatePickerDialog(getContext(), (datePicker, mYear, mMonth, mDay)
-                    -> habitDate.setText(mYear + "-" + (mMonth + 1) + "-" + mDay), year, month, day);
+                    -> habitDate.setText(mYear + "/" + (mMonth + 1) + "/" + mDay), year, month, day);
             calDialog.show();
         });
 
-
+        habitRepeat.setText("Does not repeat");
         // Set up the repeat fragment to pop up when Edit calender is clicked
         repeat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RepeatDialog repeatDialog = new RepeatDialog();
-//                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-//                ft.add(R.id.repeat_frame, repeatDialog).commit();
-                //repeatDialog.show(ft, "Repeat");
                 repeatDialog.show(getChildFragmentManager(), "Repeat");
             }
         });
-//        repeat.setOnClickListener(v -> new RepeatDialog()
-//                .show(getActivity().getFragmentManager(), "Repeat"));
 
+        habitTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Empty method for TextWatcher.
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Empty method for TextWatcher.
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                duplicateTitle(editable.toString());
+            }
+        });
 
-        /**
-         * @throws setError
-         * @throws Exception
-         */
+        // Set up the switch
+        habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    // Set to private
+                    privacy = 1;
+                } else {
+                    // Set to public
+                    privacy = 0;
+                }
+            }
+        });
 
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -154,7 +170,7 @@ public class AddHabitFragment extends DialogFragment
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Save", (dialogInterface, i) -> {
                     Date newDate = null;
-                    SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat d = new SimpleDateFormat("yyyy/MM/dd");
 
                     // Get and validate new input from user
                     String title = habitTitle.getText().toString();
@@ -177,28 +193,21 @@ public class AddHabitFragment extends DialogFragment
                         habitReason.requestFocus();
                         return;
                     }
-
-                    /**
-                     * @param String date
-                     */
+                    if (duplicate) {
+                        habitTitle.setError("Title must be unique");
+                        habitTitle.requestFocus();
+                        return;
+                    }
                     try {
                         newDate = d.parse(String.valueOf(habitDate.getText()));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
-
-
-                    habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                            if (isChecked) {
-                                privacy = 0;
-                            } else {
-                                privacy = 1;
-                            }
-                        }
-                    });
+                    if (habitPrivacy.isChecked()) {
+                        privacy = 1;
+                    } else {
+                        privacy = 0;
+                    }
 
                     /**
                      * @param String title, reason
@@ -208,11 +217,43 @@ public class AddHabitFragment extends DialogFragment
                      */
                     //why's their two?
                     // Check if input is valid and proceed
-                    if (!title.equals("") && !title.equals("") && newDate != null) {
+                    if (!title.equals("") && !reason.equals("") && newDate != null) {
                         //When user clicks save button, add new medicine
-                        listener.onSavePressed(new Habit(title, reason, newDate, repeat_strg, privacy));
+                        listener.onAddSavePressed(new Habit(title, reason, newDate, repeat_strg, privacy));
                     }
                 }).create();
     }
 
+    @Override
+    public void onRepeatSavePressed(List<String> repeat_list) {
+        String repeat_display ="";
+        if (repeat_list.size() <= 1) {
+            repeat_display = "Does not repeat";
+        } else {
+            Utility util = new Utility();
+            repeat_display = util.convertRepeat(repeat_list);
+        }
+        habitRepeat.setText(repeat_display);
+        repeat_strg = repeat_list;
+    }
+
+    private void duplicateTitle(String title) {
+        String userId = getActivity().getIntent().getStringExtra("User Id");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = db.collection("Habits");
+        Query query = collectionReference
+                .whereEqualTo("Title", title)
+                .whereEqualTo("User Id", userId);
+
+        // This query modifies global boolean variable "duplicate".
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    duplicate = task.getResult().size() != 0;
+                }
+            }
+        });
+    }
 }

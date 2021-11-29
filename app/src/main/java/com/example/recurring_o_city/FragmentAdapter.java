@@ -18,15 +18,11 @@ public class FragmentAdapter extends FragmentStateAdapter {
     private ArrayList<Habit> habitList;
     private ArrayList<HabitEvent> habitEventList;
 
-    /**
-     * @param fragmentManager
-     * @param lifecycle
-     * @param habitList
-     */
-
-    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle,ArrayList<Habit> habitList) {
+    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle,ArrayList<Habit> habitList,
+                           ArrayList<HabitEvent> habitEventList) {
         super(fragmentManager, lifecycle);
         this.habitList = habitList;
+        this.habitEventList = habitEventList;
     }
 
     /**

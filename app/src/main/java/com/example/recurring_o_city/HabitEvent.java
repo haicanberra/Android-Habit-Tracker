@@ -1,27 +1,27 @@
 package com.example.recurring_o_city;
 
+import android.graphics.Bitmap;
 import android.graphics.Picture;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.firebase.firestore.GeoPoint;
 
-/**
- * represents the event for whatever habit is occurring
- */
-public class HabitEvent {
+import java.io.Serializable;
+import java.util.Date;
+
+public class HabitEvent implements Serializable {
     private Habit eventHabit;
     private String eventComment;
-    private Picture eventPic;
-    private GoogleMap eventLoc;
+    private String eventPic;
+    private GeoPoint eventLoc;
+    private Date dateCreated;
 
-    /**
-     * @param eventHabit
-     * @param eventComment
-     */
-    public HabitEvent(Habit eventHabit, String eventComment) {
+    public HabitEvent(Habit eventHabit, Date dateCreated, String eventComment, String eventPic, GeoPoint eventLoc) {
         this.eventHabit = eventHabit;
         this.eventComment = eventComment;
         this.eventPic = eventPic;
         this.eventLoc = eventLoc;
+        this.dateCreated = dateCreated;
     }
 
     /**
@@ -52,19 +52,28 @@ public class HabitEvent {
         this.eventComment = eventName;
     }
 
-    public Picture getEventPic() {
+    public String getEventPic() {
         return eventPic;
     }
 
-    public void setEventPic(Picture eventPic) {
+    public void setEventPic(String eventPic) {
         this.eventPic = eventPic;
     }
 
-    public GoogleMap getEventLoc() {
+    public GeoPoint getEventLoc() {
         return eventLoc;
     }
 
-    public void setEventLoc(GoogleMap eventLoc) {
+    public void setEventLoc(GeoPoint eventLoc) {
         this.eventLoc = eventLoc;
     }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
 }

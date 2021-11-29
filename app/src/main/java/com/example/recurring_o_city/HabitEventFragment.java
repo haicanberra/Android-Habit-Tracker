@@ -22,7 +22,7 @@ import java.util.Date;
 public class HabitEventFragment extends Fragment {
 
     private ArrayList<HabitEvent> habitEventList;
-
+    private ItemAdapter habitAdapter;
 
     public HabitEventFragment() {
         // Required empty public constructor
@@ -46,18 +46,11 @@ public class HabitEventFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         habitEventList = (ArrayList<HabitEvent>) getArguments().getSerializable(
                 "HABIT_EVENT");
 
     }
 
-    /**
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return View
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,20 +58,19 @@ public class HabitEventFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.habit_event_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        ItemAdapter myAdapter = new ItemAdapter((ArrayList<Habit>) null, "event");
-        recyclerView.setAdapter(myAdapter);
 
-        myAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
-            /**
-             * @param position
-             */
+        habitAdapter = new ItemAdapter(habitEventList, "event");
+        recyclerView.setAdapter(habitAdapter);
+
+        // When click to view habit event
+        habitAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 HabitEvent selectedHabitEvent = (HabitEvent) habitEventList.get(position);
                 ViewHabitEventFragment habitEventFrag = new ViewHabitEventFragment();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.habit_event_frame, habitEventFrag.newInstance(selectedHabitEvent))
+                        .replace(R.id.drawer_layout, habitEventFrag.newInstance(selectedHabitEvent))
                         .addToBackStack(null).commit();
             }
         });

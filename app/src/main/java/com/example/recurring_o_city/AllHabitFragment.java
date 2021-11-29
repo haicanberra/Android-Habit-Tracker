@@ -85,20 +85,14 @@ public class AllHabitFragment extends Fragment{
         habitAdapter = new ItemAdapter(allHabitList, "all");
         recyclerView.setAdapter(habitAdapter);
 
-
-        ItemAdapter myAdapter = new ItemAdapter(allHabitList, "all");
-        recyclerView.setAdapter(myAdapter);
-
-
-
-        myAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
+        habitAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 Habit selectedHabit = (Habit) allHabitList.get(position);
                 ViewHabitFragment habitFrag = new ViewHabitFragment();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.all_habit_frame, habitFrag.newInstance(selectedHabit))
+                        .replace(R.id.drawer_layout, habitFrag.newInstance(selectedHabit, "show"))
                         .addToBackStack(null).commit();
             }
         });

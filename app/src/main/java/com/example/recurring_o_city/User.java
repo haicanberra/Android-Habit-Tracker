@@ -1,12 +1,13 @@
 package com.example.recurring_o_city;
 
-/**
- * carries user info
- */
+import java.util.ArrayList;
+import java.util.List;
+
 // Information about the user
 public class User {
 
-    public String username, email;
+    private String username, email;
+    private ArrayList<String> pending_list;
 
     /**
      * @param username
@@ -30,4 +31,13 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 }

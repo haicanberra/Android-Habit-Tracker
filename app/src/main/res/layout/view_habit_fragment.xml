@@ -6,51 +6,85 @@
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/Theme.RecurringOCity.PopupOverlay"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageButton
+                android:id="@+id/habit_back_button"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentLeft="true"
+                android:background="?attr/actionModeCloseDrawable"
+                android:backgroundTint="#ff781f"
+                android:clickable="true"
+                android:src="@drawable/ic_back" />
+
+            <ImageButton
+                android:id="@+id/habit_edit_button"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentRight="true"
+                android:background="?attr/actionModeCloseDrawable"
+                android:backgroundTint="#ff781f"
+                android:clickable="true"
+                android:src="@drawable/ic_edit" />
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
     <TextView
         android:id="@+id/habit_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:hint="Bathe Cat"
+        android:layout_marginTop="24dp"
         android:textAlignment="center"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/habit_title">
+        app:layout_constraintTop_toBottomOf="@+id/habit_title"
+        tools:layout_editor_absoluteX="0dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/habit_reason"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:paddingRight="5dp"
                 android:text="Reason:"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="115dp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/habit_reason_content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Long time no bathe"
                 android:textAlignment="textStart"
                 android:textSize="20sp" />
 
@@ -59,25 +93,23 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/habit_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:paddingRight="5dp"
-                android:text="Date:"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="168dp" />
+                android:text="Date Started:"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/habit_date_content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="2021-10-12"
                 android:textAlignment="textStart"
                 android:textSize="20sp" />
 
@@ -86,25 +118,23 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/habit_repeat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:paddingRight="5dp"
                 android:text="Repeat:"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="219dp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/habit_repeat_content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="No"
                 android:textAlignment="textStart"
                 android:textSize="20sp" />
 
@@ -113,11 +143,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal">
 
             <TextView
@@ -126,16 +153,13 @@
                 android:layout_height="wrap_content"
                 android:paddingRight="5dp"
                 android:text="Privacy:"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="330dp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/habit_privacy_content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Private"
                 android:textAlignment="textStart"
                 android:textSize="20sp" />
 
@@ -143,24 +167,6 @@
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/habit_back_button"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:background="?attr/actionModeCloseDrawable"
-        android:backgroundTint="#ff781f"
-        android:contentDescription="GO BACK"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/habit_edit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_edit"
-        tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
