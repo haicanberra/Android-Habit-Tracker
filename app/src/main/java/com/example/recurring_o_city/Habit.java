@@ -77,4 +77,5 @@ public class Habit implements Serializable
     public void setNext_date(Date next_date) {
         this.next_date = next_date;
     }
+
 }

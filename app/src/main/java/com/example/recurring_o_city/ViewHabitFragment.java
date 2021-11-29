@@ -37,6 +37,7 @@ public class ViewHabitFragment extends Fragment
     private String habit_date;
     private String habit_repeat;
     private String habit_privacy;
+
     private TextView titleText, reasonText, dateText, repeatText, privacyText;
     private FirebaseAuth mAuth;
     private String hide;
@@ -50,8 +51,8 @@ public class ViewHabitFragment extends Fragment
         args.putString("habit_privacy", newHabit.getPrivacy().toString());
         args.putString("hide", hide);
 
-        if (newHabit.getRepeat() == null){
-            habit_repeat = "No repeat";
+        if (newHabit.getRepeat() == null || newHabit.getRepeat().size() <= 1){
+            habit_repeat = "Does not repeat";
         } else {
             Utility util = new Utility();
             habit_repeat = util.convertRepeat(newHabit.getRepeat());
@@ -88,6 +89,7 @@ public class ViewHabitFragment extends Fragment
         habit_date = getArguments().getString("habit_date");
         habit_repeat = getArguments().getString("habit_repeat");
         habit_privacy = getArguments().getString("habit_privacy");
+
         mAuth = FirebaseAuth.getInstance();
         hide = getArguments().getString("hide");
 
@@ -134,14 +136,18 @@ public class ViewHabitFragment extends Fragment
     public void onEditSavePressed(Habit newHabit) {
         titleText.setText(newHabit.getTitle());
         reasonText.setText(newHabit.getReason());
+        habit_title = newHabit.getTitle();
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
         Date date = newHabit.getDate();
         String date_string = format.format(date);
         dateText.setText(date_string);
-        Utility util = new Utility();
-        repeatText.setText(util.convertRepeat(newHabit.getRepeat()));
-
+        if (newHabit.getRepeat() == null || newHabit.getRepeat().size() <= 1) {
+            repeatText.setText("Does not repeat");
+        }else{
+            Utility util = new Utility();
+            repeatText.setText(util.convertRepeat(newHabit.getRepeat()));
+        }
         if (newHabit.getPrivacy().toString().equals("0")){
             privacyText.setText("Public");
         } else {

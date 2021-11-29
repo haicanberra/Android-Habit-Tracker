@@ -85,8 +85,8 @@ public class ViewHabitEventFragment extends Fragment
         Date simpleDate = newHabitEvent.getDateCreated();
         args.putSerializable("event_date_simple", simpleDate);
 
-        Double latitude;
-        Double longitude;
+        double latitude;
+        double longitude;
 
         if (newHabitEvent.getEventLoc() != null) {
             latitude = newHabitEvent.getEventLoc().getLatitude();
@@ -101,8 +101,8 @@ public class ViewHabitEventFragment extends Fragment
         args.putDouble("event_longitude", longitude);
 
         String repeat;
-        if (newHabitEvent.getEventHabit().getRepeat() == null){
-            repeat = "No repeat";
+        if (newHabitEvent.getEventHabit().getRepeat().size() <= 1){
+            repeat = "Does not repeat";
         } else {
             Utility util = new Utility();
             repeat = util.convertRepeat(newHabitEvent.getEventHabit().getRepeat());
