@@ -27,8 +27,8 @@
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginBottom="10dp"
+            android:layout_weight="1"
             android:ems="10"
             android:hint="Email"
             android:inputType="textPersonName"
@@ -39,8 +39,8 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginBottom="10dp"
+            android:layout_weight="1"
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword"
@@ -54,27 +54,15 @@
             android:layout_marginBottom="10dp"
             android:text="Login" />
 
-        <TextView
-            android:id="@+id/forgotPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom = "20dp"
-            android:text = "Forgot Password?"
-            android:textSize ="15sp"
-            android:textAlignment="center">
-        </TextView>
 
         <TextView
             android:id="@+id/sign_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text = "Don't have an account? Sign up"
+            android:text="Don't have an account? Sign up"
             android:textAlignment="center"
-            android:textSize ="15sp">
-        </TextView>
-
+            android:textSize="15sp"></TextView>
 
 
     </LinearLayout>

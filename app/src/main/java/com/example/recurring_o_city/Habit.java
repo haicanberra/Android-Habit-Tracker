@@ -13,6 +13,8 @@ public class Habit implements Serializable
     List<String> repeat;
     Integer privacy;  //private = 1, public = 0
     String done = "false";  //task finished = 1, else 0.
+    Integer goal = 1;
+    Integer complete = 0;
 
     public Habit (String title, String reason, Date date, List<String> repeat, Integer status)
     {
@@ -21,6 +23,22 @@ public class Habit implements Serializable
         this.date = date;
         this.privacy = status;
         this.repeat = repeat;
+    }
+
+    public Integer getGoal() {
+        return goal;
+    }
+
+    public void setGoal(Integer goal) {
+        this.goal = goal;
+    }
+
+    public Integer getComplete() {
+        return complete;
+    }
+
+    public void setComplete(Integer complete) {
+        this.complete = complete;
     }
 
     public String getTitle() {
