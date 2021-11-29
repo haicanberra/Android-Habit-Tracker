@@ -47,7 +47,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         this.currentFragment = type;
         if (type.equals("event")) {
             this.habitEventList = (ArrayList<HabitEvent>) list;
-        } else if (type.equals("today") || type.equals("all")) {
+        } else if (type.equals("today") || type.equals("all") || type.equals("fyhf")) {
             this.habitList = (ArrayList<Habit>) list;
         }
     }
@@ -108,6 +108,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             holder.textView.setText(name);
             holder.chk.setVisibility(View.GONE);
             holder.date.setVisibility((View.GONE));
+        }
+        else if (this.currentFragment.equals("fyhf")) {
+            String name = habitList.get(position).getTitle();
+            holder.textView.setText(name);
+            holder.chk.setVisibility(View.GONE);
+            holder.date.setVisibility((View.GONE));
+            holder.button.setVisibility(View.INVISIBLE);
         }
         else if (this.currentFragment.equals("event")) {
             String name = habitEventList.get(position).getEventHabit().getTitle();
@@ -328,7 +335,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     @Override
     public int getItemCount() {
-        if ((this.currentFragment.equals("today") || this.currentFragment.equals("all")) && this.habitList != null ) {
+        if ((this.currentFragment.equals("today") || this.currentFragment.equals("all") || this.currentFragment.equals("fyhf")) && this.habitList != null ) {
             return this.habitList.size();
         }
         else if (this.currentFragment.equals("event") && this.habitEventList != null) {

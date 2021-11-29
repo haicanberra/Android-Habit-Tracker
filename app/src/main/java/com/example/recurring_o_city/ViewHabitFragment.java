@@ -40,14 +40,16 @@ public class ViewHabitFragment extends Fragment
 
     private TextView titleText, reasonText, dateText, repeatText, privacyText;
     private FirebaseAuth mAuth;
+    private String hide;
 
     // Get the attributes from the Habit object.
-    public ViewHabitFragment newInstance(Habit newHabit) {
+    public ViewHabitFragment newInstance(Habit newHabit, String hide) {
         Bundle args = new Bundle();
 
         args.putString("habit_title", newHabit.getTitle());
         args.putString("habit_reason", newHabit.getReason());
         args.putString("habit_privacy", newHabit.getPrivacy().toString());
+        args.putString("hide", hide);
 
         if (newHabit.getRepeat() == null || newHabit.getRepeat().size() <= 1){
             habit_repeat = "Does not repeat";
@@ -89,6 +91,7 @@ public class ViewHabitFragment extends Fragment
         habit_privacy = getArguments().getString("habit_privacy");
 
         mAuth = FirebaseAuth.getInstance();
+        hide = getArguments().getString("hide");
 
         if (habit_privacy.equals("0")) {
             habit_privacy = "Public";
@@ -101,6 +104,12 @@ public class ViewHabitFragment extends Fragment
         dateText.setText(habit_date);
         repeatText.setText(habit_repeat);
         privacyText.setText(habit_privacy);
+
+        if (hide.equals("hide")) {
+            editButton.setVisibility(View.GONE);
+        }else{
+            editButton.setVisibility(View.VISIBLE);
+        }
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
