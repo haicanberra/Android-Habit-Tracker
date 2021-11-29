@@ -22,7 +22,7 @@ public class Utility {
             }
             if (i == 1) {
                 repeat_display += repeat.get(i);
-                if (repeat.get(i).equals("week") && i < repeat.size()-2) {
+                if (repeat.get(i).equals("week") && i < repeat.size() - 2) {
                     repeat_display += " on ";
                 } else if (!repeat.get(i).equals("week") &&
                         !repeat.get(repeat.size() - 1).equals("never")) {
@@ -31,7 +31,7 @@ public class Utility {
             }
             if (repeat.get(1).equals("week") && i < repeat.size() - 1 && i > 1) {
                 repeat_display += repeat.get(i);
-                if (!repeat.get(i+1).equals("never")) {
+                if (!repeat.get(i + 1).equals("never")) {
                     repeat_display += ", ";
                 }
             }
@@ -45,7 +45,7 @@ public class Utility {
 
 //    public Date convertDate() {
 //        Date newDate = null;
-//        SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
+//        SimpleDateFormat d = new SimpleDateFormat("yyyy/MM/dd");
 //        try {
 //            newDate = d.parse(String.valueOf(habitDate.getText()));
 //        } catch (ParseException e) {
@@ -55,7 +55,7 @@ public class Utility {
 //    }
     // Get current date
     public Date getCurrentDate() {
-        SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat d = new SimpleDateFormat("yyyy/MM/dd");
         Date today = Calendar.getInstance().getTime();
         String date_s = d.format(today);
         try {

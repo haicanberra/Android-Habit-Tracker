@@ -127,6 +127,10 @@ public class RepeatDialog extends DialogFragment {
                 .setView(view)
                 .setTitle("Repeat")
                 .setNegativeButton("Cancel", null)
+                .setNeutralButton("NO REPEAT", (dialogInterface, i) -> {
+                    repeat.add("NO_REPEAT");
+                    listener.onRepeatSavePressed(repeat);
+                })
                 .setPositiveButton("Save", (dialogInterface, i) -> {
                     // Get and validate input
                     String custom_num = repeat_num.getText().toString();
