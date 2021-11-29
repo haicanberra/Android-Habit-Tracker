@@ -238,12 +238,12 @@ public class EditHabitEventFragment extends DialogFragment {
 
         // This listener gets the result from the map fragment.
         getActivity().getSupportFragmentManager().setFragmentResultListener(
-                "RequestKey", this, new FragmentResultListener() {
+                "MapRequest", this, new FragmentResultListener() {
                     @Override
                     public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                         String newAddress = result.getString("newAddress");
-                        Double latitude = result.getDouble("latitude");
-                        Double longitude = result.getDouble("longitude");
+                        double latitude = result.getDouble("latitude");
+                        double longitude = result.getDouble("longitude");
 
                         newCoordinate = new GeoPoint(latitude, longitude);
                         eventLocation.setText(newAddress);
