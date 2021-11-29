@@ -31,11 +31,13 @@ public class UserAdapter extends ArrayAdapter<String> {
     private CollectionReference collectionReference;
     private FirebaseAuth mAuth;
     private String currentEmail;
+    private String currentFragment;
 
-    public UserAdapter(Context context, ArrayList<String> users) {
+    public UserAdapter(Context context, ArrayList<String> users, String currentFragment) {
         super(context, 0, users);
         this.context = context;
         this.users = users;
+        this.currentFragment = currentFragment;
     }
 
     @NonNull
@@ -59,6 +61,17 @@ public class UserAdapter extends ArrayAdapter<String> {
         accept = view.findViewById(R.id.accept);
         deny = view.findViewById(R.id.deny);
 
+        switch (currentFragment) {
+            case ("frf"):
+                accept.setVisibility(View.VISIBLE);
+                deny.setVisibility(View.VISIBLE);
+                break;
+            default:
+                accept.setVisibility(View.GONE);
+                deny.setVisibility(View.GONE);
+                break;
+        }
+
         // When accept request
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +81,6 @@ public class UserAdapter extends ArrayAdapter<String> {
                 updatePendingList(userEmail);
                 // Add that user to following list of current user
                 updateFollowingList(userEmail);
-
             }
         });
 
