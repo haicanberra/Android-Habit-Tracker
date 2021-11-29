@@ -122,22 +122,15 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         return view;
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
 
-
+        // Enable UI to track current device location.
         getLocationUi();
+
+        // Track the current device location.
         getDeviceLocation();
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
@@ -190,6 +183,14 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 // If location permission is granted, zoom to current location of marker.
+                if (addressText.getText().toString().equals("")) {
+                    Toast.makeText(
+                            getActivity(),
+                            "Cannot search empty address",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 mMap.clear();
 
                 try {
@@ -199,11 +200,7 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
                     lastKnownLocation.setLatitude(address.getLatitude());
                     lastKnownLocation.setLongitude(address.getLongitude());
 
-                    LatLng cameraPos = new LatLng(
-                            lastKnownLocation.getLatitude(),
-                            lastKnownLocation.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraPos, 15));
-
+                    moveCamera(lastKnownLocation);
                     createMarker(lastKnownLocation);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -252,28 +249,34 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
                         if (task.isSuccessful()) {
                             lastKnownLocation = task.getResult();
 
-                            // Update last known location from the current device location.
-                            if (lastKnownLocation != null && coordinate != null) {
-
+                            // If previous coordinate exist, center on that.
+                            if (coordinate != null) {
                                 try {
                                     addresses = geocoder
                                             .getFromLocation(coordinate.getLatitude(), coordinate.getLongitude(), 1);
                                     Address location = addresses.get(0);
                                     lastKnownLocation.setLatitude(location.getLatitude());
                                     lastKnownLocation.setLongitude(location.getLongitude());
-
-                                    LatLng cameraPos = new LatLng(
-                                            lastKnownLocation.getLatitude(),
-                                            lastKnownLocation.getLongitude());
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraPos, 15));
-
-                                    createMarker(lastKnownLocation);
-                                    setLocation(lastKnownLocation);
-
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
                             }
+                            // If not record of previous coordinate, use device location.
+                            else if (lastKnownLocation != null) {
+                                try {
+                                    addresses = geocoder
+                                            .getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1);
+                                    Address location = addresses.get(0);
+                                    lastKnownLocation.setLatitude(location.getLatitude());
+                                    lastKnownLocation.setLongitude(location.getLongitude());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            moveCamera(lastKnownLocation);
+                            createMarker(lastKnownLocation);
+                            setLocation(lastKnownLocation);
                         }
                     }
                 });
@@ -289,11 +292,7 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
                     lastKnownLocation.setLatitude(newLatitude);
                     lastKnownLocation.setLongitude(newLongitude);
 
-                    LatLng cameraPos = new LatLng(
-                            lastKnownLocation.getLatitude(),
-                            lastKnownLocation.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraPos, 15));
-
+                    moveCamera(lastKnownLocation);
                     createMarker(lastKnownLocation);
                     setLocation(lastKnownLocation);
                 }
@@ -301,6 +300,13 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         } catch (SecurityException e) {
             e.printStackTrace();
         }
+    }
+
+    public void moveCamera(Location location) {
+        LatLng cameraPos = new LatLng(
+                location.getLatitude(),
+                location.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraPos, 15));
     }
 
     public void setLocation(Location location) {
