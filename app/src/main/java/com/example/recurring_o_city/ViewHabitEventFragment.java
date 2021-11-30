@@ -58,6 +58,10 @@ public class ViewHabitEventFragment extends Fragment
     private FirebaseAuth mAuth;
     private double event_latitude, event_longitude;
 
+    /**
+     * @param newHabitEvent
+     * @return Fragment
+     */
     // Get the attributes from the Habit object.
     public ViewHabitEventFragment newInstance(HabitEvent newHabitEvent) {
         Bundle args = new Bundle();
@@ -114,6 +118,12 @@ public class ViewHabitEventFragment extends Fragment
         return fragment;
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View
+     */
     // Show View Habit Event Fragment.
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -199,7 +209,11 @@ public class ViewHabitEventFragment extends Fragment
         }
 
         // Calls the EditHabitEventFragment.
+
         editButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 // Call the EditHabitEventFragment
@@ -212,6 +226,9 @@ public class ViewHabitEventFragment extends Fragment
 
         // Pops out a stack, returning to previous fragment.
         backButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();

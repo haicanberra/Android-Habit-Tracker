@@ -39,6 +39,14 @@ public class AllHabitFragment extends Fragment{
         // Required empty public constructor
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param 'ArrayList<Habit>' list
+     * @return Fragment
+     */
+
     public static AllHabitFragment newInstance(ArrayList<Habit> list) {
         AllHabitFragment fragment = new AllHabitFragment();
         Bundle bundle = new Bundle();
@@ -47,6 +55,9 @@ public class AllHabitFragment extends Fragment{
         return fragment;
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +67,12 @@ public class AllHabitFragment extends Fragment{
 
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view, the view of all habits
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

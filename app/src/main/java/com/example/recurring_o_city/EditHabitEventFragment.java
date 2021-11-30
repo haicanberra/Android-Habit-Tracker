@@ -50,6 +50,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * The popup that allows the user edit the Habit the fragment displays
+ */
 public class EditHabitEventFragment extends DialogFragment {
 
     private TextView eventTitle;
@@ -70,10 +73,14 @@ public class EditHabitEventFragment extends DialogFragment {
     private GeoPoint newCoordinate;
 
 
-    public EditHabitEventFragment(){
-
-    }
-
+    /**
+     * instantiates the class
+     * @param event_title
+     * @param event_datedone
+     * @param UserId
+     * @param date
+     * @return fragment
+     */
     public static EditHabitEventFragment newInstance(String event_title, String event_datedone, String UserId, Date date) {
         Bundle args = new Bundle();
 
@@ -93,10 +100,17 @@ public class EditHabitEventFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * save the data, when the user presses save
+     */
     public interface EditHabitEventFragmentListener{
         void onEditEventSavePressed(String newComment, String address, String img);
     }
 
+    /**
+     * @param context
+     * try to attach to context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -109,12 +123,20 @@ public class EditHabitEventFragment extends DialogFragment {
         }
     }
 
+    /**
+     * get current app state
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-
+    /**
+     * creates the dialog popup
+     * @param savedInstanceState
+     * @return Dialog
+     */
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.edit_habit_event_fragment, null);
 
@@ -136,6 +158,10 @@ public class EditHabitEventFragment extends DialogFragment {
                 .whereEqualTo("Title", getArguments().getString("event_title"))
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    /**
+                     * check the validity of the firebase snapshot and user inputs
+                     * @param task
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
@@ -188,7 +214,14 @@ public class EditHabitEventFragment extends DialogFragment {
         // When click on the image button, go to take photo
         // Code to take photo implements here
 
+        /**
+         * Allows app to display photo
+         */
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            /**
+             * returns bytes or photo
+             * @param result
+             */
             @Override
             public void onActivityResult(ActivityResult result) {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null){
@@ -204,8 +237,14 @@ public class EditHabitEventFragment extends DialogFragment {
             }
         });
 
+        /**
+         * take photo
+         */
         photoButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            /**
+             * @param View
+             */
             public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -218,8 +257,15 @@ public class EditHabitEventFragment extends DialogFragment {
         // Code to implements map here
 
         // Send all instances needed for map initialization.
+        /**
+         * opens map activity component of the app
+         */
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            /**
+             * @param View
+             * request map fragment
+             */
             public void onClick(View view) {
                 String mUserId = getArguments().getString("User_Id");
                 String mTitle = eventTitle.getText().toString();
@@ -236,6 +282,9 @@ public class EditHabitEventFragment extends DialogFragment {
             }
         });
 
+        /**
+         * retrieves map fragment, after request has been sent
+         */
         // This listener gets the result from the map fragment.
         getActivity().getSupportFragmentManager().setFragmentResultListener(
                 "MapRequest", this, new FragmentResultListener() {
@@ -257,6 +306,10 @@ public class EditHabitEventFragment extends DialogFragment {
         //        .whereEqualTo("Title", getArguments().getString("event_title"))
 
         // Create builder
+        /**
+         * @param context
+         * edit habit fragment builder
+         */
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView(view)
@@ -291,6 +344,11 @@ public class EditHabitEventFragment extends DialogFragment {
 
     }
 
+    /**
+     * goes get the address
+     * @param geoPoint
+     * @return address
+     */
     public String fetchAddress(GeoPoint geoPoint) {
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
         List<Address> addresses;

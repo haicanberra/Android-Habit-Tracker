@@ -14,17 +14,25 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class manages the view permission of the habits.
+ */
 public class FollowingRequestFragment extends Fragment {
 
     private ArrayList<String> pending;
     private ImageButton backButton;
     private ListView userList;
     private UserAdapter userAdapter;
+
     public FollowingRequestFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * get pending follow requests, put it in a new fragment
+     * @param pending
+     * @return fragment
+     */
     public static FollowingRequestFragment newInstance(ArrayList<String> pending) {
         FollowingRequestFragment fragment = new FollowingRequestFragment();
         Bundle args = new Bundle();
@@ -33,12 +41,23 @@ public class FollowingRequestFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * get app state and pending follow requests
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pending = (ArrayList<String>) getArguments().getSerializable("Pending");
     }
 
+    /**
+     * create the UI object for the user to interact wtih
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

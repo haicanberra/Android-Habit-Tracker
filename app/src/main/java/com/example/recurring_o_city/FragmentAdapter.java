@@ -10,6 +10,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.ArrayList;
 
+/**
+ * This class generate ArrayLists that hold the habits
+ */
 public class FragmentAdapter extends FragmentStateAdapter {
 
     private ArrayList<Habit> habitList;
@@ -22,6 +25,10 @@ public class FragmentAdapter extends FragmentStateAdapter {
         this.habitEventList = habitEventList;
     }
 
+    /**
+     * @param position
+     * @return HabitList
+     */
     @NonNull
     @Override
     public Fragment createFragment(int position) {
@@ -35,6 +42,9 @@ public class FragmentAdapter extends FragmentStateAdapter {
         return TodayFragment.newInstance(this.habitList);
     }
 
+    /**
+     * @return int
+     */
     @Override
     public int getItemCount() {
         return 3;

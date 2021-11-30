@@ -69,6 +69,12 @@ public class ViewHabitFragment extends Fragment
         return fragment;
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View
+     */
     // Show View Habit Event Fragment.
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -112,6 +118,9 @@ public class ViewHabitFragment extends Fragment
         }
 
         editButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 // We only need the habit title, which is the firebase document ID.
@@ -122,6 +131,9 @@ public class ViewHabitFragment extends Fragment
 
         // Pops out a stack, returning to previous fragment.
         backButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();

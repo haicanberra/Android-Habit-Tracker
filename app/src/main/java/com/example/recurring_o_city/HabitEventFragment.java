@@ -16,7 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-
+/**
+ * displays a popup of whatever habit needs to be done
+ */
 public class HabitEventFragment extends Fragment {
 
     private ArrayList<HabitEvent> habitEventList;
@@ -26,6 +28,10 @@ public class HabitEventFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * @param list
+     * @return Fragment
+     */
     public static HabitEventFragment newInstance(ArrayList<HabitEvent> list) {
         HabitEventFragment fragment = new HabitEventFragment();
         Bundle bundle = new Bundle();
@@ -34,6 +40,9 @@ public class HabitEventFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +51,13 @@ public class HabitEventFragment extends Fragment {
 
     }
 
-
+    /**
+     * display UI of Habit Event to user
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

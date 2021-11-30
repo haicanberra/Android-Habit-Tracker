@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
+/**
+ * This fragment deals with displaying everyone that follow the user
+ */
 public class FollowYouFragment extends Fragment {
 
     private ArrayList<String> follower;
@@ -22,7 +25,11 @@ public class FollowYouFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    /**
+     * instantiate the class with the list of followers
+     * @param follower
+     * @return fragment
+     */
     public static FollowYouFragment newInstance(ArrayList<String> follower) {
         FollowYouFragment fragment = new FollowYouFragment();
         Bundle args = new Bundle();
@@ -31,12 +38,23 @@ public class FollowYouFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * get app state and list of followers
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         follower = (ArrayList<String>) getArguments().getSerializable("Follower");
     }
 
+    /**
+     * Display UI to user
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,8 +67,6 @@ public class FollowYouFragment extends Fragment {
         userList = view.findViewById(R.id.listview);
         userAdapter = new UserAdapter(getContext(), follower,"fyf");
         userList.setAdapter(userAdapter);
-
-
 
         // When click back button
         backButton.setOnClickListener(new View.OnClickListener() {

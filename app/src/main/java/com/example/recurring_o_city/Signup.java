@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * creates interface for someone to create an account, connect firebase to user
+ */
 public class Signup extends AppCompatActivity implements View.OnClickListener,OnCompleteListener<AuthResult> {
 
     private TextView registerUser;
@@ -35,6 +38,9 @@ public class Signup extends AppCompatActivity implements View.OnClickListener,On
     private FirebaseFirestore db;
 
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +58,9 @@ public class Signup extends AppCompatActivity implements View.OnClickListener,On
 
     }
 
+    /**
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -60,6 +69,9 @@ public class Signup extends AppCompatActivity implements View.OnClickListener,On
         }
     }
 
+    /**
+     * @return null
+     */
     private void btn_sign_up_to_main() {
         String username = editTextUsername.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
@@ -68,45 +80,66 @@ public class Signup extends AppCompatActivity implements View.OnClickListener,On
         db = FirebaseFirestore.getInstance();
         CollectionReference users = db.collection("Users");
 
+        /**
+         * @param Boolean
+         */
         if (username.isEmpty()) {
             editTextUsername.setError("Please enter a username");
             editTextUsername.requestFocus();
             return;
         }
-
+        /**
+         * @param Boolean
+         */
         if (email.isEmpty()) {
             editTextEmail.setError("Please enter an email address");
             editTextEmail.requestFocus();
             return;
         }
-
+        /**
+         * @param String
+         */
         if (!(Patterns.EMAIL_ADDRESS.matcher(email).matches())) {
             editTextEmail.setError("Please enter a valid email address");
         }
-
+        /**
+         * @param Boolean
+         */
         if (password.isEmpty()) {
             editTextPassword.setError("Please enter a password");
             editTextPassword.requestFocus();
             return;
         }
-
+        /**
+         * @param int
+         */
         if (password.length() < 5) {
             editTextPassword.setError("Password needs to be at least 5 characters long");
             editTextPassword.requestFocus();
         }
 
+        /**
+         * @param Boolean
+         */
         if (conf_pass.isEmpty()) {
             editTextConfPass.setError("Please enter a password");
             editTextConfPass.requestFocus();
             return;
         }
-
+        /**
+         * @param Boolean
+         */
         if (!conf_pass.equals(password)) {
             editTextConfPass.setError("Passwords don't match");
             editTextConfPass.requestFocus();
             return;
         }
 
+        /**
+         * @param Boolean
+         * @param String
+         * @param int
+         */
         if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty()
                 && password.length() >= 5
                 && conf_pass.equals(password)
@@ -116,6 +149,10 @@ public class Signup extends AppCompatActivity implements View.OnClickListener,On
         }
     }
 
+    /**
+     * if signup is successful send to firebase to commit
+     * @param task
+     */
     @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         if(task.isSuccessful()){

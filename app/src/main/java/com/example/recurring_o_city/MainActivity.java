@@ -43,7 +43,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-
+/**
+ * its the main activity, its the thing that makes the app run
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AddHabitFragment.AddHabitFragmentListener{
 
@@ -67,6 +69,9 @@ public class MainActivity extends AppCompatActivity
     CollectionReference collectionReference, collectionReference2, collectionUser;
     private FirebaseAuth mAuth;
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,18 +109,25 @@ public class MainActivity extends AppCompatActivity
         tabLayout.addTab(tabLayout.newTab().setText("Event"));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            /**
+             * @param tab
+             */
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 selectedTab = tab.getPosition();
                 pager2.setCurrentItem(selectedTab);
                 hideButton(selectedTab);
             }
-
+            /**
+             * @param tab
+             */
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
 
             }
-
+            /**
+             * @param tab
+             */
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
@@ -123,6 +135,9 @@ public class MainActivity extends AppCompatActivity
         });
 
         pager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            /**
+             * @param position
+             */
             @Override
             public void onPageSelected(int position) {
                 tabLayout.selectTab(tabLayout.getTabAt(position));
@@ -147,7 +162,9 @@ public class MainActivity extends AppCompatActivity
         fragmentadapter = new FragmentAdapter(fm, getLifecycle(), habitList, habitEventList);
         pager2.setAdapter(fragmentadapter);
 
-        // Get all the habits from database realtime update
+        /**
+         * Get all the habits from database realtime update
+         */
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
@@ -190,7 +207,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        // Get the habit event list
+        /**
+         *Get the habit event list
+         */
         collectionReference2.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
@@ -234,6 +253,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /**
+     * @return null
+     */
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -243,6 +265,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * depending on which button is pressed, navigate towards new page
+     * @param item
+     * @return Boolean
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
@@ -295,7 +322,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    // Press save in Add habit fragment, add habit to database
+    /**
+     * Press save in Add habit fragment, add habit to database
+     */
     @Override
     public void onAddSavePressed(Habit newHabit) {
         Utility util = new Utility();
@@ -340,6 +369,10 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
+    /**
+     * had the button at given index
+     * @param tabIndex
+     */
     private void hideButton(int tabIndex) {
         switch (tabIndex) {
             case 2:
@@ -351,6 +384,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * get habits that the user is following, is being followed by, and pending requests to user
+     */
     public void getUserInfor() {
         collectionUser.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

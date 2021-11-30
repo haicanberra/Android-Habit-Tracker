@@ -25,6 +25,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * displays login UI to user
+ */
 public class Login extends AppCompatActivity implements View.OnClickListener,OnCompleteListener<AuthResult> {
 
     private TextView signup;
@@ -32,6 +35,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
     private Button logIn;
     private FirebaseAuth mAuth;
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +56,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         // For clicking Signup
         SpannableString s = new SpannableString(signup.getText().toString());
         ClickableSpan clickableSpan = new ClickableSpan() {
+            /**
+             * @param view
+             */
             @Override
             public void onClick(@NonNull View view) {
                 startActivity(new Intent(Login.this, com.example.recurring_o_city.Signup.class));
@@ -61,7 +70,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         signup.setHighlightColor(Color.TRANSPARENT);
     }
 
-
+    /**
+     * get account of current user
+     */
     @Override
     protected void onStart()
     {
@@ -76,6 +87,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         }
     }
 
+    /**
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -84,16 +98,25 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         }
     }
 
+    /**
+     * @returns null
+     */
     private void userLogin() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
+        /**
+         * @param Boolean
+         */
         if ((email.isEmpty())){
             editTextEmail.setError("Username is required");
             editTextEmail.requestFocus();
             return;
         }
 
+        /**
+         * @param Boolean
+         */
         if ((password.isEmpty())){
             editTextPassword.setError("Password is required");
             editTextPassword.requestFocus();
@@ -101,18 +124,26 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
             return;
         }
 
+        /**
+         * @param int
+         */
         if (password.length() < 5){
             editTextPassword.setError("Minimum password length is 5");
             editTextPassword.requestFocus();
             return;
         }
-
-
+        /**
+         * @param String
+         * @param String
+         */
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, this);
 
     }
 
+    /**
+     * @param task
+     */
     @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {

@@ -39,6 +39,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * fragment for the edit habit fragment
+ */
 public class EditHabitFragment extends DialogFragment
         implements RepeatDialog.RepeatDialogListener {
 
@@ -64,6 +67,12 @@ public class EditHabitFragment extends DialogFragment
         // Required empty public constructor
     }
 
+    /**
+     * retrieve information for the fragment
+     * @param oldHabitTitle
+     * @param UserId
+     * @return fragment
+     */
     public static EditHabitFragment newInstance(String oldHabitTitle, String UserId){
         Bundle args = new Bundle();
 
@@ -77,10 +86,17 @@ public class EditHabitFragment extends DialogFragment
         return fragment;
     }
 
+    /**
+     * create new habit when user presses save
+     */
     public interface EditHabitFragmentListener{
         void onEditSavePressed(Habit newHabit);
     }
 
+    /**
+     * get context, try to attach fragment to it
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -93,12 +109,20 @@ public class EditHabitFragment extends DialogFragment
         }
     }
 
-
+    /**
+     * get app state info for edit habit fragment
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * create dialog pop up
+     * @param savedInstanceState
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -173,14 +197,25 @@ public class EditHabitFragment extends DialogFragment
                 });
 
         // Set up the repeat fragment to pop up when Edit calender is clicked
+        /**
+         * get the repeat dialog to pop up
+         * @param OnClickListener
+         */
         repeat.setOnClickListener(new View.OnClickListener() {
             @Override
+            /**
+             * @param view
+             */
             public void onClick(View view) {
                 RepeatDialog repeatDialog = new RepeatDialog();
                 repeatDialog.show(getChildFragmentManager(), "Repeat");
             }
         });
 
+        /**
+         * toggle privacy button
+         * @param CompoundButton
+         */
         habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -192,6 +227,9 @@ public class EditHabitFragment extends DialogFragment
             }
         });
 
+        /**
+         * @param TextWatcher
+         */
         habitTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -207,6 +245,10 @@ public class EditHabitFragment extends DialogFragment
             }
         });
 
+        /**
+         * builder for fragment
+         * @param context
+         */
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -265,6 +307,10 @@ public class EditHabitFragment extends DialogFragment
                 }).create();
     }
 
+    /**
+     * get repeats, to display them
+     * @param repeat_list
+     */
     @Override
     public void onRepeatSavePressed(List<String> repeat_list) {
         // Get the List<String> of repeats, and set it to habitRepeat text field.
@@ -279,6 +325,10 @@ public class EditHabitFragment extends DialogFragment
         repeats = repeat_list;
     }
 
+    /**
+     * find possible duplicates of the same fragment
+     * @param title
+     */
     private void duplicateTitle(String title) {
         String userId = getActivity().getIntent().getStringExtra("User Id");
 

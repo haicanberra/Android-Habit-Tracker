@@ -36,6 +36,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Generates a view that reuses views instead of creating/destroyer them when the user scrolls by
+ */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> {
 
     private OnItemClickListener myListener;
@@ -47,6 +50,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     private FirebaseAuth mAuth;
 
 
+    /**
+     * instantiate class, it is array type any
+     * @param list
+     * @param type
+     */
     public ItemAdapter(ArrayList<?> list, String type) {
         this.currentFragment = type;
         if (type.equals("event")) {
@@ -56,6 +64,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         }
     }
 
+    /**
+     * the recycler view
+     */
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         ImageButton button;
@@ -65,6 +76,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         RelativeLayout layout;
         TextView textView2;
 
+        /**
+         * @param itemView
+         * @param listener
+         */
         public MyViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             textView = itemView.findViewById(R.id.item_view);
@@ -77,6 +92,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
+                /**
+                 * @param view
+                 */
                 @Override
                 public void onClick(View view) {
                     if (listener != null) {
@@ -90,6 +108,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         }
     }
 
+    /**
+     * @param parent
+     * @param viewType
+     * @return ViewHolder, or the thing that wraps views to allow reuse
+     */
     @NonNull
     @Override
     public ItemAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -100,6 +123,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_adapter,parent,false), myListener);
     }
 
+    /**
+     * determine which item needs to be displayed
+     * @param holder
+     * @param pos
+     */
     @Override
     public void onBindViewHolder(@NonNull ItemAdapter.MyViewHolder holder, int pos) {
         int position = pos;
@@ -148,6 +176,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         }
 
         holder.chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            /**
+             * @param compoundButton
+             * @param isChecked
+             */
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
@@ -200,6 +232,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         });
 
         holder.button.setOnClickListener(new View.OnClickListener() {
+            /**
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 if ((currentFragment.equals("today") || currentFragment.equals("all"))) {
@@ -214,6 +249,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     }
 
+    /**
+     * transform string to boolean
+     * @param done
+     * @return Boolean
+     */
     private boolean toBoolean(String done) {
         if (done.equals("false")) {
             return false;
@@ -224,6 +264,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     }
 
     // Add habit event when habit is checked/crossed off.
+
+    /**
+     * create an event for a habit
+     * @param doc
+     */
     private void createHabitEvent(DocumentSnapshot doc) {
 
         // Needs date of creation for undoing the last habit event.
@@ -266,7 +311,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                 });
     }
 
-    // Delete habit event when habit is unchecked.
+    /**
+     * Delete habit event when habit is unchecked.
+     * @param doc
+     */
     private void undoHabitEvent(DocumentSnapshot doc) {
         // Get most recent document from collection habit event
         collectionReference2
@@ -285,6 +333,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     }
 
+    /**
+     * delete habit from user
+     * @param holder
+     */
     private void deleteHabit(MyViewHolder holder){
         // Delete the habit from habit list
         collectionReference
@@ -330,6 +382,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         notifyDataSetChanged();
     }
 
+    /**
+     * destroy an event associated with a habit
+     * @param holder
+     */
     private void deleteEvent(MyViewHolder holder) {
         collectionReference2
                 .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
@@ -354,6 +410,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         notifyDataSetChanged();
     }
 
+    /**
+     * determine number of items within item adapter
+     * @return int
+     */
     @Override
     public int getItemCount() {
         if ((this.currentFragment.equals("today") || this.currentFragment.equals("all") || this.currentFragment.equals("fyhf")) && this.habitList != null ) {
@@ -365,10 +425,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         return -1;
     }
 
+    /**
+     * get position of whatever user clicked
+     */
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
 
+    /**
+     * @param listener
+     */
     public void setOnItemClickListener(OnItemClickListener listener) {
         myListener = listener;
     }

@@ -25,7 +25,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-
+/**
+ * creates the Fragment that allows you to request to follow other people's habits
+ */
 public class SendRequestFragment extends Fragment {
 
     private EditText userEmail;
@@ -43,7 +45,9 @@ public class SendRequestFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    /**
+     * @return fragment, instantiates class
+     */
     public static SendRequestFragment newInstance() {
         SendRequestFragment fragment = new SendRequestFragment();
         Bundle args = new Bundle();
@@ -52,12 +56,20 @@ public class SendRequestFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * @param savedInstanceState, normal android onCreate
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * this is the view object, it takes the format and objects and displays them
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -86,6 +98,9 @@ public class SendRequestFragment extends Fragment {
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
+                            /**
+                             * @param QuerySnapshot a instance of the database, to see if it happened successfully
+                             */
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
                                     int list = task.getResult().getDocuments().size();
@@ -101,9 +116,14 @@ public class SendRequestFragment extends Fragment {
             }
         });
 
-
+        /**
+         * @param OnClickListener, if human clicked something go back to original screen
+         */
         // If click on  back button
         backButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();
@@ -113,6 +133,9 @@ public class SendRequestFragment extends Fragment {
         return view;
     }
 
+    /**
+     * @param email, completes the request process
+     */
     public void sendRequest(String email) {
         // Update to pending list of that user
         collectionReference
