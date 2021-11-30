@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_you_follow"
+            android:icon="@drawable/ic_youfollow"
+            android:title="You Follow" />
+        <item
+            android:id="@+id/nav_follow_you"
+            android:icon="@drawable/ic_followyou"
+            android:title="Follow You" />
+
+        <item
+            android:id="@+id/nav_follow_request"
+            android:icon="@drawable/ic_following_request"
+            android:title="Following Request" />
+
+        <item
+            android:id="@+id/nav_send_request"
+            android:icon="@drawable/ic_sendrequest"
+            android:title="Send Request" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Log Out" />
+
+
+    </group>
+</menu>
