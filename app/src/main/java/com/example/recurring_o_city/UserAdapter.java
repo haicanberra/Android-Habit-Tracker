@@ -22,6 +22,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * modify array adapter to use with user class
+ */
 public class UserAdapter extends ArrayAdapter<String> {
     private ArrayList<String> users;
     private Context context;
@@ -33,6 +36,12 @@ public class UserAdapter extends ArrayAdapter<String> {
     private String currentEmail;
     private String currentFragment;
 
+    /**
+     * instantiate the adapter
+     * @param context
+     * @param users
+     * @param currentFragment
+     */
     public UserAdapter(Context context, ArrayList<String> users, String currentFragment) {
         super(context, 0, users);
         this.context = context;
@@ -40,6 +49,13 @@ public class UserAdapter extends ArrayAdapter<String> {
         this.currentFragment = currentFragment;
     }
 
+    /**
+     * create UI to interact with user
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return view
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -105,7 +121,10 @@ public class UserAdapter extends ArrayAdapter<String> {
         return view;
     }
 
-    // Update follower list of current user
+    /**
+     * Update follower list of current user
+     * @param email
+     */
     public void updateFollowerList(String email) {
         collectionReference
                 .whereEqualTo("Email", currentEmail)
@@ -130,7 +149,10 @@ public class UserAdapter extends ArrayAdapter<String> {
                 });
     }
 
-    // Update the pending list of current user
+    /**
+     * Update the pending list of current user
+     * @param email
+     */
     public void updatePendingList(String email) {
         collectionReference
                 .whereEqualTo("Email", currentEmail)
@@ -149,7 +171,10 @@ public class UserAdapter extends ArrayAdapter<String> {
                 });
     }
 
-    // Update the following list of that accepted user
+    /**
+     * Update the following list of current user
+     * @param email
+     */
     public void updateFollowingList(String email) {
         collectionReference
                 .whereEqualTo("Email", email)
