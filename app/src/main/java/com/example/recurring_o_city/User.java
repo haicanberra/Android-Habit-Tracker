@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Information about the user
+
+/**
+ * data class for the user
+ */
 public class User {
 
     private String username, email;
@@ -32,10 +36,18 @@ public class User {
         return email;
     }
 
+    /**
+     * set username
+     * @param username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * set email
+     * @param email
+     */
     public void setEmail(String email) {
         this.email = email;
     }

@@ -70,6 +70,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         signup.setHighlightColor(Color.TRANSPARENT);
     }
 
+    /**
+     * get account of current user
+     */
     @Override
     protected void onStart()
     {

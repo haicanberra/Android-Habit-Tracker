@@ -39,6 +39,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * this fragment deals with displaying the map in the app
+ */
 public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -53,6 +56,10 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     private GeoPoint coordinate;
     private List<Address> addresses;
 
+    /**
+     * Try to attach map fragment to screen
+     * @param context
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -77,6 +84,14 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         mPermissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
+    /**
+     * instantiate class
+     * @param userId
+     * @param title
+     * @param date
+     * @param address
+     * @return fragment
+     */
     public static MapsFragment newInstance(String userId, String title, Date date, GeoPoint address) {
         Bundle args = new Bundle();
 
@@ -91,6 +106,13 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         return fragment;
     }
 
+    /**
+     * create UI to interact with user
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
@@ -122,6 +144,10 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         return view;
     }
 
+    /**
+     * when fragment is loaded, load the google map API
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -223,6 +249,9 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * get location if permission is granted
+     */
     public void getLocationUi() {
         if (mMap == null) {
             return;
@@ -238,7 +267,10 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         }
     }
 
-        public void getDeviceLocation() {
+    /**
+     * if permission is granted, get user location
+     */
+    public void getDeviceLocation() {
         try{
             // If location permission is granted, build coordinate from getLastLocation().
             if (locationPermissionGranted) {
@@ -302,6 +334,10 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * move the top down view into the coordinates
+     * @param location
+     */
     public void moveCamera(Location location) {
         LatLng cameraPos = new LatLng(
                 location.getLatitude(),
@@ -309,6 +345,10 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraPos, 15));
     }
 
+    /**
+     * send location to google map
+     * @param location
+     */
     public void setLocation(Location location) {
         String newAddress;
 
@@ -330,6 +370,10 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * put the marker on the map
+     * @param location
+     */
     public void createMarker(Location location) {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(

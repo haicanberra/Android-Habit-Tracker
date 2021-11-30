@@ -13,7 +13,9 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
-
+/**
+ * this fragment contains all the following request fragments
+ */
 public class FollowingUserHabitFragment extends Fragment {
 
     private ArrayList<Habit> allHabit;
@@ -24,7 +26,11 @@ public class FollowingUserHabitFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    /**
+     * instantiate the class, takes in a list of all habits
+     * @param list
+     * @return fragment
+     */
     public static FollowingUserHabitFragment newInstance(ArrayList<Habit> list) {
         FollowingUserHabitFragment fragment = new FollowingUserHabitFragment();
         Bundle args = new Bundle();
@@ -33,6 +39,10 @@ public class FollowingUserHabitFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * get app state and list of habits
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +50,13 @@ public class FollowingUserHabitFragment extends Fragment {
                 "USER_HABIT");
     }
 
+    /**
+     * create the UI for the user to view all the habits they are following
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -68,6 +85,10 @@ public class FollowingUserHabitFragment extends Fragment {
 
         // When click back button
         backButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             *
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();

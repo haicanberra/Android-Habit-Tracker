@@ -149,6 +149,10 @@ public class Signup extends AppCompatActivity implements View.OnClickListener,On
         }
     }
 
+    /**
+     * if signup is successful send to firebase to commit
+     * @param task
+     */
     @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         if(task.isSuccessful()){

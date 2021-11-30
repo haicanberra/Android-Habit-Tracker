@@ -24,6 +24,9 @@ import androidx.fragment.app.DialogFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * the class that sets the repeat settings of a habit
+ */
 public class RepeatDialog extends DialogFragment {
     private EditText repeat_num, occur_num;
     private Spinner spinner;
@@ -35,12 +38,17 @@ public class RepeatDialog extends DialogFragment {
     private TextView title_repeat;
     List<String> repeat = new ArrayList<>();
 
-    //
+    /**
+     * the list of repeat settings
+     */
     public interface RepeatDialogListener {
         void onRepeatSavePressed(List<String> repeat);
     }
 
-    // Override the Fragment.onAttach() method to instantiate RepeatDialog
+    /**
+     * Override the Fragment.onAttach() method to instantiate RepeatDialog
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -54,6 +62,11 @@ public class RepeatDialog extends DialogFragment {
         }
     }
 
+    /**
+     * create the UI the user interacts with
+     * @param savedInstanceState
+     * @return dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -104,6 +117,11 @@ public class RepeatDialog extends DialogFragment {
         radiogroup.check(R.id.never_end);
 
         radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            /**
+             * toggle if repeat does occur
+             * @param radioGroup
+             * @param i
+             */
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch(i) {
@@ -123,6 +141,9 @@ public class RepeatDialog extends DialogFragment {
         repeat_num.setText("1");
 
         // Create builder
+        /**
+         * dialog builder
+         */
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView(view)

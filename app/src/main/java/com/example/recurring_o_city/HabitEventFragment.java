@@ -51,6 +51,13 @@ public class HabitEventFragment extends Fragment {
 
     }
 
+    /**
+     * display UI of Habit Event to user
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -308,7 +308,7 @@ public class EditHabitFragment extends DialogFragment
     }
 
     /**
-     *
+     * get repeats, to display them
      * @param repeat_list
      */
     @Override
@@ -325,6 +325,10 @@ public class EditHabitFragment extends DialogFragment
         repeats = repeat_list;
     }
 
+    /**
+     * find possible duplicates of the same fragment
+     * @param title
+     */
     private void duplicateTitle(String title) {
         String userId = getActivity().getIntent().getStringExtra("User Id");
 

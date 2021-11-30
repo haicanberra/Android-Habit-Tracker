@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * this class is a data class to organize all relevant information of a habit
+ */
 public class Habit implements Serializable
 {
     String title;
@@ -34,22 +37,41 @@ public class Habit implements Serializable
         this.repeat = repeat;
     }
 
+    /**
+     * @return goal
+     * an int
+     */
     public Integer getGoal() {
         return goal;
     }
 
+    /**
+     * @param goal, set goal
+     */
     public void setGoal(Integer goal) {
         this.goal = goal;
     }
 
+    /**
+     * @return complete
+     * check if habit is complete
+     */
     public Integer getComplete() {
         return complete;
     }
 
+    /**
+     * @param complete
+     * toggle the complete state
+     */
     public void setComplete(Integer complete) {
         this.complete = complete;
     }
 
+    /**
+     * get title or name
+     * @return title
+     */
     public String getTitle() {
         return title;
     }
@@ -89,33 +111,66 @@ public class Habit implements Serializable
         this.date = date;
     }
 
+    /**
+     * @return privacy
+     * get privacy setting
+     */
     public Integer getPrivacy() {
         return privacy;
     }
 
+    /**
+     * set privacy setting
+     * @param privacy
+     */
     public void setPrivacy(Integer privacy) {
         this.privacy = privacy;
     }
 
+    /**
+     * get the repeat settings
+     * @return repeat
+     */
     public List<String> getRepeat() {
         return repeat;
     }
 
+    /**
+     * set the repeat settings
+     * @param repeat
+     */
     public void setRepeat(List<String> repeat) {
         this.repeat = repeat;
     }
+
+    /**
+     * is the habit complete
+     * @return done
+     */
     public String getDone() {
         return done;
     }
 
+    /**
+     * set if the habit is done
+     * @param done
+     */
     public void setDone(String done) {
         this.done = done;
     }
 
+    /**
+     * get the date for the next reminder
+     * @return next_date
+     */
     public Date getNext_date() {
         return next_date;
     }
 
+    /**
+     * set the next date
+     * @param next_date
+     */
     public void setNext_date(Date next_date) {
         this.next_date = next_date;
     }
