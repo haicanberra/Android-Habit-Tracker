@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * class to represent who the user is following
+ */
 public class YouFollowFragment extends Fragment {
 
     private ArrayList<String> following;
@@ -43,7 +46,11 @@ public class YouFollowFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    /**
+     * instantiate class
+     * @param following
+     * @return
+     */
     public static YouFollowFragment newInstance(ArrayList<String> following) {
         YouFollowFragment fragment = new YouFollowFragment();
         Bundle args = new Bundle();
@@ -53,6 +60,10 @@ public class YouFollowFragment extends Fragment {
     }
 
     @Override
+    /**
+     * get app state
+     * @param savedInstanceState
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         following = (ArrayList<String>) getArguments().getSerializable("Following");
@@ -60,6 +71,10 @@ public class YouFollowFragment extends Fragment {
     }
 
     @Override
+    /**
+     * create UI for user to interact with
+     * @return view
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -123,6 +138,9 @@ public class YouFollowFragment extends Fragment {
         });
 
         // When click back button
+        /**
+         * go back to previous view if backbutton is pressed
+         */
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -19,15 +19,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * a whole bunch of useful functions put into one class
+ */
 public class Utility {
 
 
     public Utility() {
     }
 
-
-
-    // Method to convert list of string to string
+    /**
+     * Method to convert list of string to string
+     * @param repeat
+     * @return
+     */
     public String convertRepeat(List<String> repeat) {
         String repeat_display = "Every ";
 
@@ -70,7 +75,11 @@ public class Utility {
 //        }
 //
 //    }
-    // Get current date
+
+    /**
+     * get current date
+     * @return today
+     */
     public Date getCurrentDate() {
         SimpleDateFormat d = new SimpleDateFormat("yyyy/MM/dd");
         Date today = Calendar.getInstance().getTime();
@@ -83,6 +92,12 @@ public class Utility {
         return today;
     }
 
+    /**
+     * get a date some number of days from given date
+     * @param date
+     * @param i
+     * @return Date
+     */
     public Date addDay(Date date, int i) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -90,6 +105,13 @@ public class Utility {
         return cal.getTime();
     }
 
+    /**
+     * find next possible date for habit event
+     * @param createdDate
+     * @param nextDate
+     * @param repeat
+     * @return dateGoals
+     */
     public Date getNextDate(Date createdDate, Date nextDate, List<String> repeat) {
         //When first created, next date = null, just call get next date
         Date dateGoals = null;

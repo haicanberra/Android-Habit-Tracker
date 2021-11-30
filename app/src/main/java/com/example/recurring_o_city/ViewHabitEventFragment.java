@@ -238,6 +238,12 @@ public class ViewHabitEventFragment extends Fragment
         return view;
     }
 
+    /**
+     * set some info before posting
+     * @param comment
+     * @param address
+     * @param img
+     */
     @Override
     public void onEditEventSavePressed(String comment, String address, String img) {
         // Set the comment

@@ -144,6 +144,11 @@ public class ViewHabitFragment extends Fragment
     }
 
     // When save pressed
+
+    /**
+     * set Habit info before viewing
+     * @param newHabit
+     */
     @Override
     public void onEditSavePressed(Habit newHabit) {
         titleText.setText(newHabit.getTitle());
