@@ -74,9 +74,8 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
                             Log.e("TESTING", "PERMISSION GRANTED");
                             locationPermissionGranted = true;
 
-                            // Immediately load the user position & marker once permission is granted.
+                            // Immediately load the user position once permission is granted.
                             getLocationUi();
-                            getDeviceLocation();
                         } else {
                             Log.e("TESTING", "PERMISSION DENIED");
                         }
