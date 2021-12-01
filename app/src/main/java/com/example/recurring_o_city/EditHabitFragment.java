@@ -53,10 +53,10 @@ public class EditHabitFragment extends DialogFragment
     private ImageButton repeat;
     private Switch habitPrivacy;
     private int privacy;
-    private Date nextDate, startDate;
+    private Date nextDate, startDate, oldDate;
     private EditHabitFragmentListener listener;
     private DatePickerDialog calDialog;
-    private List<String> repeats;
+    private List<String> repeats, oldRepeat;
     private boolean duplicate;
 
     private FirebaseFirestore db;
@@ -150,7 +150,6 @@ public class EditHabitFragment extends DialogFragment
         });
 
 
-
         // Set the collection reference from the Firebase.
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
@@ -179,16 +178,18 @@ public class EditHabitFragment extends DialogFragment
                                 habitPrivacy.setChecked(false);
                             }
                             repeats = (List<String>)docSnapshot.get("Repeat");
-                            if (repeats == null || repeats.size() <= 1) {
+                            oldRepeat = repeats;
+                            if (repeats.contains("NO_REPEAT") || repeats.size() <= 1) {
                                 habitRepeat.setText("Does not repeat");
                             } else {
                                 Utility util = new Utility();
                                 habitRepeat.setText(util.convertRepeat(repeats));
                             }
 
-                            Date oldDate = docSnapshot.getDate("Date");
+                            oldDate = docSnapshot.getDate("Date");
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                            habitDate.setText(dateFormat.format(oldDate));
+                            String date = dateFormat.format(oldDate);
+                            habitDate.setText(date);
 
                             nextDate = docSnapshot.getDate("Next Date");
 
@@ -288,7 +289,11 @@ public class EditHabitFragment extends DialogFragment
                     } else {
                         nextDate = null;
                     }
-
+                    //Check if new date or reminder is selected
+                    if (repeats != oldRepeat || !startDate.equals(oldDate)) {
+                        // Reset the complete
+                        editHabit.update("Complete", 0);
+                    }
 
                     // Check if input is valid and proceed
                     if (!title.equals("") && newDate != null) {

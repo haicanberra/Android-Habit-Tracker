@@ -207,16 +207,25 @@ public class MainActivity extends AppCompatActivity
                         }
                         SimpleDateFormat name_format = new SimpleDateFormat("EEE");
                         Integer newGoal = 0;
-                        // Find the # of goal till today
-                        Date temp = date;
-                        while (!temp.after(util.getCurrentDate())) {
-                            String date_name = name_format.format(temp);
-                            if (repeat_box.contains(date_name)) {
-                                newGoal = newGoal + 1 ;
+                        if (repeat.contains("NO_REPEAT")) {
+                            newGoal  = 1;
+                        } else {
+                            // Find the # of goal till today
+                            Date temp = date;
+                            while (!temp.after(util.getCurrentDate())) {
+                                String date_name = name_format.format(temp);
+                                if (repeat_box.contains(date_name)) {
+                                    newGoal = newGoal + 1 ;
+                                }
+                                temp = util.addDay(temp,1);
+
                             }
-                            temp = util.addDay(temp,1);
+                            // Update the # of goal
+                            if (date.after(util.getCurrentDate())) {
+                                newGoal = 1;
+                            }
                         }
-                        // Update the # of goal
+
                         newHabit.setGoal(newGoal);
                         doc.getReference().update("Goal", newGoal);
 
@@ -373,7 +382,7 @@ public class MainActivity extends AppCompatActivity
         data.put("Privacy", newHabit.getPrivacy());
         data.put("Done", newHabit.getDone());
         data.put("Next Date", null);
-        data.put("Goal", newHabit.getGoal());
+        data.put("Goal", 1);
         data.put("Complete", newHabit.getComplete());
 
         collectionReference
