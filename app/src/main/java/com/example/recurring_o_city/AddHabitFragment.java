@@ -67,6 +67,14 @@ public class AddHabitFragment extends DialogFragment
     }
 
     /**
+     * Required onCreate method for creating the fragment.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    /**
      * Sets up interface between this class and {@link ViewHabitFragment} class.
      * @param context
      *  Environment that launches this class.
