@@ -21,7 +21,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -86,6 +90,8 @@ public class RepeatDialog extends DialogFragment {
         radiogroup = view.findViewById(R.id.radio_group);
         title_repeat = view.findViewById(R.id.title_repeat);
 
+        title_repeat.setVisibility(View.VISIBLE);
+        days_repeat.setVisibility(View.VISIBLE);
         // Create spinner with drop down
         ArrayAdapter<String> myAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.support_simple_spinner_dropdown_item, getResources().getStringArray(R.array.freq));
@@ -99,8 +105,6 @@ public class RepeatDialog extends DialogFragment {
                 String selected_item = adapterView.getItemAtPosition(position).toString();
                 if (selected_item.equals("week")) {
                     repeat_num.setVisibility(View.GONE);
-                    title_repeat.setVisibility(View.VISIBLE);
-                    days_repeat.setVisibility(View.VISIBLE);
                 } else if (selected_item.equals("day")) {
                     title_repeat.setVisibility(View.GONE);
                     days_repeat.setVisibility(View.GONE);
@@ -177,7 +181,7 @@ public class RepeatDialog extends DialogFragment {
                             repeat.add("Wed");
                         }
                         if (Thur.isChecked()) {
-                            repeat.add("Thur");
+                            repeat.add("Thu");
                         }
                         if (Fri.isChecked()) {
                             repeat.add("Fri");
@@ -188,6 +192,15 @@ public class RepeatDialog extends DialogFragment {
                         if (Sun.isChecked()) {
                             repeat.add("Sun");
                         }
+                    }
+                    // Check if none checkbox is chosen, set day repeat to today
+                    Utility util = new Utility();
+                    SimpleDateFormat name_format = new SimpleDateFormat("EEE");
+                    String date_name = name_format.format(util.getCurrentDate());
+
+                    if (!Mon.isChecked() && !Tue.isChecked() && !Wed.isChecked() && !Thur.isChecked()
+                    &&!Fri.isChecked() && !Sat.isChecked() && !Sun.isChecked()) {
+                        repeat.add(date_name);
                     }
 
                     // Check if user chooses end date or not
