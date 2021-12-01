@@ -36,6 +36,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import io.grpc.okhttp.internal.Util;
+
 /**
  * Generates a view that reuses views instead of creating/destroyer them when the user scrolls by
  */
@@ -151,8 +153,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
             Integer goal = habitList.get(position).getGoal();
             Integer complete = habitList.get(position).getComplete();
-            holder.textView2.setText(String.valueOf((complete/goal)*100));
-            holder.mCircle.setProgress((complete/goal)*100);
+            holder.textView2.setText(String.valueOf((complete*100)/goal));
+            holder.mCircle.setProgress((complete*100)/goal);
         }
         else if (this.currentFragment.equals("fyhf")) {
             String name = habitList.get(position).getTitle();
@@ -160,6 +162,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             holder.chk.setVisibility(View.GONE);
             holder.date.setVisibility((View.GONE));
             holder.button.setVisibility(View.INVISIBLE);
+
+            Integer goal = habitList.get(position).getGoal();
+            Integer complete = habitList.get(position).getComplete();
+            holder.textView2.setText(String.valueOf((complete*100)/goal));
+            holder.mCircle.setProgress((complete*100)/goal);
         }
         else if (this.currentFragment.equals("event")) {
             String name = habitEventList.get(position).getEventHabit().getTitle();
@@ -182,6 +189,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
              */
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                Utility util = new Utility();
                 if (isChecked) {
                     collectionReference
                             .whereEqualTo("User Id", mAuth.getCurrentUser().getUid())
@@ -194,6 +202,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             collectionReference.document(document.getId()).update("Done","true");
                                             collectionReference.document(document.getId()).update("Complete", FieldValue.increment(1));
+                                            collectionReference.document(document.getId()).update("Next Date",util.getCurrentDate());
                                             Log.d("Done Habit", "Data has been marked done successfully");
 
                                             // Function for creating new habit event.
@@ -216,8 +225,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             collectionReference.document(document.getId()).update("Done","false");
-                                            Log.d("Done Habit", "Data has been marked done successfully");
+                                            Log.d("Done Habit", "Data has been marked undone successfully");
                                             collectionReference.document(document.getId()).update("Complete", FieldValue.increment(-1));
+                                            collectionReference.document(document.getId()).update("Next Date", null);
 
                                             // Remove the habit event.
                                             undoHabitEvent(document);

@@ -90,17 +90,20 @@ public class TodayFragment extends Fragment{
         // Get today habit list
         for (int i = 0; i<habitList.size(); i++) {
             Date date = habitList.get(i).getDate();
-            Date nextDate = habitList.get(i).getNext_date();
+            Integer goal = habitList.get(i).getGoal();
             List<String> repeat_strg = habitList.get(i).getRepeat();
+            String ending = repeat_strg.get(repeat_strg.size()- 1);
             List<String> repeat_box = new ArrayList<>();
             if (repeat_strg != null && repeat_strg.size() > 3) {
                 repeat_box = repeat_strg.subList(2, repeat_strg.size()-1);
             }
             
-            if (today.compareTo(date) == 0 || today.equals(nextDate) || repeat_box.contains(date_name)) {
-                todayList.add(habitList.get(i));
-                //Update next date here
-                habitList.get(i).setNext_date(habitList.get(i).getNext_date());
+            if (today.compareTo(date) == 0 || repeat_box.contains(date_name)) {
+                if (ending.equals("never") || (!ending.equals("never") && goal <= Integer.valueOf(ending))) {
+                    todayList.add(habitList.get(i));
+                }
+
+
             }
         }
     }

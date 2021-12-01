@@ -186,15 +186,39 @@ public class MainActivity extends AppCompatActivity
                         Integer complete = Integer.valueOf(doc.getData().get("Complete").toString());
                         Habit newHabit = new Habit(title, reason, date,repeat, privacy);
                         newHabit.setComplete(complete);
-                        newHabit.setGoal(goal);
-                        Date nextDate;
+
+                        Date nextDate = null;
                         if (doc.getTimestamp("Next Date") != null) {
                             nextDate =  doc.getTimestamp("Next Date").toDate();
                             newHabit.setNext_date(nextDate);
                         } else {
                             newHabit.setNext_date(null);
                         }
-                        newHabit.setDone((String) doc.getData().get("Done"));
+                        Utility util = new Utility();
+                        if (nextDate == null || nextDate.equals(util.getCurrentDate())) {
+                            newHabit.setDone((String) doc.getData().get("Done"));
+                        } else if (nextDate != null && ! nextDate.equals(util.getCurrentDate())) {
+                            newHabit.setDone("false");
+                        }
+
+                        List<String> repeat_box = new ArrayList<>();
+                        if (repeat != null && repeat.size() > 3) {
+                            repeat_box = repeat.subList(2, repeat.size()-1);
+                        }
+                        SimpleDateFormat name_format = new SimpleDateFormat("EEE");
+                        Integer newGoal = 0;
+                        // Find the # of goal till today
+                        Date temp = date;
+                        while (!temp.after(util.getCurrentDate())) {
+                            String date_name = name_format.format(temp);
+                            if (repeat_box.contains(date_name)) {
+                                newGoal = newGoal + 1 ;
+                            }
+                            temp = util.addDay(temp,1);
+                        }
+                        // Update the # of goal
+                        newHabit.setGoal(newGoal);
+                        doc.getReference().update("Goal", newGoal);
 
                         habitList.add(newHabit);
 
@@ -331,12 +355,12 @@ public class MainActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection("Habits");
         mAuth = FirebaseAuth.getInstance();
-        Date nextDate;
-        if (newHabit.getRepeat() != null && newHabit.getRepeat().size() ==3) {
-            nextDate = util.getNextDate(newHabit.getDate(), newHabit.getNext_date(), newHabit.getRepeat());
-        } else {
-            nextDate = null;
-        }
+//        Date nextDate = null;
+//        if (newHabit.getRepeat() != null && newHabit.getRepeat().size() ==3) {
+//            nextDate = util.getNextDate(newHabit.getDate(), newHabit.getNext_date(), newHabit.getRepeat());
+//        } else {
+//            nextDate = null;
+//        }
 
         // where to set  next date in habit
 
@@ -348,7 +372,7 @@ public class MainActivity extends AppCompatActivity
         data.put("Repeat", newHabit.getRepeat());
         data.put("Privacy", newHabit.getPrivacy());
         data.put("Done", newHabit.getDone());
-        data.put("Next Date", nextDate);
+        data.put("Next Date", null);
         data.put("Goal", newHabit.getGoal());
         data.put("Complete", newHabit.getComplete());
 
