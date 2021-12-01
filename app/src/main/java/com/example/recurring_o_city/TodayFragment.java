@@ -108,7 +108,7 @@ public class TodayFragment extends Fragment{
                 repeat_box = repeat_strg.subList(2, repeat_strg.size()-1);
             }
 
-            if (today.compareTo(date) == 0 || repeat_box.contains(date_name)) {
+            if (date.equals(today)|| (repeat_box.contains(date_name) && !date.after(today))) {
                 if (!repeat_strg.equals("NO_REPEAT")) {
                     todayList.add(habitList.get(i));
                 } else if (ending.equals("never") || (!ending.equals("never") && goal <= Integer.valueOf(ending))) {
