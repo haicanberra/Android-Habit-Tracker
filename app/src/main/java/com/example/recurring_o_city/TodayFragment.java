@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Display habits to occur today
+ * Displays habits that should occur today.
  */
 public class TodayFragment extends Fragment{
 
@@ -49,13 +49,19 @@ public class TodayFragment extends Fragment{
     private ArrayList<Habit> todayList = new ArrayList<>();
     private ItemAdapter habitAdapter;
 
+    /**
+     * Empty constructor required for instantiation of this class.
+     */
     public TodayFragment() {
         // Required empty public constructor
     }
 
     /**
+     * Creates new instance of {@link TodayFragment} class.
      * @param list
+     *  {@link ArrayList} of type {@link Habit} to add to the {@link TodayFragment}.
      * @return Fragment
+     *  New fragment instantiated with {@link Bundle} containing {@link Habit} objects.
      */
     public static TodayFragment newInstance(ArrayList<Habit> list) {
         TodayFragment fragment = new TodayFragment();
@@ -66,7 +72,9 @@ public class TodayFragment extends Fragment{
     }
 
     /**
+     * Using the saved instance, gets the list of {@link Habit} to occur today.
      * @param savedInstanceState
+     *  New {@link Bundle} object instantiated from {@link #newInstance(ArrayList)} method.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,27 +100,31 @@ public class TodayFragment extends Fragment{
             Date date = habitList.get(i).getDate();
             Integer goal = habitList.get(i).getGoal();
             List<String> repeat_strg = habitList.get(i).getRepeat();
+
+            if (repeat_strg == null) {
+                repeat_strg = Collections.singletonList("never");
+            }
+
             String ending = repeat_strg.get(repeat_strg.size()- 1);
             List<String> repeat_box = new ArrayList<>();
-            if (repeat_strg != null && repeat_strg.size() > 3) {
+
+            if (repeat_strg.size() > 3) {
                 repeat_box = repeat_strg.subList(2, repeat_strg.size()-1);
             }
-            
+
             if (today.compareTo(date) == 0 || repeat_box.contains(date_name)) {
                 if (ending.equals("never") || (!ending.equals("never") && goal <= Integer.valueOf(ending))) {
                     todayList.add(habitList.get(i));
                 }
-
-
             }
         }
     }
 
     /**
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
+     * Using {@link RecyclerView}, sets up the list of {@link Habit} to occur today.
+     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for each {@link Habit} object.
      * @return View
+     *  Contains the list of {@link Habit} objects.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -144,6 +156,9 @@ public class TodayFragment extends Fragment{
         return view;
     }
 
+    /**
+     * Implements reordering by dragging and dropping the {@link Habit} or {@link HabitEvent} items.
+     */
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END,0) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {

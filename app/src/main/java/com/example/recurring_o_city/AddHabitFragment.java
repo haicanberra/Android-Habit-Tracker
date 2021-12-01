@@ -9,41 +9,33 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Display a popup that prompts user to add fragment
+ * Display a dialog fragment that prompts user to create new {@link Habit} object.
  */
-
 public class AddHabitFragment extends DialogFragment
         implements RepeatDialog.RepeatDialogListener {
 
@@ -53,7 +45,6 @@ public class AddHabitFragment extends DialogFragment
     private EditText habitRepeat;
     private ImageButton button;
     private ImageButton repeat;
-    //private OnFragmentInteractionListener listener;
     private AddHabitFragmentListener listener;
     private Switch habitPrivacy;
     static Integer privacy;
@@ -61,22 +52,25 @@ public class AddHabitFragment extends DialogFragment
     private DatePickerDialog calDialog;
     private List<String> repeat_strg;
 
+    /**
+     * Creates interface between this class and {@link ViewHabitFragment} class.
+     */
     public interface AddHabitFragmentListener{
         void onAddSavePressed(Habit newHabit);
     }
 
+    /**
+     * Empty public constructor required for class instantiation.
+     */
     public AddHabitFragment() {
         // Required empty public constructor
     }
 
     /**
-     * @return Fragment
+     * Sets up interface between this class and {@link ViewHabitFragment} class.
+     * @param context
+     *  Environment that launches this class.
      */
-    public static AddHabitFragment newInstance(){
-        AddHabitFragment fragment = new AddHabitFragment();
-        return fragment;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -89,15 +83,12 @@ public class AddHabitFragment extends DialogFragment
         }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
     /**
+     * Creates {@link AlertDialog} for creating {@link Habit} object.
      * @param savedInstanceState
-     * @return Builder
+     *  Required {@link Bundle} object for instantiating onCreateDialog method.
+     * @return builder
+     *  Dialog fragment for creation of {@link Habit} object.
      */
     @NonNull
     @Override
@@ -175,48 +166,37 @@ public class AddHabitFragment extends DialogFragment
                     // Get and validate new input from user
                     String title = habitTitle.getText().toString();
                     String reason = habitReason.getText().toString();
-                    /**
-                     * @param Boolean
-                     * @return null
-                     */
+
                     if (title.equals("")) {
                         habitTitle.setError("Title cannot be empty");
                         habitTitle.requestFocus();
                         return;
                     }
-                    /**
-                     * @param Boolean
-                     * @return null
-                     */
+
                     if (reason.equals("")) {
                         habitReason.setError("Reason cannot be empty");
                         habitReason.requestFocus();
                         return;
                     }
+
                     if (duplicate) {
                         habitTitle.setError("Title must be unique");
                         habitTitle.requestFocus();
                         return;
                     }
+
                     try {
                         newDate = d.parse(String.valueOf(habitDate.getText()));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+
                     if (habitPrivacy.isChecked()) {
                         privacy = 1;
                     } else {
                         privacy = 0;
                     }
 
-                    /**
-                     * @param String title, reason
-                     * @param Date date
-                     * @param int privacy
-                     * @returns Habit
-                     */
-                    //why's their two?
-                    // Check if input is valid and proceed
                     if (!title.equals("") && !reason.equals("") && newDate != null) {
                         //When user clicks save button, add new medicine
                         listener.onAddSavePressed(new Habit(title, reason, newDate, repeat_strg, privacy));
@@ -224,6 +204,11 @@ public class AddHabitFragment extends DialogFragment
                 }).create();
     }
 
+    /**
+     * Interface for {@link RepeatDialog} class. Sets up repeat frequency for {@link Habit} object.
+     * @param repeat_list
+     *  {@link List} of type {@link String} that stores repeat frequency information.
+     */
     @Override
     public void onRepeatSavePressed(List<String> repeat_list) {
         String repeat_display ="";
@@ -237,6 +222,11 @@ public class AddHabitFragment extends DialogFragment
         repeat_strg = repeat_list;
     }
 
+    /**
+     * Method for checking whether title of new {@link Habit} object is a duplicate.
+     * @param title
+     *  {@link String} type object that serves as title for {@link Habit} object.
+     */
     private void duplicateTitle(String title) {
         String userId = getActivity().getIntent().getStringExtra("User Id");
 
@@ -246,7 +236,6 @@ public class AddHabitFragment extends DialogFragment
                 .whereEqualTo("Title", title)
                 .whereEqualTo("User Id", userId);
 
-        // This query modifies global boolean variable "duplicate".
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
