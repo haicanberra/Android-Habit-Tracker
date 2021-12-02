@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -122,7 +123,11 @@ public class AddHabitFragment extends DialogFragment
             calDialog.show();
         });
 
+        //By default, set the repeats to no repeat
+        repeat_strg = new ArrayList<>();
+        repeat_strg.add("NO_REPEAT");
         habitRepeat.setText("Does not repeat");
+
         // Set up the repeat fragment to pop up when Edit calender is clicked
         repeat.setOnClickListener(new View.OnClickListener() {
             @Override

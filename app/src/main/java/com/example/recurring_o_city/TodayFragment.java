@@ -101,10 +101,6 @@ public class TodayFragment extends Fragment{
             Integer goal = habitList.get(i).getGoal();
             List<String> repeat_strg = habitList.get(i).getRepeat();
 
-            if (repeat_strg == null) {
-                repeat_strg = Collections.singletonList("never");
-            }
-
             String ending = repeat_strg.get(repeat_strg.size()- 1);
             List<String> repeat_box = new ArrayList<>();
 
@@ -112,11 +108,15 @@ public class TodayFragment extends Fragment{
                 repeat_box = repeat_strg.subList(2, repeat_strg.size()-1);
             }
 
-            if (today.compareTo(date) == 0 || repeat_box.contains(date_name)) {
-                if (ending.equals("never") || (!ending.equals("never") && goal <= Integer.valueOf(ending))) {
+            if (date.equals(today)|| (repeat_box.contains(date_name) && !date.after(today))) {
+                if (!repeat_strg.equals("NO_REPEAT")) {
+                    todayList.add(habitList.get(i));
+                } else if (ending.equals("never") || (!ending.equals("never") && goal <= Integer.valueOf(ending))) {
                     todayList.add(habitList.get(i));
                 }
             }
+
+
         }
     }
 
