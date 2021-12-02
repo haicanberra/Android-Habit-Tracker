@@ -18,6 +18,11 @@ public class FragmentAdapter extends FragmentStateAdapter {
     private ArrayList<Habit> habitList;
     private ArrayList<HabitEvent> habitEventList;
 
+    /**
+     * @param fragmentManager
+     * @param lifecycle
+     *  {@link ArrayList} of type {@link Habit} and {@link HabitEvent} to add to the {@link android.widget.ArrayAdapter}.
+    */
     public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle,ArrayList<Habit> habitList,
                            ArrayList<HabitEvent> habitEventList) {
         super(fragmentManager, lifecycle);
@@ -26,8 +31,10 @@ public class FragmentAdapter extends FragmentStateAdapter {
     }
 
     /**
+     * depending on int selection return either HabitList or or habitEventList
      * @param position
-     * @return HabitList
+     * @return habitList
+     * @return habitEventList
      */
     @NonNull
     @Override

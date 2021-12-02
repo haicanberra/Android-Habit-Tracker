@@ -42,9 +42,11 @@ public class AllHabitFragment extends Fragment{
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
+     * Creates new instance of {@link AllHabitFragment} class.
      * @param 'ArrayList<Habit>' list
+     *  {@link ArrayList} of type {@link Habit} to add to the {@link TodayFragment}.
      * @return Fragment
+     *  New fragment instantiated with {@link Bundle} containing {@link Habit} objects.
      */
 
     public static AllHabitFragment newInstance(ArrayList<Habit> list) {
@@ -56,6 +58,7 @@ public class AllHabitFragment extends Fragment{
     }
 
     /**
+     * Using the saved instance, gets the list of all {@link Habit}.
      * @param savedInstanceState
      */
     @Override
@@ -68,10 +71,13 @@ public class AllHabitFragment extends Fragment{
     }
 
     /**
+     * Using {@link RecyclerView}, sets up the list of {@link Habit}.
+     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for each {@link Habit} object.
      * @param inflater
      * @param container
      * @param savedInstanceState
      * @return view, the view of all habits
+     * Contains the list of {@link Habit} objects.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

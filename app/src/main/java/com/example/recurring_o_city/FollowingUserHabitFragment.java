@@ -22,14 +22,20 @@ public class FollowingUserHabitFragment extends Fragment {
     private ItemAdapter habitAdapter;
     private ImageView backButton;
 
+    /**
+     * Empty constructor required for instantiation of this class.
+     */
     public FollowingUserHabitFragment() {
         // Required empty public constructor
     }
 
     /**
      * instantiate the class, takes in a list of all habits
+     * Creates new instance of {@link FollowingRequestFragment} class.
      * @param list
+     * {@link ArrayList} of type {@link Habit} to add to the {@link FollowingUserHabitFragment}.
      * @return fragment
+     * New fragment instantiated with {@link Bundle} containing {@link Habit} objects.
      */
     public static FollowingUserHabitFragment newInstance(ArrayList<Habit> list) {
         FollowingUserHabitFragment fragment = new FollowingUserHabitFragment();
@@ -41,6 +47,7 @@ public class FollowingUserHabitFragment extends Fragment {
 
     /**
      * get app state and list of habits
+     * Using the saved instance, gets the list of user habits {@link Habit} .
      * @param savedInstanceState
      */
     @Override
@@ -52,10 +59,13 @@ public class FollowingUserHabitFragment extends Fragment {
 
     /**
      * create the UI for the user to view all the habits they are following
+     * Using {@link RecyclerView}, sets up the list of user habits {@link Habit}.
+     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for each {@link Habit} object.
      * @param inflater
      * @param container
      * @param savedInstanceState
      * @return view
+     * Contains the list of {@link Habit} objects.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

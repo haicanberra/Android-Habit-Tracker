@@ -24,13 +24,19 @@ public class HabitEventFragment extends Fragment {
     private ArrayList<HabitEvent> habitEventList;
     private ItemAdapter habitAdapter;
 
+    /**
+     * Empty constructor required for instantiation of this class.
+     */
     public HabitEventFragment() {
         // Required empty public constructor
     }
 
     /**
+     * Creates new instance of {@link HabitEventFragment} class.
      * @param list
+     * {@link ArrayList} of type {@link HabitEvent} to add to the {@link HabitEventFragment}.
      * @return Fragment
+     * New fragment instantiated with {@link Bundle} containing {@link HabitEvent} objects.
      */
     public static HabitEventFragment newInstance(ArrayList<HabitEvent> list) {
         HabitEventFragment fragment = new HabitEventFragment();
@@ -42,6 +48,7 @@ public class HabitEventFragment extends Fragment {
 
     /**
      * @param savedInstanceState
+     * Using the saved instance, gets the list of {@link HabitEvent}
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,10 +60,13 @@ public class HabitEventFragment extends Fragment {
 
     /**
      * display UI of Habit Event to user
+     * Using {@link RecyclerView}, sets up the list of {@link HabitEvent}.
+     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for each {@link HabitEvent} object.
      * @param inflater
      * @param container
      * @param savedInstanceState
      * @return view
+     * Contains the list of {@link HabitEvent} objects.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

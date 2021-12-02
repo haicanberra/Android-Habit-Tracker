@@ -35,6 +35,7 @@ import com.google.firebase.firestore.Source;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -63,15 +64,21 @@ public class EditHabitFragment extends DialogFragment
     CollectionReference collectionReference;
     DocumentReference editHabit;
 
+    /**
+     * Empty constructor required for instantiation of this class.
+     */
     public EditHabitFragment () {
         // Required empty public constructor
     }
 
     /**
+     * Creates new instance of {@link EditHabitFragment} class.
+     *  {@link String} to add to the {@link TodayFragment}
      * retrieve information for the fragment
      * @param oldHabitTitle
      * @param UserId
      * @return fragment
+     *  New fragment instantiated with {@link Bundle}.
      */
     public static EditHabitFragment newInstance(String oldHabitTitle, String UserId){
         Bundle args = new Bundle();
@@ -88,6 +95,7 @@ public class EditHabitFragment extends DialogFragment
 
     /**
      * create new habit when user presses save
+     * Creates interface between this class and {@link ViewHabitFragment} class.
      */
     public interface EditHabitFragmentListener{
         void onEditSavePressed(Habit newHabit);
@@ -95,6 +103,7 @@ public class EditHabitFragment extends DialogFragment
 
     /**
      * get context, try to attach fragment to it
+     * Creates interface between this class and {@link ViewHabitFragment} class.
      * @param context
      */
     @Override
@@ -111,6 +120,7 @@ public class EditHabitFragment extends DialogFragment
 
     /**
      * get app state info for edit habit fragment
+     * Required onCreate method for creating the fragment.
      * @param savedInstanceState
      */
     @Override
@@ -121,7 +131,10 @@ public class EditHabitFragment extends DialogFragment
     /**
      * create dialog pop up
      * @param savedInstanceState
-     * @return
+     * Creates {@link AlertDialog} for editing {@link Habit} object.
+     * Required {@link Bundle} object for instantiating onCreateDialog method.
+     * @return builder
+     * Dialog fragment for creation of {@link Habit} object.
      */
     @NonNull
     @Override
@@ -310,6 +323,8 @@ public class EditHabitFragment extends DialogFragment
     /**
      * get repeats, to display them
      * @param repeat_list
+     * Interface for {@link RepeatDialog} class. Sets up repeat frequency for {@link Habit} object.
+     * {@link List} of type {@link String} that stores repeat frequency information.
      */
     @Override
     public void onRepeatSavePressed(List<String> repeat_list) {
@@ -327,7 +342,9 @@ public class EditHabitFragment extends DialogFragment
 
     /**
      * find possible duplicates of the same fragment
+     * Method for checking whether title of edited {@link Habit} object is a duplicate.
      * @param title
+     * {@link String} type object that serves as title for {@link Habit} object.
      */
     private void duplicateTitle(String title) {
         String userId = getActivity().getIntent().getStringExtra("User Id");

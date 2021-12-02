@@ -3,6 +3,7 @@ package com.example.recurring_o_city;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,14 +25,20 @@ public class FollowingRequestFragment extends Fragment {
     private ListView userList;
     private UserAdapter userAdapter;
 
+    /**
+     * Empty constructor required for instantiation of this class.
+     */
     public FollowingRequestFragment() {
         // Required empty public constructor
     }
 
     /**
      * get pending follow requests, put it in a new fragment
+     * Creates new instance of {@link FollowingRequestFragment} class.
      * @param pending
+     * {@link ArrayList} of type {@link String} to add to the {@link FollowingRequestFragment}.
      * @return fragment
+     * new fragment instantiated with {@link Bundle} containing {@link String} objects.
      */
     public static FollowingRequestFragment newInstance(ArrayList<String> pending) {
         FollowingRequestFragment fragment = new FollowingRequestFragment();
@@ -43,7 +50,9 @@ public class FollowingRequestFragment extends Fragment {
 
     /**
      * get app state and pending follow requests
+     * Using the saved instance, gets the list of {@link String} pending follow requests.
      * @param savedInstanceState
+     * New {@link Bundle} object instantiated from {@link #newInstance(ArrayList)} method.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,11 +61,14 @@ public class FollowingRequestFragment extends Fragment {
     }
 
     /**
-     * create the UI object for the user to interact wtih
+     * create the UI object for the user to interact with
+     * Using {@link RecyclerView}, sets up the list of {@link String} to occur today.
+     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for each {@link String} object.
      * @param inflater
      * @param container
      * @param savedInstanceState
      * @return view
+     * Contains the list of {@link String} objects.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -59,8 +59,11 @@ public class ViewHabitEventFragment extends Fragment
     private double event_latitude, event_longitude;
 
     /**
+     * Creates new instance of {@link ViewHabitEventFragment} class.
      * @param newHabitEvent
+     * type {@link HabitEvent} to add to the {@link ViewHabitEventFragment}.
      * @return Fragment
+     * New fragment instantiated with {@link Bundle} containing {@link HabitEvent} object.
      */
     // Get the attributes from the Habit object.
     public ViewHabitEventFragment newInstance(HabitEvent newHabitEvent) {
@@ -119,10 +122,13 @@ public class ViewHabitEventFragment extends Fragment
     }
 
     /**
+     * sets up  {@link HabitEvent}
+     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for {@link HabitEvent} object.
      * @param inflater
      * @param container
      * @param savedInstanceState
      * @return View
+     * contains {@link HabitEvent} object
      */
     // Show View Habit Event Fragment.
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -239,6 +245,7 @@ public class ViewHabitEventFragment extends Fragment
     }
 
     /**
+     * of type {@link String} and {@link Byte} that stores image information.
      * set some info before posting
      * @param comment
      * @param address

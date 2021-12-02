@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -21,14 +22,21 @@ public class FollowYouFragment extends Fragment {
     private ImageButton backButton;
     private ListView userList;
     private UserAdapter userAdapter;
+
+    /**
+     * Empty constructor required for instantiation of this class.
+     */
     public FollowYouFragment() {
         // Required empty public constructor
     }
 
     /**
      * instantiate the class with the list of followers
+     * Creates new instance of {@link FollowYouFragment} class.
      * @param follower
+     * {@link ArrayList} of type {@link String} to add to the {@link FollowYouFragment}.
      * @return fragment
+     * New fragment instantiated with {@link Bundle} containing {@link String} objects.
      */
     public static FollowYouFragment newInstance(ArrayList<String> follower) {
         FollowYouFragment fragment = new FollowYouFragment();
@@ -50,10 +58,12 @@ public class FollowYouFragment extends Fragment {
 
     /**
      * Display UI to user
+     * Using {@link RecyclerView}, sets up the list of {@link String} of followers.
      * @param inflater
      * @param container
      * @param savedInstanceState
      * @return view
+     * Contains the list of {@link String} objects.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,13 +40,16 @@ public class SendRequestFragment extends Fragment {
     private String currentEmail;
     private Boolean valid = false;
 
-
-
+    /**
+     * Empty constructor required for instantiation of this class.
+     */
     public SendRequestFragment() {
         // Required empty public constructor
     }
 
     /**
+     * Creates new instance of {@link SendRequestFragment} class.
+     * New fragment instantiated with {@link Bundle}
      * @return fragment, instantiates class
      */
     public static SendRequestFragment newInstance() {
@@ -58,6 +62,7 @@ public class SendRequestFragment extends Fragment {
 
     /**
      * @param savedInstanceState, normal android onCreate
+     * New {@link Bundle} object instantiated from {@link #newInstance} method.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,7 @@ public class SendRequestFragment extends Fragment {
      * @param container
      * @param savedInstanceState
      * this is the view object, it takes the format and objects and displays them
+     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} .
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,6 +141,7 @@ public class SendRequestFragment extends Fragment {
 
     /**
      * @param email, completes the request process
+     * contains {@link String} object
      */
     public void sendRequest(String email) {
         // Update to pending list of that user

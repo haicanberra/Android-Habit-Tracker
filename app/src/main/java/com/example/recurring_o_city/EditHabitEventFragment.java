@@ -44,6 +44,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
@@ -74,12 +75,14 @@ public class EditHabitEventFragment extends DialogFragment {
 
 
     /**
+     * Creates new instance of {@link EditHabitEventFragment} class.
      * instantiates the class
      * @param event_title
      * @param event_datedone
      * @param UserId
      * @param date
      * @return fragment
+     *  New fragment instantiated with {@link Bundle}.
      */
     public static EditHabitEventFragment newInstance(String event_title, String event_datedone, String UserId, Date date) {
         Bundle args = new Bundle();
@@ -109,7 +112,8 @@ public class EditHabitEventFragment extends DialogFragment {
 
     /**
      * @param context
-     * try to attach to context
+     * try to attach to environment
+     * Sets up interface between this class and {@link ViewHabitEventFragment} class.
      */
     @Override
     public void onAttach(Context context) {
@@ -134,8 +138,11 @@ public class EditHabitEventFragment extends DialogFragment {
 
     /**
      * creates the dialog popup
+     * Creates {@link AlertDialog} for creating {@link HabitEvent} object.
      * @param savedInstanceState
+     *  Required {@link Bundle} object for instantiating onCreateDialog method.
      * @return Dialog
+     *  Dialog fragment for creation of {@link HabitEvent} object.
      */
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.edit_habit_event_fragment, null);
@@ -345,6 +352,7 @@ public class EditHabitEventFragment extends DialogFragment {
     }
 
     /**
+     * Interface for {@link GeoPoint} class
      * goes get the address
      * @param geoPoint
      * @return address

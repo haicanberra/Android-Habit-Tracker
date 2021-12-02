@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,14 +43,20 @@ public class YouFollowFragment extends Fragment {
     private CollectionReference userReference, habitReference;
     private String userID;
 
+    /**
+     * Empty constructor required for instantiation of this class.
+     */
     public YouFollowFragment() {
         // Required empty public constructor
     }
 
     /**
      * instantiate class
+     * Creates new instance of {@link YouFollowFragment} class.
+     *  {@link ArrayList} of type {@link String} to add to the {@link YouFollowFragment}.
      * @param following
-     * @return
+     * @return fragment
+     *  New fragment instantiated with {@link Bundle} containing {@link String} objects.
      */
     public static YouFollowFragment newInstance(ArrayList<String> following) {
         YouFollowFragment fragment = new YouFollowFragment();
@@ -62,7 +69,9 @@ public class YouFollowFragment extends Fragment {
     @Override
     /**
      * get app state
+     * Using the saved instance, gets the list of {@link String} of user is following.
      * @param savedInstanceState
+     * New {@link Bundle} object instantiated from {@link #newInstance(ArrayList)} method.
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +81,10 @@ public class YouFollowFragment extends Fragment {
 
     @Override
     /**
+     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for each {@link String} object.
      * create UI for user to interact with
      * @return view
+     *   Contains the list of {@link Habit} objects.
      */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

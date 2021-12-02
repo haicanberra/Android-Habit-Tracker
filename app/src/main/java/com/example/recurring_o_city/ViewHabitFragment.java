@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -42,6 +43,12 @@ public class ViewHabitFragment extends Fragment
     private FirebaseAuth mAuth;
     private String hide;
 
+    /**
+     * Creates new instance of {@link ViewHabitFragment} class.
+     * of type {@link Habit} and {@link String} to add to the {@link ViewHabitFragment}.
+     * @return fragment
+     *  New fragment instantiated with {@link Bundle} containing {@link Habit} object.
+     */
     // Get the attributes from the Habit object.
     public ViewHabitFragment newInstance(Habit newHabit, String hide) {
         Bundle args = new Bundle();
@@ -70,10 +77,12 @@ public class ViewHabitFragment extends Fragment
     }
 
     /**
+     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for {@link Habit} object.
      * @param inflater
      * @param container
      * @param savedInstanceState
-     * @return View
+     * @return view
+     * contains {@link Habit} object
      */
     // Show View Habit Event Fragment.
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -146,6 +155,7 @@ public class ViewHabitFragment extends Fragment
     // When save pressed
 
     /**
+     * Interface for {@link RepeatDialog} class. retrieves repeat frequency for {@link Habit} object.
      * set Habit info before viewing
      * @param newHabit
      */
