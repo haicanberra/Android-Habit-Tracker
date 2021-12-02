@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * this fragment deals with displaying the map in the app
+ * Creates {@link DialogFragment} containing a {@link GoogleMap}.
  */
 public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
 
@@ -57,8 +57,9 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     private List<Address> addresses;
 
     /**
-     * Try to attach map fragment to screen
+     * Sets up the location permission request for the {@link GoogleMap}.
      * @param context
+     *  Environment in which {@link MapsFragment} is launched.
      */
     @Override
     public void onAttach(@NonNull Context context) {
@@ -71,13 +72,11 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
                     @Override
                     public void onActivityResult(Boolean result) {
                         if (result) {
-                            Log.e("TESTING", "PERMISSION GRANTED");
                             locationPermissionGranted = true;
 
                             // Immediately load the user position once permission is granted.
                             getLocationUi();
-                        } else {
-                            Log.e("TESTING", "PERMISSION DENIED");
+                            getDeviceLocation();
                         }
                     }
                 }
@@ -88,11 +87,15 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     }
 
     /**
-     * instantiate class
+     * Creates new fragment of type {@link MapsFragment} and instantiate it with values from {@link Bundle}.
      * @param userId
+     *  ID of the user who created the {@link HabitEvent}, in type {@link String}.
      * @param title
+     *  Title of the {@link Habit} in which this {@link HabitEvent} spawned from, in type {@link String}.
      * @param date
+     *  Creation date of the {@link HabitEvent} this {@link MapsFragment} is modifying, in type {@link Date}.
      * @param address
+     *  Coordinate on the {@link GoogleMap} where the {@link HabitEvent} occurred, in type {@link GeoPoint}.
      * @return fragment
      */
     public static MapsFragment newInstance(String userId, String title, Date date, GeoPoint address) {
@@ -110,11 +113,11 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     }
 
     /**
-     * create UI to interact with user
-     * @param inflater
-     * @param container
+     * Sets up the basic attributes of the {@link MapsFragment} before the map is launched.
      * @param savedInstanceState
+     *  {@link Bundle} received from the {@link #newInstance(String, String, Date, GeoPoint)}.
      * @return view
+     *  The fragment containing {@link GoogleMap}.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -148,18 +151,15 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     }
 
     /**
-     * when fragment is loaded, load the google map API
+     * Sets up the basic user operation on the map menu.
      * @param googleMap
+     *  {@link GoogleMap} type map that user interacts with.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-
-        // Enable UI to track current device location.
         getLocationUi();
-
-        // Track the current device location.
         getDeviceLocation();
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
@@ -184,26 +184,33 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!addressText.getText().toString().equals("")) {
-                    Bundle bundle = new Bundle();
 
-                    bundle.putString("newAddress", addressText.getText().toString());
-                    bundle.putDouble("latitude", lastKnownLocation.getLatitude());
-                    bundle.putDouble("longitude", lastKnownLocation.getLongitude());
-
-                    // Send the bundle of information back to the editHabitEventFragment.
-                    getActivity().getSupportFragmentManager()
-                            .setFragmentResult("MapRequest", bundle);
-
-                    // Pop back out of the backstack.
-                    getActivity().getSupportFragmentManager().popBackStack();
+                // Check if address is valid before saving.
+                try {
+                    addresses = geocoder.getFromLocationName(addressText.getText().toString(), 1);
+                    if (addresses.size() == 0) {
+                        Toast.makeText(
+                                getActivity(),
+                                "Invalid address entered",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                else {
-                    Toast.makeText(
-                            getActivity(),
-                            "Cannot save empty address",
-                            Toast.LENGTH_SHORT).show();
-                }
+
+                // If valid, save.
+                Bundle bundle = new Bundle();
+                bundle.putString("newAddress", addressText.getText().toString());
+                bundle.putDouble("latitude", lastKnownLocation.getLatitude());
+                bundle.putDouble("longitude", lastKnownLocation.getLongitude());
+
+                // Send the bundle of information back to the editHabitEventFragment.
+                getActivity().getSupportFragmentManager()
+                        .setFragmentResult("MapRequest", bundle);
+
+                // Pop back out of the backstack.
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
@@ -224,13 +231,22 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
 
                 try {
                     addresses = geocoder.getFromLocationName(addressText.getText().toString(), 1);
-                    Address address = addresses.get(0);
 
-                    lastKnownLocation.setLatitude(address.getLatitude());
-                    lastKnownLocation.setLongitude(address.getLongitude());
-
-                    moveCamera(lastKnownLocation);
-                    createMarker(lastKnownLocation);
+                    // Check if the address is valid.
+                    Log.e("ADDRESS SIZE", String.valueOf(addresses.size()));
+                    if (addresses.size() > 0) {
+                        Address address = addresses.get(0);
+                        lastKnownLocation.setLatitude(address.getLatitude());
+                        lastKnownLocation.setLongitude(address.getLongitude());
+                        moveCamera(lastKnownLocation);
+                        createMarker(lastKnownLocation);
+                    }
+                    else {
+                        Toast.makeText(
+                                getActivity(),
+                                "Invalid address entered",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -253,7 +269,7 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     }
 
     /**
-     * get location if permission is granted
+     * Sets up UI that tracks current location of the user's device, if permission is granted.
      */
     public void getLocationUi() {
         if (mMap == null) {
@@ -271,7 +287,7 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     }
 
     /**
-     * if permission is granted, get user location
+     * Using user's current location, set up the coordinate of the user's device.
      */
     public void getDeviceLocation() {
         try{
@@ -338,8 +354,9 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     }
 
     /**
-     * move the top down view into the coordinates
+     * Move the camera to the set location.
      * @param location
+     *  Coordinate for the map to center on, in type {@link Location}.
      */
     public void moveCamera(Location location) {
         LatLng cameraPos = new LatLng(
@@ -349,8 +366,9 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     }
 
     /**
-     * send location to google map
+     * Using the user's current location, outputs the user's address in the {@link EditText}.
      * @param location
+     *  Coordinate of the user's current location, in type {@link Location}.
      */
     public void setLocation(Location location) {
         String newAddress;
@@ -360,13 +378,26 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
             String city = addresses.get(0).getLocality();
             String state = addresses.get(0).getAdminArea();
             String street = addresses.get(0).getThoroughfare();
-            String streetNum = addresses.get(0).getFeatureName();
 
             if (street == null) {
-                newAddress = streetNum + " " + city + " " + state;
+                street = addresses.get(0).getFeatureName() + " ";
             } else {
-                newAddress = street + " " + city + " " + state;
+                street = street + " ";
             }
+
+            if (state == null) {
+                state = "";
+            } else {
+                state = state + " ";
+            }
+
+            if (city == null) {
+                city = "";
+            } else {
+                city = city + " ";
+            }
+
+            newAddress = street + city + state;
             addressText.setText(newAddress);
         } catch (IOException e) {
             e.printStackTrace();
@@ -374,10 +405,12 @@ public class MapsFragment extends DialogFragment implements OnMapReadyCallback {
     }
 
     /**
-     * put the marker on the map
+     * Using the location given by the parameter, creates {@link Marker}.
      * @param location
+     *  Coordinate of the user's current location, in type {@link Location}.
      */
     public void createMarker(Location location) {
+        mMap.clear();
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(
                 location.getLatitude(),
