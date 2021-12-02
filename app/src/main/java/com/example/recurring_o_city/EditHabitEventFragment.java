@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * The popup that allows the user edit the Habit the fragment displays
+ * Creates new fragment that prompts user to edit the {@link HabitEvent}.
  */
 public class EditHabitEventFragment extends DialogFragment {
 
@@ -72,7 +72,6 @@ public class EditHabitEventFragment extends DialogFragment {
     DocumentReference editHabitEvent;
 
     private GeoPoint newCoordinate;
-
 
     /**
      * Creates new instance of {@link EditHabitEventFragment} class.
@@ -217,10 +216,6 @@ public class EditHabitEventFragment extends DialogFragment {
                     }
                 });
 
-
-        // When click on the image button, go to take photo
-        // Code to take photo implements here
-
         /**
          * Allows app to display photo
          */
@@ -260,10 +255,6 @@ public class EditHabitEventFragment extends DialogFragment {
             }
         });
 
-        // When click on map image, open map activity
-        // Code to implements map here
-
-        // Send all instances needed for map initialization.
         /**
          * opens map activity component of the app
          */
@@ -292,7 +283,6 @@ public class EditHabitEventFragment extends DialogFragment {
         /**
          * retrieves map fragment, after request has been sent
          */
-        // This listener gets the result from the map fragment.
         getActivity().getSupportFragmentManager().setFragmentResultListener(
                 "MapRequest", this, new FragmentResultListener() {
                     @Override
@@ -306,13 +296,6 @@ public class EditHabitEventFragment extends DialogFragment {
                     }
                 });
 
-        // Package the unique creation date of habit event along with intent.
-        // Make sure the habit and user matches.
-        //collectionReference
-        //        .whereEqualTo("User Id", getArguments().getString("User_Id"))
-        //        .whereEqualTo("Title", getArguments().getString("event_title"))
-
-        // Create builder
         /**
          * @param context
          * edit habit fragment builder
@@ -367,13 +350,26 @@ public class EditHabitEventFragment extends DialogFragment {
             String city = addresses.get(0).getLocality();
             String state = addresses.get(0).getAdminArea();
             String street = addresses.get(0).getThoroughfare();
-            String streetNum = addresses.get(0).getFeatureName();
 
             if (street == null) {
-                address = streetNum + " " + city + " " + state;
+                street = addresses.get(0).getFeatureName() + " ";
             } else {
-                address = street + " " + city + " " + state;
+                street = street + " ";
             }
+
+            if (state == null) {
+                state = "";
+            } else {
+                state = state + " ";
+            }
+
+            if (city == null) {
+                city = "";
+            } else {
+                city = city + " ";
+            }
+
+            address = street + city + state;
         } catch (IOException e) {
             e.printStackTrace();
         }
