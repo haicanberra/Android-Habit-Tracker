@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * fragment for the edit habit fragment
+ * Class that creates new fragment for editing {@link Habit} type object.
  */
 public class EditHabitFragment extends DialogFragment
         implements RepeatDialog.RepeatDialogListener {
@@ -73,18 +73,15 @@ public class EditHabitFragment extends DialogFragment
 
     /**
      * Creates new instance of {@link EditHabitFragment} class.
-     *  {@link String} to add to the {@link TodayFragment}
-     * retrieve information for the fragment
      * @param oldHabitTitle
+     *  {@link String} type parameter containing title of {@link Habit} to edit.
      * @param UserId
+     *  The user ID of the {@link Habit} object's owner, in type {@link String}.
      * @return fragment
      *  New fragment instantiated with {@link Bundle}.
      */
     public static EditHabitFragment newInstance(String oldHabitTitle, String UserId){
         Bundle args = new Bundle();
-
-        // This string acts as key for retrieving Firebase document.
-
         args.putString("habit_title", oldHabitTitle);
         args.putString("User_Id", UserId);
 
@@ -94,7 +91,6 @@ public class EditHabitFragment extends DialogFragment
     }
 
     /**
-     * create new habit when user presses save
      * Creates interface between this class and {@link ViewHabitFragment} class.
      */
     public interface EditHabitFragmentListener{
@@ -102,9 +98,10 @@ public class EditHabitFragment extends DialogFragment
     }
 
     /**
-     * get context, try to attach fragment to it
-     * Creates interface between this class and {@link ViewHabitFragment} class.
+     * Sets up the listener for the interfacing between {@link ViewHabitFragment} and this class.
+     * Throws {@link RuntimeException} if the interfacing was unsuccessful.
      * @param context
+     *  Environment in which {@link EditHabitFragment} class is launched from.
      */
     @Override
     public void onAttach(Context context) {
@@ -119,9 +116,7 @@ public class EditHabitFragment extends DialogFragment
     }
 
     /**
-     * get app state info for edit habit fragment
      * Required onCreate method for creating the fragment.
-     * @param savedInstanceState
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,12 +124,11 @@ public class EditHabitFragment extends DialogFragment
     }
 
     /**
-     * create dialog pop up
+     * Creates the builder for creating new {@link Habit} object.
      * @param savedInstanceState
-     * Creates {@link AlertDialog} for editing {@link Habit} object.
-     * Required {@link Bundle} object for instantiating onCreateDialog method.
+     *  {@link #newInstance(String, String)} of {@link EditHabitFragment} containing values from {@link Bundle}.
      * @return builder
-     * Dialog fragment for creation of {@link Habit} object.
+     *  Dialog fragment for creation of {@link Habit} object.
      */
     @NonNull
     @Override
@@ -211,25 +205,14 @@ public class EditHabitFragment extends DialogFragment
                 });
 
         // Set up the repeat fragment to pop up when Edit calender is clicked
-        /**
-         * get the repeat dialog to pop up
-         * @param OnClickListener
-         */
         repeat.setOnClickListener(new View.OnClickListener() {
             @Override
-            /**
-             * @param view
-             */
             public void onClick(View view) {
                 RepeatDialog repeatDialog = new RepeatDialog();
                 repeatDialog.show(getChildFragmentManager(), "Repeat");
             }
         });
 
-        /**
-         * toggle privacy button
-         * @param CompoundButton
-         */
         habitPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -241,9 +224,6 @@ public class EditHabitFragment extends DialogFragment
             }
         });
 
-        /**
-         * @param TextWatcher
-         */
         habitTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -259,10 +239,6 @@ public class EditHabitFragment extends DialogFragment
             }
         });
 
-        /**
-         * builder for fragment
-         * @param context
-         */
         // Create builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -326,10 +302,9 @@ public class EditHabitFragment extends DialogFragment
     }
 
     /**
-     * get repeats, to display them
+     * Interface for the {@link RepeatDialog} class. Receives repeat frequency of the {@link Habit}.
      * @param repeat_list
-     * Interface for {@link RepeatDialog} class. Sets up repeat frequency for {@link Habit} object.
-     * {@link List} of type {@link String} that stores repeat frequency information.
+     *  {@link List} of type {@link String} that stores repeat frequency information.
      */
     @Override
     public void onRepeatSavePressed(List<String> repeat_list) {
@@ -346,7 +321,6 @@ public class EditHabitFragment extends DialogFragment
     }
 
     /**
-     * find possible duplicates of the same fragment
      * Method for checking whether title of edited {@link Habit} object is a duplicate.
      * @param title
      * {@link String} type object that serves as title for {@link Habit} object.

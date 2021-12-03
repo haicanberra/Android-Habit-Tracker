@@ -30,6 +30,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ *
+ */
 public class AllHabitFragment extends Fragment{
 
     public ArrayList<Habit> allHabitList;
@@ -40,15 +43,13 @@ public class AllHabitFragment extends Fragment{
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Use this factory method to create a new instance of this fragment using the provided parameters.
      * Creates new instance of {@link AllHabitFragment} class.
-     * @param 'ArrayList<Habit>' list
+     * @param list
      *  {@link ArrayList} of type {@link Habit} to add to the {@link TodayFragment}.
-     * @return Fragment
+     * @return fragment
      *  New fragment instantiated with {@link Bundle} containing {@link Habit} objects.
      */
-
     public static AllHabitFragment newInstance(ArrayList<Habit> list) {
         AllHabitFragment fragment = new AllHabitFragment();
         Bundle bundle = new Bundle();
@@ -60,6 +61,7 @@ public class AllHabitFragment extends Fragment{
     /**
      * Using the saved instance, gets the list of all {@link Habit}.
      * @param savedInstanceState
+     *  {@link Bundle} containing the arguments received from {@link #newInstance(ArrayList)}.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,17 +69,18 @@ public class AllHabitFragment extends Fragment{
 
         allHabitList = (ArrayList<Habit>) getArguments().getSerializable(
                 "ALL_HABIT");
-
     }
 
     /**
      * Using {@link RecyclerView}, sets up the list of {@link Habit}.
-     * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for each {@link Habit} object.
      * @param inflater
+     *  Layout .xml file instantiated into a {@link View}.
      * @param container
+     *  Container for the {@link View} created by {@link LayoutInflater}.
      * @param savedInstanceState
+     *  {@link Bundle} instantiated from {@link #newInstance(ArrayList)}.
      * @return view, the view of all habits
-     * Contains the list of {@link Habit} objects.
+     *  Contains the list of {@link Habit} objects.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,7 +105,6 @@ public class AllHabitFragment extends Fragment{
                         .addToBackStack(null).commit();
             }
         });
-
 
         return view;
     }

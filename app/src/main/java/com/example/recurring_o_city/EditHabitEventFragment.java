@@ -75,7 +75,6 @@ public class EditHabitEventFragment extends DialogFragment {
 
     /**
      * Creates new instance of {@link EditHabitEventFragment} class.
-     * instantiates the class
      * @param event_title
      * @param event_datedone
      * @param UserId

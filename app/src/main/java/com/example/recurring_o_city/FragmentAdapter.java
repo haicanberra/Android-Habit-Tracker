@@ -11,7 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import java.util.ArrayList;
 
 /**
- * This class generate ArrayLists that hold the habits
+ * Main class for holding {@link ArrayList} of various type on the main menu.
  */
 public class FragmentAdapter extends FragmentStateAdapter {
 
@@ -19,8 +19,12 @@ public class FragmentAdapter extends FragmentStateAdapter {
     private ArrayList<HabitEvent> habitEventList;
 
     /**
+     * Constructor for the {@link FragmentAdapter} class.
      * @param fragmentManager
+     *  Responsible for the {@link Fragment} activities.
      * @param lifecycle
+     *  Holds state of the current {@link Fragment}'s {@link Lifecycle} information.
+     * @param habitList
      *  {@link ArrayList} of type {@link Habit} and {@link HabitEvent} to add to the {@link android.widget.ArrayAdapter}.
     */
     public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle,ArrayList<Habit> habitList,
@@ -31,10 +35,13 @@ public class FragmentAdapter extends FragmentStateAdapter {
     }
 
     /**
-     * depending on int selection return either HabitList or or habitEventList
+     * Depending on which tab is selected, either return list of {@link Habit} or list of {@link HabitEvent}.
      * @param position
+     *  The tab position the user is currently located within {@link MainActivity}.
      * @return habitList
+     *  {@link ArrayList} holding {@link Habit} objects.
      * @return habitEventList
+     *  {@link ArrayList} holding {@link HabitEvent} objects.
      */
     @NonNull
     @Override
@@ -50,7 +57,9 @@ public class FragmentAdapter extends FragmentStateAdapter {
     }
 
     /**
+     * Returns the total numbers of tabs present in the app.
      * @return int
+     *  Where {@link Integer} return value corresponds to the total size of the {@link FragmentAdapter} list.
      */
     @Override
     public int getItemCount() {

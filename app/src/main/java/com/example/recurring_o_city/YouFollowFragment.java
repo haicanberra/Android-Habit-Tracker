@@ -102,7 +102,6 @@ public class YouFollowFragment extends Fragment {
         userAdapter = new UserAdapter(getContext(), following,"yff");
         userList.setAdapter(userAdapter);
 
-
         // When click on an user, go to new fragment
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

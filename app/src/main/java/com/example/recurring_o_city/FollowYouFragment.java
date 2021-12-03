@@ -31,12 +31,11 @@ public class FollowYouFragment extends Fragment {
     }
 
     /**
-     * instantiate the class with the list of followers
      * Creates new instance of {@link FollowYouFragment} class.
      * @param follower
-     * {@link ArrayList} of type {@link String} to add to the {@link FollowYouFragment}.
+     *  {@link ArrayList} of type {@link String} to add to the {@link FollowYouFragment}.
      * @return fragment
-     * New fragment instantiated with {@link Bundle} containing {@link String} objects.
+     *  New fragment instantiated with {@link Bundle} containing {@link String} objects.
      */
     public static FollowYouFragment newInstance(ArrayList<String> follower) {
         FollowYouFragment fragment = new FollowYouFragment();
@@ -47,8 +46,9 @@ public class FollowYouFragment extends Fragment {
     }
 
     /**
-     * get app state and list of followers
+     * Sets the follower {@link ArrayList<String>} with the value instantiated from {@link Bundle}.
      * @param savedInstanceState
+     *  {@link Bundle} containing {@link ArrayList<String>} created from {@link #newInstance(ArrayList)}.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,13 +57,15 @@ public class FollowYouFragment extends Fragment {
     }
 
     /**
-     * Display UI to user
      * Using {@link RecyclerView}, sets up the list of {@link String} of followers.
      * @param inflater
+     *  Layout .xml file instantiated into a {@link View}.
      * @param container
+     *  Container for the {@link View} created by {@link LayoutInflater}.
      * @param savedInstanceState
+     *  {@link Bundle} instantiated from {@link #newInstance(ArrayList)}.
      * @return view
-     * Contains the list of {@link String} objects.
+     *  Contains the list of {@link String} objects.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -49,6 +49,7 @@ public class FollowingUserHabitFragment extends Fragment {
      * get app state and list of habits
      * Using the saved instance, gets the list of user habits {@link Habit} .
      * @param savedInstanceState
+     *  {@link Bundle} object created from {@link #newInstance(ArrayList)} function.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,14 +59,16 @@ public class FollowingUserHabitFragment extends Fragment {
     }
 
     /**
-     * create the UI for the user to view all the habits they are following
      * Using {@link RecyclerView}, sets up the list of user habits {@link Habit}.
      * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for each {@link Habit} object.
      * @param inflater
+     *  Layout .xml file instantiated into a {@link View}.
      * @param container
+     *  Container for the {@link View} created by {@link LayoutInflater}.
      * @param savedInstanceState
+     *  {@link Bundle} instantiated from {@link #newInstance(ArrayList)}.
      * @return view
-     * Contains the list of {@link Habit} objects.
+     *  Contains the list of {@link Habit} objects.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,10 +98,6 @@ public class FollowingUserHabitFragment extends Fragment {
 
         // When click back button
         backButton.setOnClickListener(new View.OnClickListener() {
-            /**
-             *
-             * @param view
-             */
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();
