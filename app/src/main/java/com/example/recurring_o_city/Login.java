@@ -105,18 +105,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        /**
-         * @param Boolean
-         */
         if ((email.isEmpty())){
             editTextEmail.setError("Username is required");
             editTextEmail.requestFocus();
             return;
         }
 
-        /**
-         * @param Boolean
-         */
         if ((password.isEmpty())){
             editTextPassword.setError("Password is required");
             editTextPassword.requestFocus();
@@ -124,21 +118,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener,OnC
             return;
         }
 
-        /**
-         * @param int
-         */
         if (password.length() < 5){
             editTextPassword.setError("Minimum password length is 5");
             editTextPassword.requestFocus();
             return;
         }
-        /**
-         * @param String
-         * @param String
-         */
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, this);
-
     }
 
     /**

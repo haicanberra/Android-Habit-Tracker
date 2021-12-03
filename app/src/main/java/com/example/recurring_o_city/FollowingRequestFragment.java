@@ -49,7 +49,6 @@ public class FollowingRequestFragment extends Fragment {
     }
 
     /**
-     * get app state and pending follow requests
      * Using the saved instance, gets the list of {@link String} pending follow requests.
      * @param savedInstanceState
      * New {@link Bundle} object instantiated from {@link #newInstance(ArrayList)} method.
@@ -61,12 +60,14 @@ public class FollowingRequestFragment extends Fragment {
     }
 
     /**
-     * create the UI object for the user to interact with
      * Using {@link RecyclerView}, sets up the list of {@link String} to occur today.
      * Sets up {@link com.example.recurring_o_city.ItemAdapter.OnItemClickListener} for each {@link String} object.
      * @param inflater
+     *  Layout .xml file instantiated into a {@link View}.
      * @param container
+     *  Container for the {@link View} created by {@link LayoutInflater}.
      * @param savedInstanceState
+     *  {@link Bundle} instantiated from {@link #newInstance(ArrayList)}.
      * @return view
      * Contains the list of {@link String} objects.
      */

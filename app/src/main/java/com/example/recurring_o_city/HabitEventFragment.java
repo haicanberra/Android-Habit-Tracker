@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * displays a popup of whatever habit needs to be done
+ * Displays a {@link HabitEvent} objects generated through the {@link Habit} completion.
  */
 public class HabitEventFragment extends Fragment {
 
@@ -34,9 +34,9 @@ public class HabitEventFragment extends Fragment {
     /**
      * Creates new instance of {@link HabitEventFragment} class.
      * @param list
-     * {@link ArrayList} of type {@link HabitEvent} to add to the {@link HabitEventFragment}.
+     *  {@link ArrayList} of type {@link HabitEvent} to add to the {@link HabitEventFragment}.
      * @return Fragment
-     * New fragment instantiated with {@link Bundle} containing {@link HabitEvent} objects.
+     *  New fragment instantiated with {@link Bundle} containing {@link HabitEvent} objects.
      */
     public static HabitEventFragment newInstance(ArrayList<HabitEvent> list) {
         HabitEventFragment fragment = new HabitEventFragment();
@@ -47,8 +47,9 @@ public class HabitEventFragment extends Fragment {
     }
 
     /**
+     *
      * @param savedInstanceState
-     * Using the saved instance, gets the list of {@link HabitEvent}
+     *  {@link Bundle} containing the {@link ArrayList} of {@link HabitEvent}.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
