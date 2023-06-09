@@ -28,7 +28,7 @@ An Android app that tracks any habits, todos and tasks you might have.
 - Forked from original [repo](https://github.com/CMPUT301F21T39/Recurring-O-City).
 <a name="specifications"></a>
 ## Specifications
-
+- Documentation is located in the [Wiki](https://github.com/haicanberra/Habit-Tracker/wiki).
 <a name="installation"></a>
 ## Installation
 - Install Android Studio.
