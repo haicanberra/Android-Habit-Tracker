@@ -22,7 +22,8 @@
 An Android app that tracks any habits, todos and tasks you might have.
 <a name="packages"></a>
 ## Packages
-- Android Studio
+### <u>Back-end</u>
+- Google Firebase.
 <a name="references"></a>
 ## References
 - Forked from original [repo](https://github.com/CMPUT301F21T39/Recurring-O-City).
