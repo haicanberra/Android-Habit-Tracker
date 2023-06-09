@@ -1,8 +1,10 @@
 <div align="center">
 
-# Habit Tracker
+
 
 <img src="./thumbnail.png" width="300">
+  
+# Habit Tracker
 
 </div> 
 
