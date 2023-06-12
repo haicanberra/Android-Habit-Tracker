@@ -19,7 +19,10 @@
 
 <a name="about"></a>
 ## About
-An Android app that tracks any habits, todos and tasks you might have.
+Habit Tracker - Collaborative Task Management Android Application
+- Developed a habit tracker Android application with task management, repeat scheduling, and privacy controls.  
+- Integrated Google Firebase backend for user registration, login and logout with real-time task sharing among teammates.  
+- Gained valuable experience in UI/UX design, user storyboarding, and weekly progress reporting with a mentor.  
 <a name="packages"></a>
 ## Packages
 ### <u>Back-end</u>
