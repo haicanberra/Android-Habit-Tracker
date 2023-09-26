@@ -19,10 +19,11 @@
 
 <a name="about"></a>
 ## About
-Habit Tracker - Collaborative Task Management Android Application
-- Developed a habit tracker Android application with task management, repeat scheduling, and privacy controls.  
-- Integrated Google Firebase backend for user registration, login and logout with real-time task sharing among teammates.  
-- Gained valuable experience in UI/UX design, user storyboarding, and weekly progress reporting with a mentor.  
+Android Habit Tracker - Collaborative Task Management Android Application	
+- Led a team of 5 students to develop an Android habit tracker app from concept to release.
+- Efficiently managed project timelines, resulting in 100% completion rate of project tasks.
+- Organized weekly team meetings, ensuring consistent communication on project status and individual contributions.
+
 <a name="packages"></a>
 ## Packages
 ### <u>Back-end</u>
